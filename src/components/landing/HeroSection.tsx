@@ -13,29 +13,44 @@ export default function HeroSection() {
 
   return (
     <div className="relative w-full min-h-screen lg:h-[850px] overflow-hidden bg-white">
-      {/* Decorative Red Background Circles - Restored to more central-right position */}
-      <div className="absolute left-[20%] lg:left-[450px] top-[-300px] lg:top-[-726px] w-[150vw] lg:w-[1324.81px] h-[150vw] lg:h-[1324.81px] bg-[#FF4B3A] rounded-full z-20 transition-all duration-700"></div>
+      {/* Decorative Red Background Circles - Shifted further right */}
+      <div className="absolute left-[20%] lg:left-[550px] top-[-300px] lg:top-[-726px] w-[150vw] lg:w-[1324.81px] h-[150vw] lg:h-[1324.81px] bg-[#FF4B3A] rounded-full z-20 transition-all duration-700"></div>
       
-      {/* Orbiting Food Icons Mask Container (z-30) - Hidden on mobile */}
-      <div className="hidden lg:block absolute left-[20%] lg:left-[450px] top-[-300px] lg:top-[-726px] w-[150vw] lg:w-[1324.81px] h-[150vw] lg:h-[1324.81px] rounded-full overflow-hidden z-30 pointer-events-none transition-all duration-700">
+      {/* Orbiting Food Icons Mask Container (z-30) - Hidden on mobile - Shifted further right */}
+      <div className="hidden lg:block absolute left-[20%] lg:left-[550px] top-[-300px] lg:top-[-726px] w-[150vw] lg:w-[1324.81px] h-[150vw] lg:h-[1324.81px] rounded-full overflow-hidden z-30 pointer-events-none transition-all duration-700">
         {/* Orbiting Food Icons Container */}
-        <div className="absolute left-[15%] lg:left-[346.86px] top-[70%] lg:top-[1010.53px] w-[60vw] lg:w-[630.33px] h-[60vw] lg:h-[630.33px] rounded-full animate-[spin_25s_linear_infinite]">
-          {/* Icons */}
+        <div className="absolute left-[15%] lg:left-[346.86px] top-[70%] lg:top-[1010.53px] w-[60vw] lg:w-[630.33px] h-[60vw] lg:h-[630.33px] rounded-full animate-[spin_35s_linear_infinite]">
+          {/* Icons - Dynamically positioned in a circle */}
           {[
-            { img: "Orange.png", pos: "left-1/2 top-0 -translate-x-1/2 -translate-y-1/2" },
-            { img: "Grape.png", pos: "left-[97.55%] top-[34.55%] -translate-x-1/2 -translate-y-1/2" },
-            { img: "Lemon.png", pos: "left-[79.38%] top-[90.45%] -translate-x-1/2 -translate-y-1/2" },
-            { img: "Watermelon.png", pos: "left-[20.62%] top-[90.45%] -translate-x-1/2 -translate-y-1/2", scale: "w-[70%] h-[70%]" },
-            { img: "Pineapple (1).png", pos: "left-[2.45%] top-[34.55%] -translate-x-1/2 -translate-y-1/2" }
-          ].map((icon, idx) => (
-            <div key={idx} className={`absolute ${icon.pos} w-[60px] lg:w-[105px] h-[60px] lg:h-[105px] bg-white rounded-full border-[1px] border-[#FF4B3A] shadow-lg flex items-center justify-center animate-[spin_25s_linear_infinite_reverse]`}>
-              <img 
-                className={`${icon.scale || "w-[60%] h-[60%]"} object-contain drop-shadow-md`} 
-                src={`/hero/food-icon/Type=Fruits, Icon=${icon.img}`} 
-                alt={icon.img} 
-              />
-            </div>
-          ))}
+            "Type=Fruits, Icon=Orange.png",
+            "Type=Food, Icon=Fried Eggs.png",
+            "Type=Vegetables, Icon=Carrot (1).png",
+            "Type=Fruits, Icon=Grape.png",
+            "Type=Food, Icon=Bread.png",
+            "Type=Fruits, Icon=Watermelon.png"
+          ].map((imgName, idx, arr) => {
+            const angle = (idx / arr.length) * 2 * Math.PI;
+            const left = 50 + 50 * Math.cos(angle);
+            const top = 50 + 50 * Math.sin(angle);
+            
+            return (
+              <div 
+                key={idx} 
+                className="absolute w-[60px] lg:w-[105px] h-[60px] lg:h-[105px] bg-white rounded-full border-[1px] border-[#FF4B3A] shadow-lg flex items-center justify-center animate-[spin_25s_linear_infinite_reverse]"
+                style={{ 
+                  left: `${left}%`, 
+                  top: `${top}%`,
+                  transform: 'translate(-50%, -50%)'
+                }}
+              >
+                <img 
+                  className="w-[60%] h-[60%] object-contain drop-shadow-md" 
+                  src={`/hero/food-icon/${imgName}`} 
+                  alt={imgName} 
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -43,8 +58,8 @@ export default function HeroSection() {
       <div className="absolute left-0 top-[101px] w-full h-0 border-t-[0.30px] border-[#F4F4F8] z-50 opacity-30"></div>
       <div className="absolute left-0 top-[212px] w-full h-0 border-t-[0.30px] border-[#F4F4F8] z-50 opacity-30"></div>
 
-      {/* Big Title Background - Center aligned within the red area and between lines - Responsive */}
-      <div className="absolute left-[25%] lg:left-[540px] top-[125px] text-white text-[28px] lg:text-[73.16px] font-extrabold leading-none z-50 pointer-events-none whitespace-nowrap">
+      {/* Big Title Background - Shifted further right */}
+      <div className="absolute left-[25%] lg:left-[640px] top-[125px] text-white text-[28px] lg:text-[73.16px] font-extrabold leading-none z-50 pointer-events-none whitespace-nowrap">
         Pantauin MBG
       </div>
 
@@ -74,7 +89,7 @@ export default function HeroSection() {
         
         {/* Right: Tray Image Container (Hidden on mobile) */}
         <div className="hidden lg:flex relative lg:static w-full lg:w-auto justify-center mb-10 lg:mb-0 order-1 lg:order-2">
-          <div className="relative lg:absolute lg:left-[950px] lg:top-[250px] w-[250px] lg:w-[315px] h-[250px] lg:h-[315px] bg-white rounded-full shadow-2xl overflow-hidden flex items-center justify-center z-40">
+          <div className="relative lg:absolute lg:left-[1050px] lg:top-[250px] w-[250px] lg:w-[315px] h-[250px] lg:h-[315px] bg-white rounded-full shadow-2xl overflow-hidden flex items-center justify-center z-40">
             <img className="w-full h-full object-cover" src="/hero/mbg.png" alt="Main MBG Tray" />
           </div>
         </div>
