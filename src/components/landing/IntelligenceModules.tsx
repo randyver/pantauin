@@ -1,85 +1,81 @@
+import Image from "next/image";
+
 export default function IntelligenceModules() {
   return (
-    <>
-      {/* Background Decor */}
-      {/* Background Decor Removed */}
-      {/* <div className="absolute left-[-72.87px] top-[804px] w-[1586.33px] h-[396px] rounded-full outline outline-[2.25px] outline-[#FF4B3A]/30 -outline-offset-[1.13px]"></div> */}
-      
-      {/* Module 1: Blur decorative shadow */}
-      <div className="absolute left-[1029.40px] top-[1563.88px] w-[264.19px] h-[129.29px] bg-gradient-to-b from-[#54425A] to-white shadow-[19.87px_19.87px_19.87px] blur-[9.94px] origin-top-left rotate-15"></div>
+    <div className="absolute left-0 w-full top-[1300px] z-10 px-[136px]">
+      {/* Top Header Section */}
+      <div className="relative w-full flex justify-between items-start mb-[80px]">
+        <div className="max-w-[800px] pt-10">
+          <h2 className="text-[#333333] text-[73px] font-bold font-sf-rounded leading-[1.05] mb-6">
+            Memantau setiap sinyal, dari semua arah
+          </h2>
+          <p className="text-[#333333] text-[15px] font-medium max-w-[500px] leading-relaxed opacity-80">
+            Data Publik Dari Media, Sosial Media, Dan Laporan Masyarakat Dianalisis Bersama Data Resmi Pemerintah & Sekolah.
+          </p>
+        </div>
 
-      {/* Duplicate Headers Removed */}
-      
-      <div className="absolute left-[152.13px] top-[1469.11px] w-[472px] h-[53px] flex flex-col justify-end text-[#333333] text-[14.63px] font-normal capitalize">
-        Data publik dari media, sosial media, dan laporan masyarakat dianalisis bersama data resmi pemerintah & sekolah.
+        {/* 3D Character Image - Positioned absolute to overlap with cards below */}
+        <div className="absolute right-[-100px] top-[-50px] w-[450px] h-[450px] z-0 pointer-events-none">
+          <img 
+            src="/intelligence/ToyFaces_Tansparent_BG_29(1).png" 
+            className="w-full h-full object-contain" 
+            alt="Intelligence Character" 
+          />
+        </div>
       </div>
 
-      <div className="absolute left-[672.13px] top-[2127px] w-[728px] text-[73.16px] font-bold font-sf-rounded leading-[63.53px]">
-        <span className="text-[#FF4B3A]">Empat</span>
-        <span className="text-[#333333]"> </span>
-        <span className="text-white">modul intelijen dalam satu platform.</span>
-      </div>
-
-      {/* 4 Cards Grid */}
-      <div className="absolute left-[152.13px] top-[1576px] w-[1006px] inline-flex flex-wrap content-start items-start justify-start gap-[16.14px]">
+      {/* 4 Cards Grid - Higher z-index to cover the character's body */}
+      <div className="relative grid grid-cols-2 gap-[24px] max-w-[1168px] z-10">
         
         {/* Card 1: Twitter */}
-        <div className="relative w-[494.93px] h-[177.53px] bg-gradient-to-l from-[#E9F7BA] to-[#E9F7BA] rounded-[32.28px] overflow-hidden group">
-          <div className="absolute left-[428.22px] top-[-50.57px] w-[107.59px] h-[107.59px] bg-[#FF4B3A] rounded-[387.34px] transition-transform group-hover:scale-110"></div>
-          <div className="absolute left-[30.13px] top-[23.67px] inline-flex items-center gap-[21.52px]">
-            <img className="w-[85.19px] h-[86.96px] object-contain" src="https://placehold.co/85x87" alt="Twitter" />
-            <div className="w-[327.08px] inline-flex flex-col items-start gap-[21.52px]">
-              <div className="w-full text-[#FF4B3A] text-[43.04px] font-normal leading-[37.37px]">Twitter</div>
-              <div className="w-full text-black/50 text-[26.90px] font-normal leading-[23.36px]">Tweet & reply terkait MBG, keracunan, makan siang sekolah.</div>
-            </div>
+        <div className="relative w-[572px] h-[210px] bg-[#E9F7BA] rounded-[40px] shadow-[0px_20px_40px_rgba(0,0,0,0.03)] overflow-hidden p-8 flex items-center gap-8">
+          <div className="absolute right-[10px] top-[10px] w-[80px] h-[80px] bg-[#FF4B3A] rounded-full -mr-8 -mt-8"></div>
+          <div className="w-[100px] h-[100px] flex-shrink-0">
+            <img src="/intelligence/x logo.svg" className="w-full h-full object-contain" alt="Twitter" />
+          </div>
+          <div className="flex flex-col gap-2">
+            <h3 className="text-[#FF4B3A] text-[43px] font-medium leading-tight">Twitter</h3>
+            <p className="text-black/50 text-[26px] leading-tight">Tweet & reply terkait MBG, keracunan, makan siang sekolah.</p>
           </div>
         </div>
 
         {/* Card 2: Instagram/Tiktok */}
-        <div className="relative w-[494.93px] h-[177.53px] bg-gradient-to-l from-[#EE4F44] to-[#F98422] rounded-[32.28px] overflow-hidden group">
-          <div className="absolute left-[424.99px] top-[128.04px] w-[107.59px] h-[107.59px] bg-[#E9F7BA] rounded-[387.34px] transition-transform group-hover:scale-110"></div>
-          <div className="absolute left-[30.13px] top-[23.67px] inline-flex items-center gap-[21.52px]">
-            <div className="relative w-[86.07px] h-[86.07px] overflow-hidden">
-              <div className="absolute left-[7.17px] top-[7.17px] w-[71.73px] h-[71.73px] outline outline-[4.30px] outline-white/90 -outline-offset-[2.15px] rounded-2xl"></div>
-            </div>
-            <div className="w-[327.08px] inline-flex flex-col items-start gap-[21.52px]">
-              <div className="w-[352.91px] text-[#E9F7BA] text-[43.04px] font-normal leading-[37.37px]">Instagram/Tiktok</div>
-              <div className="w-full text-white/90 text-[26.90px] font-normal leading-[23.36px]">Caption & komentar publik dari hashtag relevan.</div>
-            </div>
+        <div className="relative w-[572px] h-[210px] bg-gradient-to-r from-[#EE4F44] to-[#F98422] rounded-[40px] shadow-[0px_20px_40px_rgba(0,0,0,0.03)] overflow-hidden p-8 flex items-center gap-8 text-white">
+          <div className="absolute right-[10px] bottom-[10px] w-[80px] h-[80px] bg-[#E9F7BA] rounded-full -mr-8 -mb-8"></div>
+          <div className="w-[100px] h-[100px] flex-shrink-0">
+            <img src="/intelligence/Instagram.svg" className="w-full h-full object-contain brightness-0 invert" alt="Instagram" />
           </div>
-        </div>
-
-        {/* Card 3: Media/Berita */}
-        <div className="relative w-[494.93px] h-[177.53px] bg-gradient-to-l from-[#EE4F44] to-[#F98422] rounded-[32.28px] overflow-hidden group">
-          <div className="absolute left-[424.99px] top-[128.04px] w-[107.59px] h-[107.59px] bg-[#E9F7BA] rounded-[387.34px] transition-transform group-hover:scale-110"></div>
-          <div className="absolute left-[30.13px] top-[23.67px] inline-flex items-center gap-[21.52px]">
-            <div className="relative w-[72.56px] h-[72.56px] overflow-hidden">
-              <div className="absolute left-[2.59px] top-[9.07px] w-[67.38px] h-[54.42px] outline outline-[5.18px] outline-[#FEF1EA] -outline-offset-[2.59px] rounded-lg"></div>
-              <div className="absolute left-[18.14px] top-[22.03px] w-[23.32px] h-[12.96px] outline outline-[5.18px] outline-[#FEF1EA] -outline-offset-[2.59px] rounded-sm"></div>
-            </div>
-            <div className="w-[327.08px] inline-flex flex-col items-start gap-[21.52px]">
-              <div className="w-[352.91px] text-[#E9F7BA] text-[43.04px] font-normal leading-[37.37px]">Media/Berita</div>
-              <div className="w-full text-white/90 text-[26.90px] font-normal leading-[23.36px]">Portal berita lokal & nasional, deteksi otomatis 24/7.</div>
-            </div>
+          <div className="flex flex-col gap-2">
+            <h3 className="text-[#E9F7BA] text-[43px] font-medium leading-tight">Instagram/Tiktok</h3>
+            <p className="text-white/90 text-[26px] leading-tight">Caption & komentar publik dari hashtag relevan.</p>
           </div>
         </div>
 
         {/* Card 4: Laporan Publik */}
-        <div className="relative w-[494.93px] h-[177.53px] bg-gradient-to-l from-[#E9F7BA] to-[#E9F7BA] rounded-[32.28px] overflow-hidden group">
-          <div className="absolute left-[428.22px] top-[-50.57px] w-[107.59px] h-[107.59px] bg-[#FF4B3A] rounded-[387.34px] transition-transform group-hover:scale-110"></div>
-          <div className="absolute left-[30.13px] top-[23.67px] inline-flex items-center gap-[21.52px]">
-            <div className="relative w-[79.08px] h-[79.08px] overflow-hidden">
-              <div className="absolute left-[28.23px] top-[28.24px] w-[48.03px] h-[48.01px] outline outline-[5.65px] outline-black -outline-offset-[2.82px] rounded-xl"></div>
-              <div className="absolute left-[2.82px] top-[2.87px] w-[52.87px] h-[59.27px] outline outline-[5.65px] outline-black -outline-offset-[2.82px] rounded-xl"></div>
-            </div>
-            <div className="w-[327.08px] inline-flex flex-col items-start gap-[21.52px]">
-              <div className="w-full text-[#FF4B3A] text-[43.04px] font-normal leading-[37.37px]">Laporan Publik</div>
-              <div className="w-full text-black/50 text-[26.90px] font-normal leading-[23.36px]">Form laporan siswa, guru, orang tua, WhatsApp bot</div>
-            </div>
+        <div className="relative w-[572px] h-[210px] bg-[#E9F7BA] rounded-[40px] shadow-[0px_20px_40px_rgba(0,0,0,0.03)] overflow-hidden p-8 flex items-center gap-8">
+          <div className="absolute right-[10px] top-[10px] w-[80px] h-[80px] bg-[#FF4B3A] rounded-full -mr-8 -mt-8"></div>
+          <div className="w-[100px] h-[100px] flex-shrink-0">
+            <img src="/intelligence/chat.svg" className="w-full h-full object-contain" alt="Laporan Publik" />
+          </div>
+          <div className="flex flex-col gap-2">
+            <h3 className="text-[#FF4B3A] text-[43px] font-medium leading-tight">Laporan Publik</h3>
+            <p className="text-black/50 text-[26px] leading-tight">Form laporan siswa, guru, orang tua, WhatsApp bot</p>
+          </div>
+        </div>
+
+        {/* Card 3: Media/Berita */}
+        <div className="relative w-[572px] h-[210px] bg-gradient-to-r from-[#EE4F44] to-[#F98422] rounded-[40px] shadow-[0px_20px_40px_rgba(0,0,0,0.03)] overflow-hidden p-8 flex items-center gap-8 text-white">
+          <div className="absolute right-[10px] bottom-[10px] w-[80px] h-[80px] bg-[#E9F7BA] rounded-full -mr-8 -mb-8"></div>
+          <div className="w-[100px] h-[100px] flex-shrink-0">
+            <img src="/intelligence/news-paper--newspaper-periodical-fold-content-entertainment.svg" className="w-full h-full object-contain brightness-0 invert" alt="Media" />
+          </div>
+          <div className="flex flex-col gap-2">
+            <h3 className="text-[#E9F7BA] text-[43px] font-medium leading-tight">Media/Berita</h3>
+            <p className="text-white/90 text-[26px] leading-tight">Portal berita lokal & nasional, deteksi otomatis 24/7.</p>
           </div>
         </div>
 
       </div>
-    </>
+    </div>
   );
 }
