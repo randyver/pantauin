@@ -2,10 +2,10 @@ import Image from "next/image";
 
 export default function StatsSection() {
   return (
-    <div id="stats-section" className="relative w-full min-h-[500px] flex flex-col items-center justify-center overflow-hidden py-12">
-      {/* Background Ellipse SVG - Increased visibility and better layering */}
+    <div id="stats-section" className="relative w-full min-h-[600px] flex flex-col items-center justify-center overflow-hidden py-24 lg:py-32">
+      {/* Background Ellipse SVG - Refined sizing to prevent clipping */}
       <div className="absolute inset-0 z-0 pointer-events-none flex items-center justify-center">
-        <img src="/stats/ellipse.svg" className="w-[1500px] lg:w-[2500px] h-[600px] lg:h-[800px] object-contain opacity-80" alt="Background Decor" />
+        <img src="/stats/ellipse.svg" className="w-[200%] lg:w-[180%] h-auto max-h-[1000px] object-contain opacity-60" alt="Background Decor" />
       </div>
 
       <div className="relative w-full max-w-[1441px] mx-auto px-6 lg:px-[136px] flex flex-col items-center justify-center">

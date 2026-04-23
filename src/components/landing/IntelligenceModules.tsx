@@ -2,30 +2,29 @@ import Image from "next/image";
 
 export default function IntelligenceModules() {
   return (
-    <div className="relative w-full z-10 px-6 lg:px-[136px]">
-      {/* Top Header Section */}
-      <div className="relative w-full flex flex-col lg:flex-row justify-between items-start mb-12 lg:mb-[80px]">
-        <div className="w-full lg:max-w-[700px] pt-0 lg:pt-10 z-10">
+    <div className="relative w-full z-10 px-6 lg:px-[136px] flex flex-col items-center">
+      {/* Top Header Section - Centered */}
+      <div className="relative w-full flex flex-col items-center text-center mb-12 lg:mb-[80px]">
+        <div className="w-full lg:max-w-[800px] pt-0 lg:pt-10 z-10">
           <h2 className="text-[#333333] text-[36px] lg:text-[56px] font-bold font-sf-rounded leading-[1.1] mb-6">
             Memantau setiap sinyal, dari semua arah
           </h2>
-          <p className="text-[#333333] text-[16px] lg:text-[18px] font-medium max-w-[550px] leading-relaxed opacity-80">
+          <p className="text-[#333333] text-[16px] lg:text-[18px] font-medium max-w-[550px] mx-auto leading-relaxed opacity-80">
             Data Publik Dari Media, Sosial Media, Dan Laporan Masyarakat Dianalisis Bersama Data Resmi Pemerintah & Sekolah.
           </p>
         </div>
+      </div>
 
-        {/* 3D Character Image - Positioned to overlap on desktop, stacks or hides on small mobile if needed */}
-        <div className="absolute right-[-40px] lg:right-[-100px] top-[-100px] lg:top-[-50px] w-[300px] lg:w-[450px] h-[300px] lg:h-[450px] z-0 pointer-events-none opacity-40 lg:opacity-100">
+      {/* 4 Cards Grid - Responsive layout */}
+      <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-[24px] w-full max-w-[1168px] z-10">
+        {/* 3D Character Image - Now positioned relative to the grid and BEHIND it */}
+        <div className="absolute right-[-20px] lg:right-[-80px] top-[-180px] lg:top-[-330px] w-[250px] lg:w-[400px] h-[250px] lg:h-[400px] z-[-1] pointer-events-none opacity-30 lg:opacity-100">
           <img 
             src="/intelligence/ToyFaces_Tansparent_BG_29(1).png" 
             className="w-full h-full object-contain" 
             alt="Intelligence Character" 
           />
         </div>
-      </div>
-
-      {/* 4 Cards Grid - Responsive layout */}
-      <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-[24px] w-full max-w-[1168px] z-10">
         
         {/* Card 1: Twitter */}
         <div className="relative w-full min-h-[180px] lg:h-[210px] bg-[#E9F7BA] rounded-[40px] shadow-[0px_20px_40px_rgba(0,0,0,0.03)] overflow-hidden p-6 lg:p-8 flex items-center gap-6 lg:gap-8">

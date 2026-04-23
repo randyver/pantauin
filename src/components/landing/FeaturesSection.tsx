@@ -22,8 +22,8 @@ export default function FeaturesSection() {
         </div>
       </div>
 
-      {/* Floating Cards Container - Responsive Stacking */}
-      <div className="relative lg:absolute left-1/2 lg:-translate-x-1/2 mt-12 lg:mt-0 lg:bottom-[-220px] w-full max-w-[1441px] flex flex-col lg:flex-row justify-center items-center gap-24 lg:gap-8 px-6 lg:px-10 z-20">
+      {/* Floating Cards Container - Adjusted for perfect overlap and mobile responsiveness */}
+      <div className="relative lg:absolute lg:left-1/2 lg:-translate-x-1/2 mt-20 lg:mt-0 lg:top-[400px] w-full max-w-[1441px] flex flex-col lg:flex-row justify-center items-center gap-24 lg:gap-8 px-6 lg:px-10 z-20 pb-20 lg:pb-0 mx-auto">
         
         {[
           { icon: <Bell size={44} />, title: "Early warning system", desc: "Alert otomatis saat lonjakan laporan terdeteksi di suatu wilayah, vendor, atau sekolah." },
@@ -46,8 +46,8 @@ export default function FeaturesSection() {
 
       </div>
       
-      {/* Spacer for desktop layout overlap */}
-      <div className="hidden lg:block h-[220px]"></div>
+      {/* Spacer for desktop layout overlap - Increased significantly to prevent clipping */}
+      <div className="hidden lg:block h-[350px]"></div>
     </div>
   );
 }

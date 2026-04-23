@@ -16,8 +16,8 @@ export default function PipelineSection() {
           </h2>
         </div>
 
-        {/* Center: Dotted Arrow Asset - Hidden on Mobile */}
-        <div className="hidden lg:block absolute left-[380px] top-[40px] w-[200px] h-[100px]">
+        {/* Center: Dotted Arrow Asset - Touching the card */}
+        <div className="hidden lg:block absolute right-[520px] top-[40px] w-[350px] h-[150px] z-20">
           <img src="/pipeline/arrow.svg" className="w-full h-full object-contain" alt="Arrow Decor" />
         </div>
 
