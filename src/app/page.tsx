@@ -8,7 +8,7 @@ import CtaSection from "@/components/landing/CtaSection";
 export default function Page() {
   return (
     <main className="w-full bg-white min-h-screen overflow-x-hidden">
-      <div className="w-full max-w-[1441px] mx-auto h-[5300px] relative bg-white">
+      <div className="w-full max-w-[1441px] mx-auto h-[6500px] relative bg-white">
         <HeroSection />
         
         {/* Extra spacing added via translate-y to simulate h-screen gaps */}
@@ -16,19 +16,19 @@ export default function Page() {
           <StatsSection />
         </div>
         
-        <div className="translate-y-[400px]">
+        <div className="translate-y-[700px]">
           <IntelligenceModules />
         </div>
         
-        <div className="translate-y-[600px]">
+        <div className="translate-y-[1200px]">
           <FeaturesSection />
         </div>
         
-        <div className="translate-y-[800px]">
+        <div className="translate-y-[1700px]">
           <PipelineSection />
         </div>
         
-        <div className="translate-y-[1000px]">
+        <div className="translate-y-[2200px]">
           <CtaSection />
         </div>
       </div>

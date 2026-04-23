@@ -2,15 +2,13 @@ export default function IntelligenceModules() {
   return (
     <>
       {/* Background Decor */}
-      <div className="absolute left-[-72.87px] top-[804px] w-[1586.33px] h-[396px] rounded-full outline outline-[2.25px] outline-[#FF4B3A]/30 -outline-offset-[1.13px]"></div>
+      {/* Background Decor Removed */}
+      {/* <div className="absolute left-[-72.87px] top-[804px] w-[1586.33px] h-[396px] rounded-full outline outline-[2.25px] outline-[#FF4B3A]/30 -outline-offset-[1.13px]"></div> */}
       
       {/* Module 1: Blur decorative shadow */}
       <div className="absolute left-[1029.40px] top-[1563.88px] w-[264.19px] h-[129.29px] bg-gradient-to-b from-[#54425A] to-white shadow-[19.87px_19.87px_19.87px] blur-[9.94px] origin-top-left rotate-15"></div>
 
-      {/* Headers */}
-      <div className="absolute left-[149.13px] top-[1309px] w-[908px] text-[#333333] text-[73.16px] font-bold font-sf-rounded leading-[63.53px]">
-        Memantau setiap sinyal, dari semua arah
-      </div>
+      {/* Duplicate Headers Removed */}
       
       <div className="absolute left-[152.13px] top-[1469.11px] w-[472px] h-[53px] flex flex-col justify-end text-[#333333] text-[14.63px] font-normal capitalize">
         Data publik dari media, sosial media, dan laporan masyarakat dianalisis bersama data resmi pemerintah & sekolah.
