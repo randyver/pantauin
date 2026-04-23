@@ -7,30 +7,30 @@ import CtaSection from "@/components/landing/CtaSection";
 
 export default function Page() {
   return (
-    <main className="w-full bg-white min-h-screen overflow-x-hidden">
-      <div className="w-full max-w-[1441px] mx-auto h-[5350px] relative bg-white">
+    <main className="w-full bg-white min-h-screen overflow-x-hidden flex flex-col items-center">
+      <div className="w-full flex flex-col">
         <HeroSection />
         
-        {/* Extra spacing added via translate-y to simulate h-screen gaps */}
-        <div className="translate-y-[200px]">
+        {/* Sections now follow a natural vertical flow with responsive spacing */}
+        <section className="py-12 md:py-24">
           <StatsSection />
-        </div>
+        </section>
         
-        <div className="translate-y-[700px]">
+        <section className="py-12 md:py-32">
           <IntelligenceModules />
-        </div>
+        </section>
         
-        <div className="translate-y-[600px]">
+        <section className="py-12 md:py-32">
           <FeaturesSection />
-        </div>
+        </section>
         
-        <div className="translate-y-[1100px]">
+        <section className="py-12 md:py-32">
           <PipelineSection />
-        </div>
+        </section>
         
-        <div className="translate-y-[1350px]">
+        <section className="pt-12 md:pt-32">
           <CtaSection />
-        </div>
+        </section>
       </div>
     </main>
   );

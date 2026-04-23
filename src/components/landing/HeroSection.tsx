@@ -4,114 +4,109 @@ import Image from "next/image";
 
 export default function HeroSection() {
   const scrollToNext = () => {
-    window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
+    // Standard scroll to next natural section
+    const nextSection = document.getElementById('stats-section');
+    if (nextSection) {
+      nextSection.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return (
-    <>
-      {/* Decorative Red Background Circles - Restored to perfect circle and z-20 */}
-      <div className="absolute left-[450px] top-[-726px] w-[1324.81px] h-[1324.81px] bg-[#FF4B3A] rounded-full z-20"></div>
-      <div className="absolute left-[450px] top-[-726px] w-[1324.81px] h-[1324.81px] bg-[#FF4B3A] rounded-full border-[1.13px] border-[#FF4B3A] z-20"></div>
+    <div className="relative w-full min-h-screen lg:h-[850px] overflow-hidden bg-white">
+      {/* Decorative Red Background Circles - Restored to more central-right position */}
+      <div className="absolute left-[20%] lg:left-[450px] top-[-300px] lg:top-[-726px] w-[150vw] lg:w-[1324.81px] h-[150vw] lg:h-[1324.81px] bg-[#FF4B3A] rounded-full z-20 transition-all duration-700"></div>
+      
+      {/* Orbiting Food Icons Mask Container (z-30) - Hidden on mobile */}
+      <div className="hidden lg:block absolute left-[20%] lg:left-[450px] top-[-300px] lg:top-[-726px] w-[150vw] lg:w-[1324.81px] h-[150vw] lg:h-[1324.81px] rounded-full overflow-hidden z-30 pointer-events-none transition-all duration-700">
+        {/* Orbiting Food Icons Container */}
+        <div className="absolute left-[15%] lg:left-[346.86px] top-[70%] lg:top-[1010.53px] w-[60vw] lg:w-[630.33px] h-[60vw] lg:h-[630.33px] rounded-full animate-[spin_25s_linear_infinite]">
+          {/* Icons */}
+          {[
+            { img: "Orange.png", pos: "left-1/2 top-0 -translate-x-1/2 -translate-y-1/2" },
+            { img: "Grape.png", pos: "left-[97.55%] top-[34.55%] -translate-x-1/2 -translate-y-1/2" },
+            { img: "Lemon.png", pos: "left-[79.38%] top-[90.45%] -translate-x-1/2 -translate-y-1/2" },
+            { img: "Watermelon.png", pos: "left-[20.62%] top-[90.45%] -translate-x-1/2 -translate-y-1/2", scale: "w-[70%] h-[70%]" },
+            { img: "Pineapple (1).png", pos: "left-[2.45%] top-[34.55%] -translate-x-1/2 -translate-y-1/2" }
+          ].map((icon, idx) => (
+            <div key={idx} className={`absolute ${icon.pos} w-[60px] lg:w-[105px] h-[60px] lg:h-[105px] bg-white rounded-full border-[1px] border-[#FF4B3A] shadow-lg flex items-center justify-center animate-[spin_25s_linear_infinite_reverse]`}>
+              <img 
+                className={`${icon.scale || "w-[60%] h-[60%]"} object-contain drop-shadow-md`} 
+                src={`/hero/food-icon/Type=Fruits, Icon=${icon.img}`} 
+                alt={icon.img} 
+              />
+            </div>
+          ))}
+        </div>
+      </div>
 
-      {/* Orbiting Food Icons Mask Container (z-30) 
-          This container has the exact same shape as the red circle and hides anything outside of it.
-      */}
-      <div className="absolute left-[450px] top-[-726px] w-[1324.81px] h-[1324.81px] rounded-full overflow-hidden z-30 pointer-events-none">
-        {/* Orbiting Food Icons Container (relative to the mask) */}
-        <div className="absolute left-[346.86px] top-[1010.53px] w-[630.33px] h-[630.33px] rounded-full animate-[spin_25s_linear_infinite]">
-          
-          {/* Icon 1: Top */}
-          <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 w-[105px] h-[105px] bg-white rounded-full border-[1px] border-[#FF4B3A] shadow-lg flex items-center justify-center animate-[spin_25s_linear_infinite_reverse]">
-            <img className="w-[60%] h-[60%] object-contain drop-shadow-md" src="/hero/food-icon/Type=Fruits, Icon=Orange.png" alt="Orange" />
+      {/* Hero Lines */}
+      <div className="absolute left-0 top-[101px] w-full h-0 border-t-[0.30px] border-[#F4F4F8] z-50 opacity-30"></div>
+      <div className="absolute left-0 top-[212px] w-full h-0 border-t-[0.30px] border-[#F4F4F8] z-50 opacity-30"></div>
+
+      {/* Big Title Background - Center aligned within the red area and between lines - Responsive */}
+      <div className="absolute left-[25%] lg:left-[540px] top-[125px] text-white text-[28px] lg:text-[73.16px] font-extrabold leading-none z-50 pointer-events-none whitespace-nowrap">
+        Pantauin MBG
+      </div>
+
+      {/* Navbar Content */}
+      <div className="relative w-full px-6 lg:px-[136px] pt-[47px] flex justify-between items-center z-50">
+        {/* Left: Logo */}
+        <div className="flex items-center gap-3 min-w-[150px]">
+          <div className="w-[18px] h-[18px] bg-[#FF4B3A] rounded-full"></div>
+          <div className="text-[#333333] text-[20px] font-extrabold capitalize">Pantauin</div>
+        </div>
+        
+        {/* Center: Navigation Links */}
+        <div className="hidden lg:flex items-center justify-center gap-[58px] flex-1">
+          <div className="text-white text-[16px] font-medium capitalize cursor-pointer hover:opacity-80">Fitur</div>
+          <div className="text-white text-[16px] font-medium capitalize cursor-pointer hover:opacity-80">Sumber Data</div>
+          <div className="text-white text-[16px] font-medium capitalize cursor-pointer hover:opacity-80">Cara Kerja</div>
+        </div>
+
+        {/* Right: CTA Button - Slightly shifted left */}
+        <div className="text-white text-[17px] font-semibold cursor-pointer hover:underline flex items-center gap-2 min-w-[150px] justify-end lg:pr-10">
+          Buka Dashboard <span className="text-[20px]">&rarr;</span>
+        </div>
+      </div>
+
+      {/* Main Content Area */}
+      <div className="relative w-full px-6 lg:px-[136px] mt-32 lg:mt-[100px] z-50 flex flex-col lg:flex-row items-center lg:items-start lg:justify-between">
+        
+        {/* Right: Tray Image Container (Hidden on mobile) */}
+        <div className="hidden lg:flex relative lg:static w-full lg:w-auto justify-center mb-10 lg:mb-0 order-1 lg:order-2">
+          <div className="relative lg:absolute lg:left-[950px] lg:top-[250px] w-[250px] lg:w-[315px] h-[250px] lg:h-[315px] bg-white rounded-full shadow-2xl overflow-hidden flex items-center justify-center z-40">
+            <img className="w-full h-full object-cover" src="/hero/mbg.png" alt="Main MBG Tray" />
           </div>
+        </div>
 
-          {/* Icon 2: Top Right (72 degrees) */}
-          <div className="absolute left-[97.55%] top-[34.55%] -translate-x-1/2 -translate-y-1/2 w-[105px] h-[105px] bg-white rounded-full border-[1px] border-[#FF4B3A] shadow-lg flex items-center justify-center animate-[spin_25s_linear_infinite_reverse]">
-            <img className="w-[60%] h-[60%] object-contain drop-shadow-md" src="/hero/food-icon/Type=Fruits, Icon=Grape.png" alt="Grape" />
-          </div>
+        {/* Left: Typography */}
+        <div className="w-full lg:max-w-[600px] text-center lg:text-left pt-24 lg:pt-20 order-2 lg:order-1">
+          <h1 className="text-[#333333] text-[42px] lg:text-[60px] font-extrabold capitalize leading-[1.1] mb-6 mt-20 lg:mt-32">
+            Deteksi Dini <br />
+            <span>Keracunan MBG</span>
+          </h1>
+          <p className="text-[#333333] text-[16px] lg:text-[14.6px] font-normal leading-relaxed max-w-[400px] mx-auto lg:mx-0 mb-10">
+            Pantauin Menggabungkan AI, <span className="italic">Social Listening</span>, Dan Data Lapangan Untuk Memberi Peringatan Dini Risiko Keracunan Makanan Pada Program Makan Bergizi Gratis Di Seluruh Indonesia.
+          </p>
 
-          {/* Icon 3: Bottom Right (144 degrees) */}
-          <div className="absolute left-[79.38%] top-[90.45%] -translate-x-1/2 -translate-y-1/2 w-[105px] h-[105px] bg-white rounded-full border-[1px] border-[#FF4B3A] shadow-lg flex items-center justify-center animate-[spin_25s_linear_infinite_reverse]">
-            <img className="w-[60%] h-[60%] object-contain drop-shadow-md" src="/hero/food-icon/Type=Fruits, Icon=Lemon.png" alt="Lemon" />
-          </div>
-
-          {/* Icon 4: Bottom Left (216 degrees) */}
-          <div className="absolute left-[20.62%] top-[90.45%] -translate-x-1/2 -translate-y-1/2 w-[105px] h-[105px] bg-white rounded-full border-[1px] border-[#FF4B3A] shadow-lg flex items-center justify-center animate-[spin_25s_linear_infinite_reverse]">
-            <img className="w-[70%] h-[70%] object-contain drop-shadow-md" src="/hero/food-icon/Type=Fruits, Icon=Watermelon.png" alt="Watermelon" />
-          </div>
-
-          {/* Icon 5: Top Left (288 degrees) */}
-          <div className="absolute left-[2.45%] top-[34.55%] -translate-x-1/2 -translate-y-1/2 w-[105px] h-[105px] bg-white rounded-full border-[1px] border-[#FF4B3A] shadow-lg flex items-center justify-center animate-[spin_25s_linear_infinite_reverse]">
-            <img className="w-[60%] h-[60%] object-contain drop-shadow-md" src="/hero/food-icon/Type=Fruits, Icon=Pineapple (1).png" alt="Pineapple" />
+          <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 lg:gap-5">
+            <button className="w-full sm:w-[247px] h-[54px] bg-[#FF4B3A] text-white font-bold rounded-full shadow-lg hover:bg-[#e03f31] transition-all">
+              LIHAT DASHBOARD LIVE
+            </button>
+            <button className="w-full sm:w-[247px] h-[54px] bg-white text-[#FF4B3A] border-[1px] border-[#FF4B3A] font-bold rounded-full shadow-lg hover:bg-gray-50 transition-all">
+              LAPOR INSIDEN
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Hero Lines - Spanning the whole screen width */}
-      <div className="absolute left-1/2 -translate-x-1/2 top-[101px] w-screen h-0 outline outline-[0.30px] outline-[#F4F4F8] -outline-offset-[0.15px] z-50 opacity-30"></div>
-      <div className="absolute left-1/2 -translate-x-1/2 top-[212px] w-screen h-0 outline outline-[0.30px] outline-[#F4F4F8] -outline-offset-[0.15px] z-50 opacity-30"></div>
-
-      {/* Big Main Center Image Component (Tray) */}
-      <div className="absolute left-[950px] top-[420.92px] w-[315.23px] h-[315.23px] bg-white rounded-full shadow-[0px_23px_45px_rgba(0,0,0,0.11)] overflow-hidden flex items-center justify-center z-40">
-        <img className="w-full h-full object-cover" src="/hero/mbg.png" alt="Main MBG Tray" />
-      </div>
-
-      {/* Hero Typography */}
-      <div className="absolute left-[60px] top-[360px] w-[800px] flex flex-col justify-end z-50">
-        <span className="text-[#333333] text-[60px] font-extrabold capitalize leading-[56.28px] break-words">
-          Deteksi Dini <br />
-          <span className="text-[#FF4B3A]">Keracunan MBG</span>
-        </span>
-      </div>
-
-      <div className="absolute left-[60px] top-[492px] w-[390.58px] flex flex-col justify-end z-50">
-        <span className="text-[#333333] text-[14.63px] font-normal capitalize break-words">
-          Pantauin Menggabungkan AI,{" "}
-          <span className="italic">Social Listening</span>
-          , Dan Data Lapangan Untuk Memberi Peringatan Dini Risiko Keracunan Makanan Pada Program Makan Bergizi Gratis Di Seluruh Indonesia.
-        </span>
-      </div>
-
-      {/* Buttons */}
-      <div className="absolute left-[60px] top-[641.58px] inline-flex items-center justify-start gap-[20.26px] z-50">
-        {/* Btn 1 */}
-        <div className="relative w-[247.63px] h-[54.03px] flex items-center justify-center bg-[#FF4B3A] rounded-[77.67px] shadow-[0px_22.5px_45px_#F4E2D1] cursor-pointer hover:bg-[#e03f31] transition-colors">
-          <span className="text-white text-[14.63px] font-bold capitalize">LIHAT DASHBOARD LIVE</span>
-        </div>
-        {/* Divider line invisible logic based on original html */}
-        <div className="w-[11.26px] h-[2.25px] bg-transparent shadow-[0px_22.5px_45px_#F4E2D1] rounded-[77.67px]"></div>
-        {/* Btn 2 */}
-        <div className="relative w-[247.63px] h-[54.03px] flex items-center justify-center bg-white rounded-[77.67px] shadow-[0px_22.5px_45px_#F4E2D1] border-[1.13px] border-[#FF4B3A] cursor-pointer hover:bg-gray-50 transition-colors">
-          <span className="text-[#FF4B3A] text-[14.63px] font-bold capitalize">LAPOR INSIDEN</span>
-        </div>
-      </div>
-
-      {/* Decorative Dots (Smooth scroll to next section) */}
+      {/* Scroll Down Button */}
       <div 
         onClick={scrollToNext}
-        className="absolute right-[60px] top-[694.48px] w-[45.02px] h-[45.02px] bg-[#FF4B3A] rounded-full shadow-[0px_11px_22.5px_#F5ECE3] flex items-center justify-center text-white cursor-pointer hover:bg-[#e03f31] pb-1 z-50 transition-transform hover:scale-110"
+        className="absolute right-6 lg:right-[136px] bottom-10 w-[45px] h-[45px] bg-[#FF4B3A] rounded-full shadow-lg flex items-center justify-center text-white cursor-pointer hover:bg-[#e03f31] z-50 animate-bounce"
       >
         &darr;
       </div>
-
-      {/* Navbar & Navigation */}
-      <div className="absolute left-[540px] top-[58.53px] inline-flex items-center justify-start gap-[58px] z-50">
-        <div className="flex flex-col justify-end text-white text-[15.76px] font-medium capitalize cursor-pointer hover:opacity-80">Fitur</div>
-        <div className="flex flex-col justify-end text-white text-[15.76px] font-medium capitalize cursor-pointer hover:opacity-80">Sumber Data</div>
-        <div className="flex flex-col justify-end text-white text-[15.76px] font-medium capitalize cursor-pointer hover:opacity-80">Cara Kerja</div>
-      </div>
-
-      {/* Logo */}
-      <div className="absolute left-[85px] top-[58.90px] flex flex-col justify-end text-[#333333] text-[20.26px] font-extrabold capitalize z-50">Pantauin</div>
-      <div className="absolute left-[61px] top-[58.53px] w-[18.01px] h-[18.01px] bg-[#FF4B3A] rounded-full z-50"></div>
-
-      {/* Big Title Background */}
-      <div className="absolute left-[550px] top-[115px] text-white text-[73.16px] font-extrabold leading-[63.53px] z-50">Pantauin MBG</div>
-
-      {/* Top Right Action */}
-      <div className="absolute right-[60px] top-[47px] text-center text-white text-[17px] font-semibold cursor-pointer hover:underline flex items-center gap-2 z-50">
-        Buka Dashboard <span>&rarr;</span>
-      </div>
-    </>
+    </div>
   );
 }
