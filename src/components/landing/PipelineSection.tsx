@@ -1,112 +1,101 @@
+import { Database, BrainCircuit, Activity, Zap } from "lucide-react";
+
 export default function PipelineSection() {
   return (
-    <>
-      {/* Background connecting line / curves */}
-      <div className="absolute left-[879.28px] top-[2793.54px] w-[121.73px] h-[110.12px] outline outline-[3px] outline-[#C4C4C4]/70 -outline-offset-[1.50px] origin-top-left rotate-7"></div>
-      <div className="absolute left-[942.85px] top-[2772.08px] w-[43.63px] h-[45.71px] bg-[#C4C4C4]/70 rounded-lg origin-top-left -rotate-22"></div>
-      
-      {/* Main Title Background Container */}
-      <div className="absolute left-[566.13px] top-[2756px] w-[775px] h-[251px] bg-[#E9F7BA] rounded-tl-[40px] rounded-br-[40px] overflow-hidden">
-        <div className="absolute left-[54px] top-[22px] w-[690px] h-[164px] flex flex-col justify-end text-[#333333] text-[40px] font-normal capitalize">
-          Dari data mentah ke keputusan, dalam hitungan menit.
+    <div className="absolute left-0 w-full top-[2750px] z-10 px-[136px]">
+      {/* Top Header Section */}
+      <div className="relative w-full flex justify-between items-center mb-[100px]">
+        {/* Left Side: Title */}
+        <div className="max-w-[450px]">
+          <h2 className="text-[56px] font-bold font-sf-rounded leading-[1.1]">
+            <span className="text-[#FF4B3A]">AI Processing</span>
+            <br />
+            <span className="text-[#09283A]">Pipeline</span>
+          </h2>
         </div>
-        <div className="absolute left-[708px] top-[-46px] w-[107.59px] h-[107.59px] bg-[#FF4B3A] rounded-full"></div>
+
+        {/* Center: Dotted Arrow Asset */}
+        <div className="absolute left-[380px] top-[40px] w-[200px] h-[100px]">
+          <img src="/pipeline/arrow.svg" className="w-full h-full object-contain" alt="Arrow Decor" />
+        </div>
+
+        {/* Right Side: Subheader Box */}
+        <div className="relative w-[650px] h-[220px] bg-[#E9F7BA] rounded-[40px] flex items-center px-12">
+          <div className="absolute right-[20px] top-[20px] w-[60px] h-[60px] bg-[#FF4B3A] rounded-full -mr-4 -mt-4"></div>
+          <p className="text-[#333333] text-[42px] font-medium leading-tight">
+            Dari Data Mentah Ke Keputusan, Dalam Hitungan Menit.
+          </p>
+        </div>
       </div>
 
-      <div className="absolute left-[546.73px] top-[2871.62px] w-[121.73px] h-[110.12px] outline outline-[3px] outline-[#FF4B3A] -outline-offset-[1.50px] origin-top-left rotate-68"></div>
-      <div className="absolute left-[596.49px] top-[2916.63px] w-[43.63px] h-[45.71px] bg-[#FF4B3A] rounded-lg origin-top-left rotate-39"></div>
-
-      {/* Main Section Title */}
-      <div className="absolute left-[93.13px] top-[2815.36px] w-[447.22px] flex flex-col justify-center">
-        <span className="text-[#FF3839] text-[65px] font-bold font-sf-rounded leading-[62.40px]">AI Processing<br/></span>
-        <span className="text-[#09283A] text-[65px] font-bold font-sf-rounded leading-[62.40px]">Pipeline</span>
-      </div>
-
-      {/* 4 Pipeline Cards */}
-      <div className="absolute left-[80.13px] top-[3126.11px] inline-flex items-center justify-start gap-[40px]">
+      {/* 4 Cards Row */}
+      <div className="flex justify-between items-start gap-10">
         
-        {/* Card 1: Ingestion */}
-        <div className="relative w-[290px] h-[356px] bg-white rounded-[15px] overflow-hidden shadow-sm">
-          <div className="absolute left-0 top-[9px] w-[290px] h-[109.33px]">
-            <div className="absolute left-0 top-[62.08px] w-full h-[6.49px] bg-[#F6F6F6] rounded-full"></div>
-            <div className="absolute left-[98.67px] top-0 w-[92.65px] h-[109.33px]">
-              <div className="absolute left-[7.88px] top-[17.11px] w-[76.41px] h-[76.41px] bg-[#F1C9FF] shadow-[0px_4.58px_9.17px_rgba(0,0,0,0.20)] rounded-full"></div>
-              {/* Replaced 400 lines of div vector art with a placeholder image as requested */}
-              <img className="absolute left-[18px] top-[30px] w-[55px] h-[50px] object-contain" src="https://placehold.co/55x50" alt="Ingestion Icon" />
-              <div className="absolute left-[29.65px] top-0 w-[32.43px] h-[32.43px] bg-[#E1F2E3] rounded-[27.80px] flex items-center justify-center">
-                <span className="text-[#1B6D51] text-[18.53px] font-bold">1</span>
-              </div>
+        {/* Step 1: Ingestion */}
+        <div className="flex flex-col items-center w-[280px] text-center">
+          <div className="relative mb-8">
+            <div className="w-[100px] h-[100px] bg-[#F1C9FF] rounded-full flex items-center justify-center shadow-lg">
+              <Database size={40} className="text-[#333333]" />
+            </div>
+            <div className="absolute -top-2 -right-2 w-[35px] h-[35px] bg-[#E1F2E3] rounded-full border-[2px] border-white flex items-center justify-center text-[#1B6D51] font-bold text-[18px] shadow-sm">
+              1
             </div>
           </div>
-          <div className="absolute left-[13px] top-[188px] w-[260px] text-center text-[#696984] text-[18px] font-normal leading-[29px]">
+          <h3 className="text-[#0B7077] text-[28px] font-bold mb-3">Ingestion</h3>
+          <p className="text-[#696984] text-[17px] leading-relaxed">
             Crawling sosmed, berita, & laporan publik secara terus-menerus.
-          </div>
-          <div className="absolute left-[86px] top-[133px] text-center text-[#0B7077] text-[27px] font-semibold">
-            Ingestion
-          </div>
+          </p>
         </div>
 
-        {/* Card 2: NLP Analysis */}
-        <div className="relative w-[290px] h-[356px] bg-white rounded-[15px] overflow-hidden shadow-sm">
-          <div className="absolute left-0 top-[9px] w-[290px] h-[109.33px]">
-            <div className="absolute left-0 top-[62.08px] w-full h-[6.49px] bg-[#F6F6F6] rounded-full"></div>
-            <div className="absolute left-[98.67px] top-0 w-[92.65px] h-[109.33px]">
-              <div className="absolute left-[7.87px] top-[17.11px] w-[76.41px] h-[76.41px] bg-[#A2D3FF] shadow-[0px_4.58px_9.17px_rgba(0,0,0,0.20)] rounded-full"></div>
-              <img className="absolute left-[17.83px] top-[32.60px] w-[55px] h-[49px] object-contain" src="https://placehold.co/55x49" alt="NLP Icon" />
-              <div className="absolute left-[29.65px] top-0 w-[32.43px] h-[32.43px] bg-[#E1F2E3] rounded-[27.80px] flex items-center justify-center">
-                <span className="text-[#1B6D51] text-[18.53px] font-bold">2</span>
-              </div>
+        {/* Step 2: NLP Analysis */}
+        <div className="flex flex-col items-center w-[280px] text-center">
+          <div className="relative mb-8">
+            <div className="w-[100px] h-[100px] bg-[#A2D3FF] rounded-full flex items-center justify-center shadow-lg">
+              <BrainCircuit size={40} className="text-[#333333]" />
+            </div>
+            <div className="absolute -top-2 -right-2 w-[35px] h-[35px] bg-[#E1F2E3] rounded-full border-[2px] border-white flex items-center justify-center text-[#1B6D51] font-bold text-[18px] shadow-sm">
+              2
             </div>
           </div>
-          <div className="absolute left-[13px] top-[188px] w-[260px] text-center text-[#696984] text-[18px] font-medium leading-[29px]">
+          <h3 className="text-[#0B7077] text-[28px] font-bold mb-3">NLP Analysis</h3>
+          <p className="text-[#696984] text-[17px] leading-relaxed">
             Klasifikasi teks (IndoBERT) & ekstraksi lokasi, jenis makanan, waktu.
-          </div>
-          <div className="absolute left-[62px] top-[133px] text-center text-[#0B7077] text-[27px] font-semibold">
-            NLP Analysis
-          </div>
+          </p>
         </div>
 
-        {/* Card 3: Pattern Detection */}
-        <div className="relative w-[290px] h-[356px] bg-white rounded-[15px] overflow-hidden shadow-sm">
-          <div className="absolute left-0 top-[9px] w-[290px] h-[109.33px]">
-            <div className="absolute left-0 top-[62.08px] w-full h-[6.49px] bg-[#F6F6F6] rounded-full"></div>
-            <div className="absolute left-[98.67px] top-0 w-[92.65px] h-[109.33px]">
-              <div className="absolute left-[7.88px] top-[17.11px] w-[76.41px] h-[76.41px] bg-[#FFDB7E] shadow-[0px_4.58px_9.17px_rgba(0,0,0,0.20)] rounded-full"></div>
-              <img className="absolute left-[16.83px] top-[32.60px] w-[57px] h-[51px] object-contain" src="https://placehold.co/57x51" alt="Pattern Icon" />
-              <div className="absolute left-[29.65px] top-0 w-[32.43px] h-[32.43px] bg-[#E1F2E3] rounded-[27.80px] flex items-center justify-center">
-                <span className="text-[#1B6D51] text-[18.53px] font-bold">3</span>
-              </div>
+        {/* Step 3: Pattern Detection */}
+        <div className="flex flex-col items-center w-[280px] text-center">
+          <div className="relative mb-8">
+            <div className="w-[100px] h-[100px] bg-[#FFDB7E] rounded-full flex items-center justify-center shadow-lg">
+              <Activity size={40} className="text-[#333333]" />
+            </div>
+            <div className="absolute -top-2 -right-2 w-[35px] h-[35px] bg-[#E1F2E3] rounded-full border-[2px] border-white flex items-center justify-center text-[#1B6D51] font-bold text-[18px] shadow-sm">
+              3
             </div>
           </div>
-          <div className="absolute left-[13px] top-[188px] w-[260px] text-center text-[#696984] text-[18px] font-medium leading-[29px]">
+          <h3 className="text-[#0B7077] text-[28px] font-bold mb-3">Pattern Detection</h3>
+          <p className="text-[#696984] text-[17px] leading-relaxed">
             Clustering laporan serupa & spike detection per wilayah/vendor.
-          </div>
-          <div className="absolute left-[30px] top-[133px] text-center text-[#0B7077] text-[27px] font-semibold">
-            Pattern Detection
-          </div>
+          </p>
         </div>
 
-        {/* Card 4: Risk Prediction */}
-        <div className="relative w-[290px] h-[356px] bg-white rounded-[15px] overflow-hidden shadow-sm">
-          <div className="absolute left-0 top-[9px] w-[290px] h-[109.33px]">
-            <div className="absolute left-0 top-[62.08px] w-full h-[6.49px] bg-[#F6F6F6] rounded-full"></div>
-            <div className="absolute left-[98.67px] top-0 w-[92.65px] h-[109.33px]">
-              <div className="absolute left-[7.88px] top-[17.11px] w-[76.41px] h-[76.41px] bg-[#CAC9FF] shadow-[0px_4.58px_9.17px_rgba(0,0,0,0.20)] rounded-full"></div>
-              <img className="absolute left-[14.83px] top-[25.60px] w-[62px] h-[56px] object-contain" src="https://placehold.co/62x56" alt="Risk Icon" />
-              <div className="absolute left-[29.65px] top-0 w-[32.43px] h-[32.43px] bg-[#E1F2E3] rounded-[27.80px] flex items-center justify-center">
-                <span className="text-[#1B6D51] text-[18.53px] font-bold">4</span>
-              </div>
+        {/* Step 4: Risk Prediction */}
+        <div className="flex flex-col items-center w-[280px] text-center">
+          <div className="relative mb-8">
+            <div className="w-[100px] h-[100px] bg-[#CAC9FF] rounded-full flex items-center justify-center shadow-lg">
+              <Zap size={40} className="text-[#333333]" />
+            </div>
+            <div className="absolute -top-2 -right-2 w-[35px] h-[35px] bg-[#E1F2E3] rounded-full border-[2px] border-white flex items-center justify-center text-[#1B6D51] font-bold text-[18px] shadow-sm">
+              4
             </div>
           </div>
-          <div className="absolute left-[13px] top-[188px] w-[260px] text-center text-[#696984] text-[18px] font-medium leading-[29px]">
-            Scoring risiko & notifikasi otomatis ke dinas kesehatan & sekolah.
-          </div>
-          <div className="absolute left-[45px] top-[133px] text-center text-[#0B7077] text-[27px] font-semibold">
-            Risk Prediction
-          </div>
+          <h3 className="text-[#0B7077] text-[28px] font-bold mb-3">Risk Prediction</h3>
+          <p className="text-[#696984] text-[17px] leading-relaxed">
+            Skor risiko + alert otomatis ke pemangku kepentingan.
+          </p>
         </div>
 
       </div>
-    </>
+    </div>
   );
 }

@@ -10,13 +10,13 @@ export default function HeroSection() {
   return (
     <>
       {/* Decorative Red Background Circles - Restored to perfect circle and z-20 */}
-      <div className="absolute left-[318.54px] top-[-726px] w-[1324.81px] h-[1324.81px] bg-[#FF4B3A] rounded-full z-20"></div>
-      <div className="absolute left-[318.54px] top-[-726px] w-[1324.81px] h-[1324.81px] bg-[#FF4B3A] rounded-full border-[1.13px] border-[#FF4B3A] z-20"></div>
+      <div className="absolute left-[450px] top-[-726px] w-[1324.81px] h-[1324.81px] bg-[#FF4B3A] rounded-full z-20"></div>
+      <div className="absolute left-[450px] top-[-726px] w-[1324.81px] h-[1324.81px] bg-[#FF4B3A] rounded-full border-[1.13px] border-[#FF4B3A] z-20"></div>
 
       {/* Orbiting Food Icons Mask Container (z-30) 
           This container has the exact same shape as the red circle and hides anything outside of it.
       */}
-      <div className="absolute left-[318.54px] top-[-726px] w-[1324.81px] h-[1324.81px] rounded-full overflow-hidden z-30 pointer-events-none">
+      <div className="absolute left-[450px] top-[-726px] w-[1324.81px] h-[1324.81px] rounded-full overflow-hidden z-30 pointer-events-none">
         {/* Orbiting Food Icons Container (relative to the mask) */}
         <div className="absolute left-[346.86px] top-[1010.53px] w-[630.33px] h-[630.33px] rounded-full animate-[spin_25s_linear_infinite]">
           
@@ -52,19 +52,19 @@ export default function HeroSection() {
       <div className="absolute left-1/2 -translate-x-1/2 top-[212px] w-screen h-0 outline outline-[0.30px] outline-[#F4F4F8] -outline-offset-[0.15px] z-50 opacity-30"></div>
 
       {/* Big Main Center Image Component (Tray) */}
-      <div className="absolute left-[826.01px] top-[420.92px] w-[315.23px] h-[315.23px] bg-white rounded-full shadow-[0px_23px_45px_rgba(0,0,0,0.11)] overflow-hidden flex items-center justify-center z-40">
+      <div className="absolute left-[950px] top-[420.92px] w-[315.23px] h-[315.23px] bg-white rounded-full shadow-[0px_23px_45px_rgba(0,0,0,0.11)] overflow-hidden flex items-center justify-center z-40">
         <img className="w-full h-full object-cover" src="/hero/mbg.png" alt="Main MBG Tray" />
       </div>
 
       {/* Hero Typography */}
-      <div className="absolute left-[111.13px] top-[360px] w-[800px] flex flex-col justify-end z-50">
-        <span className="text-[#333333] text-[50px] font-extrabold capitalize leading-[56.28px] break-words">
+      <div className="absolute left-[60px] top-[360px] w-[800px] flex flex-col justify-end z-50">
+        <span className="text-[#333333] text-[60px] font-extrabold capitalize leading-[56.28px] break-words">
           Deteksi Dini <br />
           <span className="text-[#FF4B3A]">Keracunan MBG</span>
         </span>
       </div>
 
-      <div className="absolute left-[111.13px] top-[492px] w-[390.58px] flex flex-col justify-end z-50">
+      <div className="absolute left-[60px] top-[492px] w-[390.58px] flex flex-col justify-end z-50">
         <span className="text-[#333333] text-[14.63px] font-normal capitalize break-words">
           Pantauin Menggabungkan AI,{" "}
           <span className="italic">Social Listening</span>
@@ -73,7 +73,7 @@ export default function HeroSection() {
       </div>
 
       {/* Buttons */}
-      <div className="absolute left-[111.43px] top-[641.58px] inline-flex items-center justify-start gap-[20.26px] z-50">
+      <div className="absolute left-[60px] top-[641.58px] inline-flex items-center justify-start gap-[20.26px] z-50">
         {/* Btn 1 */}
         <div className="relative w-[247.63px] h-[54.03px] flex items-center justify-center bg-[#FF4B3A] rounded-[77.67px] shadow-[0px_22.5px_45px_#F4E2D1] cursor-pointer hover:bg-[#e03f31] transition-colors">
           <span className="text-white text-[14.63px] font-bold capitalize">LIHAT DASHBOARD LIVE</span>
@@ -89,27 +89,27 @@ export default function HeroSection() {
       {/* Decorative Dots (Smooth scroll to next section) */}
       <div 
         onClick={scrollToNext}
-        className="absolute left-[1283.16px] top-[694.48px] w-[45.02px] h-[45.02px] bg-[#FF4B3A] rounded-full shadow-[0px_11px_22.5px_#F5ECE3] flex items-center justify-center text-white cursor-pointer hover:bg-[#e03f31] pb-1 z-50 transition-transform hover:scale-110"
+        className="absolute right-[60px] top-[694.48px] w-[45.02px] h-[45.02px] bg-[#FF4B3A] rounded-full shadow-[0px_11px_22.5px_#F5ECE3] flex items-center justify-center text-white cursor-pointer hover:bg-[#e03f31] pb-1 z-50 transition-transform hover:scale-110"
       >
         &darr;
       </div>
 
       {/* Navbar & Navigation */}
-      <div className="absolute left-[422.09px] top-[58.53px] inline-flex items-center justify-start gap-[58px] z-50">
+      <div className="absolute left-[540px] top-[58.53px] inline-flex items-center justify-start gap-[58px] z-50">
         <div className="flex flex-col justify-end text-white text-[15.76px] font-medium capitalize cursor-pointer hover:opacity-80">Fitur</div>
         <div className="flex flex-col justify-end text-white text-[15.76px] font-medium capitalize cursor-pointer hover:opacity-80">Sumber Data</div>
         <div className="flex flex-col justify-end text-white text-[15.76px] font-medium capitalize cursor-pointer hover:opacity-80">Cara Kerja</div>
       </div>
 
       {/* Logo */}
-      <div className="absolute left-[136.20px] top-[58.90px] flex flex-col justify-end text-[#333333] text-[20.26px] font-extrabold capitalize z-50">Pantauin</div>
-      <div className="absolute left-[112.56px] top-[58.53px] w-[18.01px] h-[18.01px] bg-[#FF4B3A] rounded-full z-50"></div>
+      <div className="absolute left-[85px] top-[58.90px] flex flex-col justify-end text-[#333333] text-[20.26px] font-extrabold capitalize z-50">Pantauin</div>
+      <div className="absolute left-[61px] top-[58.53px] w-[18.01px] h-[18.01px] bg-[#FF4B3A] rounded-full z-50"></div>
 
       {/* Big Title Background */}
-      <div className="absolute left-[432px] top-[115px] text-white text-[73.16px] font-extrabold leading-[63.53px] z-50">Pantauin MBG</div>
+      <div className="absolute left-[550px] top-[115px] text-white text-[73.16px] font-extrabold leading-[63.53px] z-50">Pantauin MBG</div>
 
       {/* Top Right Action */}
-      <div className="absolute left-[1181px] top-[47px] text-center text-white text-[17px] font-semibold cursor-pointer hover:underline flex items-center gap-2 z-50">
+      <div className="absolute right-[60px] top-[47px] text-center text-white text-[17px] font-semibold cursor-pointer hover:underline flex items-center gap-2 z-50">
         Buka Dashboard <span>&rarr;</span>
       </div>
     </>

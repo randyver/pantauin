@@ -1,76 +1,83 @@
-import Image from "next/image";
+import { Bell, LayoutDashboard, Map as MapIcon, ShieldAlert } from "lucide-react";
 
 export default function FeaturesSection() {
   return (
-    <>
-      <div className="absolute left-[150.13px] top-[2335px] inline-flex items-start justify-start gap-[34px]">
+    <div className="absolute left-1/2 -translate-x-1/2 w-screen top-[2335px] z-10">
+      {/* Main Banner Container - Now truly full width */}
+      <div className="relative w-full h-[550px] bg-[#1A2130] rounded-tl-[120px] flex overflow-hidden">
+        {/* Left Side: Image */}
+        <div className="w-[45%] h-full">
+          <img 
+            src="/feature/sppg.png" 
+            className="w-full h-full object-cover" 
+            alt="Feature SPPG" 
+          />
+        </div>
         
-        {/* Feature 1: Early Warning System */}
-        <div className="relative w-[268px] h-[350px] flex flex-col items-center">
-          <div className="absolute left-0 top-[138px] w-[268px] h-[212px] bg-white shadow-[0px_30px_60px_rgba(57,57,57,0.10)] rounded-[30px]"></div>
-          <div className="relative z-10 flex flex-col items-center justify-start gap-[20px] pt-[83px]">
-            <div className="w-[110px] h-[110px] bg-white shadow-[0px_30px_40px_rgba(0,0,0,0.10)] rounded-full flex items-center justify-center">
-              {/* Refactored vector to an image placeholder for cleanliness */}
-              <img src="https://placehold.co/41x41" alt="Early Warning" className="w-[41px] h-[41px]" />
-            </div>
-            <div className="w-[208px] text-center text-black text-[30px] font-semibold font-sf-rounded leading-[30.40px]">
-              Early warning system
-            </div>
-            <div className="w-[208px] text-center text-black text-[17px] font-normal font-sf-rounded">
-              Alert otomatis saat lonjakan laporan terdeteksi di suatu wilayah, vendor, atau sekolah.
-            </div>
+        {/* Right Side: Text - Shifted up using items-start and padding */}
+        <div className="w-[55%] h-full flex items-start px-20 pt-36">
+          <h2 className="text-white text-[56px] font-bold font-sf-rounded leading-[1.1] max-w-[700px]">
+            <span className="text-[#FF4B3A]">Empat</span> modul intelijen dalam satu platform.
+          </h2>
+        </div>
+      </div>
+
+      {/* Floating Cards Container - Shifted down to avoid overlapping the text */}
+      <div className="absolute left-1/2 -translate-x-1/2 -bottom-[220px] w-full max-w-[1441px] flex justify-center gap-8 px-10">
+        
+        {/* Card 1: Early Warning */}
+        <div className="relative w-[300px] h-[360px] bg-white rounded-[40px] shadow-[0px_40px_80px_rgba(0,0,0,0.08)] flex flex-col items-center justify-start pt-16 px-6 text-center">
+          <div className="absolute -top-[60px] w-[120px] h-[120px] bg-white rounded-full shadow-xl flex items-center justify-center text-[#333333] border-[1px] border-gray-100">
+            <Bell size={44} />
           </div>
+          <h3 className="text-[#333333] text-[30px] font-bold font-sf-rounded leading-tight mt-6">
+            Early warning system
+          </h3>
+          <p className="text-[#333333]/70 text-[16px] font-normal font-sf-rounded mt-4 leading-relaxed">
+            Alert otomatis saat lonjakan laporan terdeteksi di suatu wilayah, vendor, atau sekolah.
+          </p>
         </div>
 
-        {/* Feature 2: Social Signal Dashboard */}
-        <div className="relative w-[268px] h-[350px] flex flex-col items-center">
-          <div className="absolute left-0 top-[138px] w-[268px] h-[212px] bg-white shadow-[0px_30px_60px_rgba(57,57,57,0.10)] rounded-[30px]"></div>
-          <div className="relative z-10 flex flex-col items-center justify-start gap-[20px] pt-[83px]">
-            <div className="w-[110px] h-[110px] bg-white shadow-[0px_30px_40px_rgba(0,0,0,0.10)] rounded-full flex items-center justify-center">
-              <img src="https://placehold.co/38x38" alt="Social Signal" className="w-[38px] h-[38px]" />
-            </div>
-            <div className="w-[208px] text-center text-black text-[30px] font-semibold font-sf-rounded leading-[30.40px]">
-              Social Signal Dashboard
-            </div>
-            <div className="w-[208px] text-center text-black text-[17px] font-normal font-sf-rounded">
-              Visualisasi mention, sentimen publik, dan trending keyword secara real-time.
-            </div>
+        {/* Card 2: Social Signal Dashboard */}
+        <div className="relative w-[300px] h-[360px] bg-white rounded-[40px] shadow-[0px_40px_80px_rgba(0,0,0,0.08)] flex flex-col items-center justify-start pt-16 px-6 text-center">
+          <div className="absolute -top-[60px] w-[120px] h-[120px] bg-white rounded-full shadow-xl flex items-center justify-center text-[#333333] border-[1px] border-gray-100">
+            <LayoutDashboard size={44} />
           </div>
+          <h3 className="text-[#333333] text-[30px] font-bold font-sf-rounded leading-tight mt-6">
+            Social Signal Dashboard
+          </h3>
+          <p className="text-[#333333]/70 text-[16px] font-normal font-sf-rounded mt-4 leading-relaxed">
+            Visualisasi mention, sentimen publik, dan trending keyword secara real-time.
+          </p>
         </div>
 
-        {/* Feature 3: Risk Map Indonesia */}
-        <div className="relative w-[268px] h-[350px] flex flex-col items-center">
-          <div className="absolute left-0 top-[138px] w-[268px] h-[212px] bg-white shadow-[0px_30px_60px_rgba(57,57,57,0.10)] rounded-[30px]"></div>
-          <div className="relative z-10 flex flex-col items-center justify-start gap-[20px] pt-[83px]">
-            <div className="w-[110px] h-[110px] bg-white shadow-[0px_30px_40px_rgba(0,0,0,0.10)] rounded-full flex items-center justify-center overflow-hidden">
-              <img src="https://placehold.co/159x110" alt="Risk Map" className="w-[158.79px] h-[110px] object-cover" />
-            </div>
-            <div className="w-[208px] text-center text-black text-[30px] font-semibold font-sf-rounded leading-[30.40px]">
-              Risk Map Indonesia
-            </div>
-            <div className="w-[208px] text-center text-black text-[17px] font-normal font-sf-rounded">
-              Peta interaktif dengan indikator hijau-kuning-merah per wilayah & hotspot.
-            </div>
+        {/* Card 3: Risk Map Indonesia */}
+        <div className="relative w-[300px] h-[360px] bg-white rounded-[40px] shadow-[0px_40px_80px_rgba(0,0,0,0.08)] flex flex-col items-center justify-start pt-16 px-6 text-center">
+          <div className="absolute -top-[60px] w-[120px] h-[120px] bg-white rounded-full shadow-xl flex items-center justify-center text-[#333333] border-[1px] border-gray-100">
+            <MapIcon size={44} />
           </div>
+          <h3 className="text-[#333333] text-[30px] font-bold font-sf-rounded leading-tight mt-6">
+            Risk Map Indonesia
+          </h3>
+          <p className="text-[#333333]/70 text-[16px] font-normal font-sf-rounded mt-4 leading-relaxed">
+            Peta interaktif dengan indikator hijau-kuning-merah per wilayah & hotspot.
+          </p>
         </div>
 
-        {/* Feature 4: Incident Explorer */}
-        <div className="relative w-[268px] h-[350px] flex flex-col items-center">
-          <div className="absolute left-0 top-[138px] w-[268px] h-[212px] bg-white shadow-[0px_30px_60px_rgba(57,57,57,0.10)] rounded-[30px]"></div>
-          <div className="relative z-10 flex flex-col items-center justify-start gap-[20px] pt-[83px]">
-            <div className="w-[110px] h-[110px] bg-white shadow-[0px_30px_40px_rgba(0,0,0,0.10)] rounded-full flex items-center justify-center overflow-hidden">
-              <img src="https://placehold.co/157x196" alt="Incident Explorer" className="w-[157px] h-[196px] object-cover" />
-            </div>
-            <div className="w-[208px] text-center text-black text-[30px] font-semibold font-sf-rounded leading-[30.40px]">
-              Incident Explorer
-            </div>
-            <div className="w-[208px] text-center text-black text-[17px] font-normal font-sf-rounded">
-              Daftar laporan dari sosmed, berita, & user bisa difilter & ditelusuri detailnya
-            </div>
+        {/* Card 4: Incident Explorer */}
+        <div className="relative w-[300px] h-[360px] bg-white rounded-[40px] shadow-[0px_40px_80px_rgba(0,0,0,0.08)] flex flex-col items-center justify-start pt-16 px-6 text-center">
+          <div className="absolute -top-[60px] w-[120px] h-[120px] bg-white rounded-full shadow-xl flex items-center justify-center text-[#333333] border-[1px] border-gray-100">
+            <ShieldAlert size={44} />
           </div>
+          <h3 className="text-[#333333] text-[30px] font-bold font-sf-rounded leading-tight mt-6">
+            Incident Explorer
+          </h3>
+          <p className="text-[#333333]/70 text-[16px] font-normal font-sf-rounded mt-4 leading-relaxed">
+            Daftar laporan dari sosmed, berita, & user bisa difilter & ditelusuri detailnya.
+          </p>
         </div>
 
       </div>
-    </>
+    </div>
   );
 }
