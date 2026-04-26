@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 
 export default function HeroSection() {
   const scrollToNext = () => {
@@ -79,9 +80,9 @@ export default function HeroSection() {
         </div>
 
         {/* Right: CTA Button - Slightly shifted left */}
-        <div className="text-white text-[17px] font-semibold cursor-pointer hover:underline flex items-center gap-2 min-w-[150px] justify-end lg:pr-10">
+        <Link href="/dashboard" className="text-white text-[17px] font-semibold cursor-pointer hover:underline flex items-center gap-2 min-w-[150px] justify-end lg:pr-10">
           Buka Dashboard <span className="text-[20px]">&rarr;</span>
-        </div>
+        </Link>
       </div>
 
       {/* Main Content Area */}
@@ -105,9 +106,11 @@ export default function HeroSection() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 lg:gap-5">
-            <button className="w-full sm:w-[247px] h-[54px] bg-[#FF4B3A] text-white font-bold rounded-full shadow-lg hover:bg-[#e03f31] transition-all">
-              LIHAT DASHBOARD LIVE
-            </button>
+            <Link href="/dashboard" className="w-full sm:w-[247px]">
+              <button className="w-full h-[54px] bg-[#FF4B3A] text-white font-bold rounded-full shadow-lg hover:bg-[#e03f31] transition-all">
+                LIHAT DASHBOARD LIVE
+              </button>
+            </Link>
             <button className="w-full sm:w-[247px] h-[54px] bg-white text-[#FF4B3A] border-[1px] border-[#FF4B3A] font-bold rounded-full shadow-lg hover:bg-gray-50 transition-all">
               LAPOR INSIDEN
             </button>
