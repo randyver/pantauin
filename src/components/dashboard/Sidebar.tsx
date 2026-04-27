@@ -10,7 +10,6 @@ import {
   Signal, 
   Search, 
   BellRing, 
-  Settings, 
   ShieldAlert,
   ChevronRight
 } from 'lucide-react';
@@ -22,7 +21,6 @@ const menuItems = [
   { icon: Signal, label: 'Sinyal Sosial', href: '/dashboard/social' },
   { icon: Search, label: 'Eksplorasi Insiden', href: '/dashboard/incidents' },
   { icon: BellRing, label: 'Pusat Alert', href: '/dashboard/alerts' },
-  { icon: Settings, label: 'Pengaturan', href: '/dashboard/settings' },
 ];
 
 export function Sidebar() {
