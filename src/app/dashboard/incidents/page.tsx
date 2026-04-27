@@ -220,9 +220,9 @@ export default function IncidentExplorerPage() {
                       </div>
                     </div>
 
-                    <button className="w-full py-2.5 md:py-3 bg-foreground text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 hover:bg-black transition-all">
+                    {/* <button className="w-full py-2.5 md:py-3 bg-foreground text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 hover:bg-black transition-all">
                       Eskalasi Tugas <MessageSquare className="w-3.5 h-3.5" />
-                    </button>
+                    </button> */}
                   </div>
                 </div>
               </div>
