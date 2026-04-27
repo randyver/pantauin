@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function IntelligenceModules() {
   return (
-    <div className="relative w-full z-10 px-6 lg:px-[136px] flex flex-col items-center">
+    <div id="sumber-data" className="relative w-full z-10 px-6 lg:px-[136px] flex flex-col items-center">
       {/* Top Header Section - Centered */}
       <div className="relative w-full flex flex-col items-center text-center mb-12 lg:mb-[80px]">
         <div className="w-full lg:max-w-[800px] pt-0 lg:pt-10 z-10">
@@ -10,7 +10,7 @@ export default function IntelligenceModules() {
             Memantau setiap sinyal, dari semua arah
           </h2>
           <p className="text-[#333333] text-[16px] lg:text-[18px] font-medium max-w-[550px] mx-auto leading-relaxed opacity-80">
-            Data Publik Dari Media, Sosial Media, Dan Laporan Masyarakat Dianalisis Bersama Data Resmi Pemerintah & Sekolah.
+            Bukan hanya keracunan — Pantauin memantau keluhan porsi, mutu gizi, dugaan mark-up harga, keterlambatan distribusi, kemasan, hingga kebersihan dapur SPPG, dari berbagai kanal publik.
           </p>
         </div>
       </div>
@@ -34,7 +34,7 @@ export default function IntelligenceModules() {
           </div>
           <div className="flex flex-col gap-2">
             <h3 className="text-[#FF4B3A] text-[24px] lg:text-[28px] font-bold leading-tight">Twitter</h3>
-            <p className="text-black/50 text-[16px] lg:text-[18px] leading-snug">Tweet & reply terkait MBG, keracunan, makan siang sekolah.</p>
+            <p className="text-black/50 text-[16px] lg:text-[18px] leading-snug">Tweet & reply soal MBG: keracunan, porsi, harga, hingga keluhan rasa.</p>
           </div>
         </div>
 
@@ -46,7 +46,7 @@ export default function IntelligenceModules() {
           </div>
           <div className="flex flex-col gap-2">
             <h3 className="text-[#E9F7BA] text-[24px] lg:text-[28px] font-bold leading-tight">Instagram/Tiktok</h3>
-            <p className="text-white/90 text-[16px] lg:text-[18px] leading-snug">Caption & komentar publik dari hashtag relevan.</p>
+            <p className="text-white/90 text-[16px] lg:text-[18px] leading-snug">Caption & komentar publik — termasuk video viral menu & porsi MBG.</p>
           </div>
         </div>
 
@@ -58,7 +58,7 @@ export default function IntelligenceModules() {
           </div>
           <div className="flex flex-col gap-2">
             <h3 className="text-[#FF4B3A] text-[24px] lg:text-[28px] font-bold leading-tight">Laporan Publik</h3>
-            <p className="text-black/50 text-[16px] lg:text-[18px] leading-snug">Form laporan siswa, guru, orang tua, WhatsApp bot</p>
+            <p className="text-black/50 text-[16px] lg:text-[18px] leading-snug">Form laporan siswa, guru, orang tua, dan WhatsApp bot komunitas.</p>
           </div>
         </div>
 
@@ -70,7 +70,7 @@ export default function IntelligenceModules() {
           </div>
           <div className="flex flex-col gap-2">
             <h3 className="text-[#E9F7BA] text-[24px] lg:text-[28px] font-bold leading-tight">Media/Berita</h3>
-            <p className="text-white/90 text-[16px] lg:text-[18px] leading-snug">Portal berita lokal & nasional, deteksi otomatis 24/7.</p>
+            <p className="text-white/90 text-[16px] lg:text-[18px] leading-snug">Portal berita lokal & nasional, deteksi isu MBG otomatis 24/7.</p>
           </div>
         </div>
 

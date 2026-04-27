@@ -19,13 +19,13 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Pantauin MBG - Deteksi Dini Keracunan Makanan",
-  description: "Pantauin menggabungkan AI dan Social Listening untuk memberi peringatan dini risiko keracunan makanan pada program Makan Bergizi Gratis di seluruh Indonesia.",
-  keywords: ["MBG", "Makan Bergizi Gratis", "Food Safety", "Keracunan Makanan", "Deteksi Dini", "Pantauin"],
+  title: "Pantauin",
+  description: "Platform AI yang memantau & memprediksi berbagai isu program Makan Bergizi Gratis (MBG) — dari keracunan, porsi tidak sesuai, kualitas, harga, hingga distribusi — dari sosial media, berita, dan laporan publik secara real-time.",
+  keywords: ["MBG", "Makan Bergizi Gratis", "Food Safety", "Keracunan Makanan", "Anomali Pengadaan", "Early Warning", "Pantauin"],
   authors: [{ name: "Pantauin Team" }],
   openGraph: {
-    title: "Pantauin MBG - Deteksi Dini Keracunan Makanan",
-    description: "Memantau setiap sinyal, dari semua arah. Deteksi dini risiko keracunan makanan untuk program Makan Bergizi Gratis.",
+    title: "Pantauin — Early Warning Isu MBG",
+    description: "Deteksi sinyal awal berbagai isu MBG (keracunan, porsi, kualitas, harga, distribusi) dari Twitter, Instagram, TikTok, berita, dan laporan masyarakat — sebelum kasus meluas.",
     url: "https://pantauin-web.vercel.app",
     siteName: "Pantauin",
     images: [
@@ -41,8 +41,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Pantauin MBG - Deteksi Dini Keracunan Makanan",
-    description: "Sistem AI untuk deteksi dini risiko keracunan makanan pada program Makan Bergizi Gratis.",
+    title: "Pantauin — Early Warning Isu MBG",
+    description: "Deteksi sinyal awal berbagai isu MBG (keracunan, porsi, kualitas, harga, distribusi) dari Twitter, Instagram, TikTok, berita, dan laporan masyarakat — sebelum kasus meluas.",
     images: ["/og-image.png"],
   },
   icons: {
