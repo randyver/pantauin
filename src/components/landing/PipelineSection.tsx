@@ -4,7 +4,7 @@ import { Database, BrainCircuit, Activity, Zap } from "lucide-react";
 
 export default function PipelineSection() {
   return (
-    <div className="relative w-full z-10 px-6 lg:px-[136px]">
+    <div id="cara-kerja" className="relative w-full z-10 px-6 lg:px-[136px]">
       {/* Top Header Section - Responsive */}
       <div className="relative w-full flex flex-col lg:flex-row justify-between items-center mb-12 lg:mb-[100px] gap-8 lg:gap-0">
         {/* Left Side: Title */}

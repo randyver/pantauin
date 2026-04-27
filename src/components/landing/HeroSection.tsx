@@ -74,9 +74,9 @@ export default function HeroSection() {
         
         {/* Center: Navigation Links */}
         <div className="hidden lg:flex items-center justify-center gap-[58px] flex-1">
-          <div className="text-white text-[16px] font-medium capitalize cursor-pointer hover:opacity-80">Fitur</div>
-          <div className="text-white text-[16px] font-medium capitalize cursor-pointer hover:opacity-80">Sumber Data</div>
-          <div className="text-white text-[16px] font-medium capitalize cursor-pointer hover:opacity-80">Cara Kerja</div>
+          <a href="#fitur" className="text-white text-[16px] font-medium capitalize cursor-pointer hover:opacity-80">Fitur</a>
+          <a href="#sumber-data" className="text-white text-[16px] font-medium capitalize cursor-pointer hover:opacity-80">Sumber Data</a>
+          <a href="#cara-kerja" className="text-white text-[16px] font-medium capitalize cursor-pointer hover:opacity-80">Cara Kerja</a>
         </div>
 
         {/* Right: CTA Button - Slightly shifted left */}
@@ -97,23 +97,25 @@ export default function HeroSection() {
 
         {/* Left: Typography */}
         <div className="w-full lg:max-w-[600px] text-center lg:text-left pt-24 lg:pt-20 order-2 lg:order-1">
-          <h1 className="text-[#333333] text-[42px] lg:text-[60px] font-extrabold capitalize leading-[1.1] mb-6 mt-20 lg:mt-32">
-            Deteksi Dini <br />
-            <span>Keracunan MBG</span>
+          <h1 className="text-[#333333] text-[42px] lg:text-[60px] font-extrabold leading-[1.1] mb-6 mt-20 lg:mt-32">
+            Pantau MBG Lebih Cepat,<br />
+            <span>Tindak Lebih Tepat.</span>
           </h1>
           <p className="text-[#333333] text-[16px] lg:text-[14.6px] font-normal leading-relaxed max-w-[400px] mx-auto lg:mx-0 mb-10">
-            Pantauin Menggabungkan AI, <span className="italic">Social Listening</span>, Dan Data Lapangan Untuk Memberi Peringatan Dini Risiko Keracunan Makanan Pada Program Makan Bergizi Gratis Di Seluruh Indonesia.
+            Pantauin menggabungkan AI, <span className="italic">Social Listening</span>, dan data lapangan untuk memantau seluruh isu program <strong>Makan Bergizi Gratis</strong> — mulai dari keracunan, porsi &amp; gizi tidak sesuai, kualitas makanan, dugaan harga tidak wajar, hingga keterlambatan distribusi — di seluruh Indonesia.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 lg:gap-5">
             <Link href="/dashboard" className="w-full sm:w-[247px]">
-              <button className="w-full h-[54px] bg-[#FF4B3A] text-white font-bold rounded-full shadow-lg hover:bg-[#e03f31] transition-all">
+              <button className="w-full h-[54px] bg-[#FF4B3A] text-white font-bold rounded-full shadow-lg hover:bg-[#e03f31] transition-all cursor-pointer">
                 LIHAT DASHBOARD LIVE
               </button>
             </Link>
-            <button className="w-full sm:w-[247px] h-[54px] bg-white text-[#FF4B3A] border-[1px] border-[#FF4B3A] font-bold rounded-full shadow-lg hover:bg-gray-50 transition-all">
-              LAPOR INSIDEN
-            </button>
+            <Link href="/dashboard/risk-map" className="w-full sm:w-[247px]">
+              <button className="w-full h-[54px] bg-white text-[#FF4B3A] border-[1px] border-[#FF4B3A] font-bold rounded-full shadow-lg hover:bg-gray-50 transition-all cursor-pointer">
+                LIHAT RISK MAP
+              </button>
+            </Link>
           </div>
         </div>
       </div>

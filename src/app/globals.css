@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@layer base {
+  html { scroll-behavior: smooth; }
+}
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
