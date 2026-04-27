@@ -3,15 +3,12 @@
 import React, { useState } from 'react';
 import { Sidebar } from '@/components/dashboard/Sidebar';
 import { Menu, Search, Bell, X } from 'lucide-react';
+import { SearchProvider, useSearch } from '@/lib/search-context';
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+function LayoutInner({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [searchValue, setSearchValue] = useState('');
   const [searchFocused, setSearchFocused] = useState(false);
+  const { value: searchValue, set: setSearchValue } = useSearch();
 
   return (
     <div className="min-h-screen bg-[#FDFCFB]">
@@ -71,7 +68,6 @@ export default function DashboardLayout({
             )}
           </div>
 
-          {/* Bell */}
           <button className="relative w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors text-gray-600 flex-shrink-0">
             <Bell className="w-4 h-4" />
             <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full" />
@@ -80,7 +76,6 @@ export default function DashboardLayout({
         </div>
       </div>
 
-      {/* ── Main content ── */}
       <main className="md:pl-72 px-4 md:pr-6 pb-12 pt-0">
         <div className="max-w-[1600px] mx-auto mt-20">
           {children}
@@ -88,5 +83,13 @@ export default function DashboardLayout({
       </main>
 
     </div>
+  );
+}
+
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <SearchProvider>
+      <LayoutInner>{children}</LayoutInner>
+    </SearchProvider>
   );
 }

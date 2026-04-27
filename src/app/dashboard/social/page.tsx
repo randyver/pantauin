@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { 
+import {
   Signal, Send, Camera, Globe, ExternalLink, ThumbsUp, MessageCircle,
 } from 'lucide-react';
 import {
@@ -11,6 +11,7 @@ import {
 import { socialSignals } from '@/lib/dummy-data';
 import { cn } from '@/lib/utils';
 import { allSocialPosts, criticalPosts, type SocialPost, type Source } from '@/lib/sosmed-dummy-data';
+import { useSearch } from '@/lib/search-context';
 
 function SourceIcon({ source }: { source: Source }) {
   if (source === 'telegram') return <Send className="w-4 h-4" />;
@@ -81,11 +82,18 @@ function FeedCard({ post, index }: { post: SocialPost; index: number }) {
 export default function SocialSignalPage() {
   const [mounted, setMounted] = React.useState(false);
   const [filter, setFilter] = React.useState<'all' | 'critical'>('all');
+  const { value: searchTerm } = useSearch();
 
   React.useEffect(() => setMounted(true), []);
   if (!mounted) return <div className="h-screen" />;
 
-  const displayedPosts = filter === 'critical' ? criticalPosts : allSocialPosts;
+  const basePosts = filter === 'critical' ? criticalPosts : allSocialPosts;
+  const displayedPosts = basePosts.filter(post =>
+    !searchTerm ||
+    post.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    post.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    post.location.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="space-y-6 md:space-y-8 animate-in fade-in duration-700">
@@ -175,9 +183,14 @@ export default function SocialSignalPage() {
       {/* Live Feed */}
       <div className="space-y-4 md:space-y-6">
         <div className="flex items-center justify-between">
-          <h3 className="text-[10px] md:text-sm font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-            <Signal className="w-3.5 h-3.5 md:w-4 md:h-4 text-primary animate-pulse" /> Feed Intelijen
-          </h3>
+          <div>
+            <h3 className="text-[10px] md:text-sm font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+              <Signal className="w-3.5 h-3.5 md:w-4 md:h-4 text-primary animate-pulse" /> Feed Intelijen
+            </h3>
+            {searchTerm && (
+              <p className="text-[10px] text-primary font-semibold mt-0.5">Filter: "{searchTerm}" — {displayedPosts.length} hasil</p>
+            )}
+          </div>
           <div className="flex gap-2">
             <button
               onClick={() => setFilter('all')}
@@ -200,11 +213,17 @@ export default function SocialSignalPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
-          {displayedPosts.map((post, i) => (
-            <FeedCard key={post.id} post={post} index={i} />
-          ))}
-        </div>
+        {displayedPosts.length === 0 ? (
+          <div className="floating-card p-8 text-center text-sm text-muted-foreground">
+            Tidak ada post yang cocok dengan pencarian
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
+            {displayedPosts.map((post, i) => (
+              <FeedCard key={post.id} post={post} index={i} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

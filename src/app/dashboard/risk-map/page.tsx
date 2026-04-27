@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { PROVINCES } from '@/lib/provinces';
+import { useSearch } from '@/lib/search-context';
 import type { MbgStaticData, MbgProvinceData, RupPackageEnriched } from '@/types/mbg';
 
 const MAPS_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
@@ -122,10 +123,17 @@ export default function RiskMapPage() {
   const [selectedPackage, setSelectedPackage] = useState<RupPackageEnriched | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [tableSearch, setTableSearch] = useState('');
   const [tableSortBy, setTableSortBy] = useState<'score' | 'value'>('score');
   const [page, setPage] = useState(1);
   const [mounted, setMounted] = useState(false);
+
+  // Gunakan search dari context (navbar) — juga sediakan input lokal di tabel
+  // agar bisa dipakai mandiri jika user ingin filter hanya di tabel ini
+  const { value: globalSearch } = useSearch();
+  const [localSearch, setLocalSearch] = useState('');
+
+  // Gabungkan: local search prioritas, fallback ke global
+  const tableSearch = localSearch || globalSearch;
 
   useEffect(() => setMounted(true), []);
   useEffect(() => setPage(1), [tableSearch, tableSortBy]);
@@ -189,9 +197,11 @@ export default function RiskMapPage() {
         ))}
       </div>
 
-      {/* Map + Detail Panel */}
+      {/* Map + Detail Panel — mobile: panel dulu lalu map; desktop: map kiri panel kanan */}
       <div className="flex flex-col xl:flex-row gap-4 md:gap-6">
-        <div className="flex-1 relative h-[300px] md:h-[520px] glass rounded-3xl overflow-hidden border-white/40 shadow-2xl">
+
+        {/* Map — di mobile tampil setelah panel (order-2), di desktop kiri (order-1) */}
+        <div className="order-2 xl:order-1 xl:flex-1 relative h-[320px] sm:h-[420px] md:h-[500px] glass rounded-3xl overflow-hidden border-white/40 shadow-2xl">
           {!MAPS_KEY ? (
             <div className="h-full flex flex-col items-center justify-center text-center p-8">
               <AlertTriangle className="w-10 h-10 text-amber-500 mb-4" />
@@ -222,6 +232,8 @@ export default function RiskMapPage() {
               </Map>
             </APIProvider>
           )}
+
+          {/* Legend */}
           <div className="absolute bottom-3 left-3 glass rounded-xl p-2 md:p-3 text-[10px] space-y-1">
             {[
               { color: '#EF4444', label: 'Kritis (≥70)' },
@@ -236,14 +248,14 @@ export default function RiskMapPage() {
           </div>
         </div>
 
-        {/* Province Detail Panel */}
-        <div className="w-full xl:w-96">
+        {/* Province Detail Panel — mobile: tampil duluan (order-1), desktop: kanan (order-2) */}
+        <div className="order-1 xl:order-2 w-full xl:w-96">
           <AnimatePresence mode="wait">
             {selectedProvince ? (
               <motion.div
                 key={selectedProvince.provinceId}
                 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}
-                className="glass rounded-3xl p-4 md:p-6 max-h-[400px] md:max-h-[520px] overflow-y-auto relative"
+                className="glass rounded-3xl p-4 md:p-6 relative"
               >
                 <button onClick={() => setSelectedProvince(null)} className="absolute top-4 right-4 text-muted-foreground hover:text-foreground">
                   <X className="w-4 h-4" />
@@ -270,19 +282,22 @@ export default function RiskMapPage() {
                       <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Total Anggaran</p>
                       <p className="text-lg md:text-xl font-bold text-foreground">{formatRupiah(selectedProvince.totalAnggaran)}</p>
                     </div>
+                    {/* Grid paket — 1 kolom di mobile, 2 kolom di sm ke atas */}
                     <div className="space-y-2">
                       <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Paket Pengadaan</p>
-                      {selectedProvince.packages.map(pkg => (
-                        <button key={pkg.id} onClick={() => setSelectedPackage(pkg)}
-                          className="w-full p-3 bg-white/40 rounded-xl border border-white/60 space-y-1 text-left hover:bg-white/70 transition-colors"
-                        >
-                          <p className="text-xs font-medium text-foreground leading-tight">{pkg.namaPaket}</p>
-                          <div className="flex items-center justify-between">
-                            <span className="text-[10px] text-muted-foreground">{formatRupiah(pkg.paguAnggaran)}</span>
-                            <AnomalyBadge score={pkg.anomalyScore} />
-                          </div>
-                        </button>
-                      ))}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {selectedProvince.packages.map(pkg => (
+                          <button key={pkg.id} onClick={() => setSelectedPackage(pkg)}
+                            className="w-full p-3 bg-white/40 rounded-xl border border-white/60 space-y-1 text-left hover:bg-white/70 transition-colors"
+                          >
+                            <p className="text-xs font-medium text-foreground leading-tight">{pkg.namaPaket}</p>
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] text-muted-foreground">{formatRupiah(pkg.paguAnggaran)}</span>
+                              <AnomalyBadge score={pkg.anomalyScore} />
+                            </div>
+                          </button>
+                        ))}
+                      </div>
                     </div>
                   </>
                 ) : (
@@ -295,7 +310,7 @@ export default function RiskMapPage() {
             ) : (
               <motion.div
                 key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                className="glass rounded-3xl p-6 flex flex-col items-center justify-center text-center h-40 md:h-64"
+                className="glass rounded-3xl p-6 flex flex-col items-center justify-center text-center h-48"
               >
                 <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center mb-3">
                   <Building2 className="w-6 h-6 text-primary" />
@@ -313,7 +328,12 @@ export default function RiskMapPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 md:gap-4 mb-4 md:mb-5">
           <div>
             <h3 className="text-[10px] md:text-sm font-bold uppercase tracking-widest text-muted-foreground">Daftar Paket Mencurigakan</h3>
-            <p className="text-[10px] md:text-xs text-muted-foreground mt-0.5">Data Badan Gizi Nasional — dianalisis oleh AI</p>
+            <p className="text-[10px] md:text-xs text-muted-foreground mt-0.5">
+              Data Badan Gizi Nasional — dianalisis oleh AI
+              {globalSearch && !localSearch && (
+                <span className="ml-2 text-primary font-semibold">· Filter: "{globalSearch}"</span>
+              )}
+            </p>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <div className="relative">
@@ -321,8 +341,8 @@ export default function RiskMapPage() {
               <input
                 type="text"
                 placeholder="Cari paket..."
-                value={tableSearch}
-                onChange={e => setTableSearch(e.target.value)}
+                value={localSearch}
+                onChange={e => setLocalSearch(e.target.value)}
                 className="pl-8 pr-3 py-1.5 text-xs border border-border rounded-lg bg-white/50 focus:outline-none focus:ring-1 focus:ring-primary w-36 md:w-48"
               />
             </div>
