@@ -43,44 +43,47 @@ function markerColor(riskScore: number) {
   return { bg: '#EAB308', ring: '#FEF08A' };
 }
 
-// ── Package Detail Modal ──────────────────────────────────────────────────────
-
 function PackageModal({ pkg, onClose }: { pkg: RupPackageEnriched; onClose: () => void }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
       <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 10 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95, y: 10 }}
-        className="relative z-10 w-full max-w-lg glass rounded-3xl p-6 shadow-2xl"
+        initial={{ y: '100%', opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: '100%', opacity: 0 }}
+        transition={{ type: 'spring', damping: 30 }}
+        className="relative z-10 w-full sm:max-w-lg glass sm:rounded-3xl rounded-t-3xl p-5 md:p-6 shadow-2xl max-h-[85dvh] overflow-y-auto"
       >
+        <div className="flex justify-center mb-3 sm:hidden">
+          <div className="w-10 h-1 rounded-full bg-white/30" />
+        </div>
+
         <button onClick={onClose} className="absolute top-4 right-4 text-muted-foreground hover:text-foreground">
           <X className="w-4 h-4" />
         </button>
 
         <div className="mb-4 pr-6">
           <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{pkg.satker}</p>
-          <h3 className="text-base font-bold text-foreground leading-snug">{pkg.namaPaket}</h3>
+          <h3 className="text-sm md:text-base font-bold text-foreground leading-snug">{pkg.namaPaket}</h3>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 mb-4">
+        <div className="grid grid-cols-2 gap-2 md:gap-3 mb-4">
           {[
             { label: 'Pagu Anggaran', value: formatRupiah(pkg.paguAnggaran) },
             { label: 'Metode', value: pkg.metodePengadaan },
             { label: 'Sumber Dana', value: pkg.sumberDana },
             { label: 'Rencana Awal', value: pkg.rencanaAwal || '—' },
           ].map(f => (
-            <div key={f.label} className="bg-white/50 rounded-xl p-3 border border-white/80">
+            <div key={f.label} className="bg-white/50 rounded-xl p-2 md:p-3 border border-white/80">
               <p className="text-[10px] text-muted-foreground mb-0.5">{f.label}</p>
-              <p className="text-sm font-semibold text-foreground">{f.value}</p>
+              <p className="text-xs md:text-sm font-semibold text-foreground">{f.value}</p>
             </div>
           ))}
         </div>
 
         {pkg.anomalyScore > 0 && (
           <div className={cn(
-            'p-4 rounded-xl border mb-4',
+            'p-3 md:p-4 rounded-xl border mb-4',
             pkg.anomalyScore >= 60 ? 'bg-red-50 border-red-200' : 'bg-yellow-50 border-yellow-200'
           )}>
             <div className="flex items-center justify-between mb-2">
@@ -113,8 +116,6 @@ function PackageModal({ pkg, onClose }: { pkg: RupPackageEnriched; onClose: () =
   );
 }
 
-// ── Main Page ─────────────────────────────────────────────────────────────────
-
 export default function RiskMapPage() {
   const [nationalData, setNationalData] = useState<MbgStaticData | null>(null);
   const [selectedProvince, setSelectedProvince] = useState<MbgProvinceData | null>(null);
@@ -127,8 +128,6 @@ export default function RiskMapPage() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
-
-  // Reset page when search/sort changes
   useEffect(() => setPage(1), [tableSearch, tableSortBy]);
 
   const loadNational = useCallback(async () => {
@@ -161,30 +160,28 @@ export default function RiskMapPage() {
 
   const provinceMap: Record<string, MbgProvinceData> = {};
   nationalData?.provinces.forEach(p => { provinceMap[p.provinceId] = p; });
-
-  // Only show markers for provinces that have MBG package data
   const provincesWithData = PROVINCES.filter(p => (provinceMap[p.id]?.packages.length ?? 0) > 0);
 
   if (!mounted) return <div className="h-screen" />;
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="space-y-4 md:space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
 
       {/* Stats Bar */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
         {[
           { label: 'Total Anggaran BGN', value: nationalData ? formatRupiah(nationalData.totalNasional) : '—', icon: TrendingUp, color: 'text-blue-600 bg-blue-50' },
-          { label: 'Total Paket Dianalisis', value: nationalData ? `${nationalData.bgnPackages.length} paket` : '—', icon: Package, color: 'text-emerald-600 bg-emerald-50' },
-          { label: 'Terindikasi Anomali', value: nationalData ? `${nationalData.totalAnomali} paket` : '—', icon: BadgeAlert, color: 'text-red-600 bg-red-50' },
-          { label: 'Provinsi Dengan Data', value: nationalData ? `${provincesWithData.length} provinsi` : '—', icon: ShieldAlert, color: 'text-amber-600 bg-amber-50' },
+          { label: 'Total Paket', value: nationalData ? `${nationalData.bgnPackages.length}` : '—', icon: Package, color: 'text-emerald-600 bg-emerald-50' },
+          { label: 'Terindikasi Anomali', value: nationalData ? `${nationalData.totalAnomali}` : '—', icon: BadgeAlert, color: 'text-red-600 bg-red-50' },
+          { label: 'Provinsi Dengan Data', value: nationalData ? `${provincesWithData.length}` : '—', icon: ShieldAlert, color: 'text-amber-600 bg-amber-50' },
         ].map((stat) => (
-          <div key={stat.label} className="floating-card p-4 flex items-center gap-4">
-            <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0', stat.color)}>
-              <stat.icon className="w-5 h-5" />
+          <div key={stat.label} className="floating-card p-3 md:p-4 flex items-center gap-3 md:gap-4">
+            <div className={cn('w-8 h-8 md:w-10 md:h-10 rounded-xl flex items-center justify-center flex-shrink-0', stat.color)}>
+              <stat.icon className="w-4 h-4 md:w-5 md:h-5" />
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">{stat.label}</p>
-              <p className="text-lg font-bold text-foreground">
+              <p className="text-[10px] text-muted-foreground leading-tight">{stat.label}</p>
+              <p className="text-base md:text-lg font-bold text-foreground">
                 {loading ? <Loader2 className="w-4 h-4 animate-spin inline" /> : stat.value}
               </p>
             </div>
@@ -193,8 +190,8 @@ export default function RiskMapPage() {
       </div>
 
       {/* Map + Detail Panel */}
-      <div className="flex flex-col xl:flex-row gap-6">
-        <div className="flex-1 relative h-[520px] glass rounded-3xl overflow-hidden border-white/40 shadow-2xl">
+      <div className="flex flex-col xl:flex-row gap-4 md:gap-6">
+        <div className="flex-1 relative h-[300px] md:h-[520px] glass rounded-3xl overflow-hidden border-white/40 shadow-2xl">
           {!MAPS_KEY ? (
             <div className="h-full flex flex-col items-center justify-center text-center p-8">
               <AlertTriangle className="w-10 h-10 text-amber-500 mb-4" />
@@ -202,7 +199,7 @@ export default function RiskMapPage() {
             </div>
           ) : (
             <APIProvider apiKey={MAPS_KEY}>
-              <Map defaultCenter={{ lat: -2.5489, lng: 118.0149 }} defaultZoom={5} mapId="PANTUIN_RISK_MAP" disableDefaultUI>
+              <Map defaultCenter={{ lat: -2.5489, lng: 118.0149 }} defaultZoom={4} mapId="PANTUIN_RISK_MAP" disableDefaultUI>
                 {provincesWithData.map((province) => {
                   const pd = provinceMap[province.id];
                   const colors = markerColor(pd.riskScore);
@@ -211,14 +208,13 @@ export default function RiskMapPage() {
                     <AdvancedMarker key={province.id} position={province.coordinates} onClick={() => setSelectedProvince(pd)}>
                       <div
                         className={cn(
-                          'relative flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-300 cursor-pointer',
+                          'relative flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full border-2 transition-all duration-300 cursor-pointer',
                           isSelected ? 'scale-125 z-10' : 'hover:scale-110'
                         )}
                         style={{ backgroundColor: colors.bg, borderColor: colors.ring }}
-                        title={province.name}
                       >
                         <div className="absolute inset-0 rounded-full animate-ping opacity-30" style={{ backgroundColor: colors.bg }} />
-                        <span className="text-[9px] font-bold text-white relative z-10">{pd.riskScore}</span>
+                        <span className="text-[8px] md:text-[9px] font-bold text-white relative z-10">{pd.riskScore}</span>
                       </div>
                     </AdvancedMarker>
                   );
@@ -226,16 +222,14 @@ export default function RiskMapPage() {
               </Map>
             </APIProvider>
           )}
-
-          {/* Legend */}
-          <div className="absolute bottom-4 left-4 glass rounded-xl p-3 text-[10px] space-y-1">
+          <div className="absolute bottom-3 left-3 glass rounded-xl p-2 md:p-3 text-[10px] space-y-1">
             {[
               { color: '#EF4444', label: 'Kritis (≥70)' },
               { color: '#F97316', label: 'Tinggi (40-69)' },
               { color: '#EAB308', label: 'Sedang (<40)' },
             ].map(l => (
-              <div key={l.label} className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: l.color }} />
+              <div key={l.label} className="flex items-center gap-1.5 md:gap-2">
+                <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: l.color }} />
                 <span className="text-muted-foreground">{l.label}</span>
               </div>
             ))}
@@ -248,21 +242,19 @@ export default function RiskMapPage() {
             {selectedProvince ? (
               <motion.div
                 key={selectedProvince.provinceId}
-                initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}
-                className="glass rounded-3xl p-6 h-full max-h-[520px] overflow-y-auto relative"
+                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}
+                className="glass rounded-3xl p-4 md:p-6 max-h-[400px] md:max-h-[520px] overflow-y-auto relative"
               >
                 <button onClick={() => setSelectedProvince(null)} className="absolute top-4 right-4 text-muted-foreground hover:text-foreground">
                   <X className="w-4 h-4" />
                 </button>
-
-                <div className="mb-4">
-                  <h3 className="text-lg font-bold text-foreground">{selectedProvince.provinceName}</h3>
+                <div className="mb-3 md:mb-4">
+                  <h3 className="text-base md:text-lg font-bold text-foreground">{selectedProvince.provinceName}</h3>
                   <p className="text-xs text-muted-foreground">Data Pengadaan MBG</p>
                 </div>
-
                 {selectedProvince.packages.length > 0 ? (
                   <>
-                    <div className="grid grid-cols-3 gap-2 mb-4">
+                    <div className="grid grid-cols-3 gap-2 mb-3 md:mb-4">
                       {[
                         { label: 'Paket', value: selectedProvince.packages.length },
                         { label: 'Anomali', value: selectedProvince.anomalyCount },
@@ -270,20 +262,18 @@ export default function RiskMapPage() {
                       ].map(s => (
                         <div key={s.label} className="bg-white/50 rounded-xl p-2 text-center border border-white/80">
                           <p className="text-[10px] text-muted-foreground">{s.label}</p>
-                          <p className={cn('text-base font-bold', s.label === 'Anomali' && s.value > 0 ? 'text-red-600' : 'text-foreground')}>{s.value}</p>
+                          <p className={cn('text-sm md:text-base font-bold', s.label === 'Anomali' && s.value > 0 ? 'text-red-600' : 'text-foreground')}>{s.value}</p>
                         </div>
                       ))}
                     </div>
-                    <div className="mb-4">
+                    <div className="mb-3 md:mb-4">
                       <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Total Anggaran</p>
-                      <p className="text-xl font-bold text-foreground">{formatRupiah(selectedProvince.totalAnggaran)}</p>
+                      <p className="text-lg md:text-xl font-bold text-foreground">{formatRupiah(selectedProvince.totalAnggaran)}</p>
                     </div>
                     <div className="space-y-2">
                       <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Paket Pengadaan</p>
                       {selectedProvince.packages.map(pkg => (
-                        <button
-                          key={pkg.id}
-                          onClick={() => setSelectedPackage(pkg)}
+                        <button key={pkg.id} onClick={() => setSelectedPackage(pkg)}
                           className="w-full p-3 bg-white/40 rounded-xl border border-white/60 space-y-1 text-left hover:bg-white/70 transition-colors"
                         >
                           <p className="text-xs font-medium text-foreground leading-tight">{pkg.namaPaket}</p>
@@ -291,9 +281,6 @@ export default function RiskMapPage() {
                             <span className="text-[10px] text-muted-foreground">{formatRupiah(pkg.paguAnggaran)}</span>
                             <AnomalyBadge score={pkg.anomalyScore} />
                           </div>
-                          {pkg.anomalyReason && pkg.anomalyScore >= 40 && (
-                            <p className="text-[10px] text-orange-600 italic line-clamp-2">{pkg.anomalyReason}</p>
-                          )}
                         </button>
                       ))}
                     </div>
@@ -308,15 +295,13 @@ export default function RiskMapPage() {
             ) : (
               <motion.div
                 key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                className="glass rounded-3xl p-6 h-full max-h-[520px] flex flex-col items-center justify-center text-center"
+                className="glass rounded-3xl p-6 flex flex-col items-center justify-center text-center h-40 md:h-64"
               >
-                <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mb-4">
-                  <Building2 className="w-7 h-7 text-primary" />
+                <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center mb-3">
+                  <Building2 className="w-6 h-6 text-primary" />
                 </div>
-                <h3 className="font-bold text-foreground mb-1">Pilih Provinsi</h3>
-                <p className="text-xs text-muted-foreground max-w-[200px]">
-                  Klik marker di peta untuk melihat detail pengadaan MBG dan analisis anomali
-                </p>
+                <h3 className="font-bold text-foreground mb-1 text-sm">Pilih Provinsi</h3>
+                <p className="text-xs text-muted-foreground max-w-[200px]">Klik marker di peta untuk melihat detail</p>
               </motion.div>
             )}
           </AnimatePresence>
@@ -324,13 +309,13 @@ export default function RiskMapPage() {
       </div>
 
       {/* Anomali Table */}
-      <div className="floating-card p-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
+      <div className="floating-card p-4 md:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 md:gap-4 mb-4 md:mb-5">
           <div>
-            <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Daftar Paket Mencurigakan</h3>
-            <p className="text-xs text-muted-foreground mt-0.5">Data dari Badan Gizi Nasional — dianalisis oleh AI</p>
+            <h3 className="text-[10px] md:text-sm font-bold uppercase tracking-widest text-muted-foreground">Daftar Paket Mencurigakan</h3>
+            <p className="text-[10px] md:text-xs text-muted-foreground mt-0.5">Data Badan Gizi Nasional — dianalisis oleh AI</p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <div className="relative">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
               <input
@@ -338,31 +323,31 @@ export default function RiskMapPage() {
                 placeholder="Cari paket..."
                 value={tableSearch}
                 onChange={e => setTableSearch(e.target.value)}
-                className="pl-8 pr-3 py-1.5 text-xs border border-border rounded-lg bg-white/50 focus:outline-none focus:ring-1 focus:ring-primary w-48"
+                className="pl-8 pr-3 py-1.5 text-xs border border-border rounded-lg bg-white/50 focus:outline-none focus:ring-1 focus:ring-primary w-36 md:w-48"
               />
             </div>
             <button
               onClick={() => setTableSortBy(s => s === 'score' ? 'value' : 'score')}
-              className="flex items-center gap-1 text-xs px-3 py-1.5 border border-border rounded-lg bg-white/50 hover:bg-white/80 transition-colors"
+              className="flex items-center gap-1 text-xs px-2.5 md:px-3 py-1.5 border border-border rounded-lg bg-white/50 hover:bg-white/80 transition-colors"
             >
               {tableSortBy === 'score' ? 'Anomali' : 'Nilai'}
               {tableSortBy === 'score' ? <ChevronDown className="w-3 h-3" /> : <ChevronUp className="w-3 h-3" />}
             </button>
-            <button onClick={loadNational} className="p-1.5 border border-border rounded-lg bg-white/50 hover:bg-white/80 transition-colors" title="Refresh">
+            <button onClick={loadNational} className="p-1.5 border border-border rounded-lg bg-white/50 hover:bg-white/80 transition-colors">
               <RefreshCw className={cn('w-3.5 h-3.5', loading && 'animate-spin')} />
             </button>
           </div>
         </div>
 
         {error && (
-          <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-xl mb-4 text-sm text-red-700">
+          <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-xl mb-4 text-xs md:text-sm text-red-700">
             <AlertTriangle className="w-4 h-4 flex-shrink-0" />
             {error}
           </div>
         )}
 
         <div className="overflow-x-auto">
-          <table className="w-full text-xs">
+          <table className="w-full text-xs min-w-[500px]">
             <thead>
               <tr className="border-b border-border/50">
                 <th className="text-left pb-2 font-semibold text-muted-foreground w-8">#</th>
@@ -402,7 +387,7 @@ export default function RiskMapPage() {
                     )}
                   >
                     <td className="py-2.5 pr-2 text-muted-foreground">{(page - 1) * PAGE_SIZE + i + 1}</td>
-                    <td className="py-2.5 pr-4 max-w-[220px]">
+                    <td className="py-2.5 pr-4 max-w-[160px] md:max-w-[220px]">
                       <p className="font-medium text-foreground truncate">{pkg.namaPaket}</p>
                       {pkg.anomalyFlags.length > 0 && (
                         <div className="flex gap-1 mt-0.5 flex-wrap">
@@ -417,13 +402,9 @@ export default function RiskMapPage() {
                     <td className="py-2.5 pr-4 text-muted-foreground hidden sm:table-cell max-w-[100px] truncate">{pkg.metodePengadaan}</td>
                     <td className="py-2.5 pr-2 text-center"><AnomalyBadge score={pkg.anomalyScore} /></td>
                     <td className="py-2.5">
-                      <a
-                        href={pkg.detailUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <a href={pkg.detailUrl} target="_blank" rel="noopener noreferrer"
                         onClick={e => e.stopPropagation()}
                         className="text-primary hover:text-primary/70 flex items-center justify-center"
-                        title="Lihat di INAPROC"
                       >
                         <ArrowUpRight className="w-3.5 h-3.5" />
                       </a>
@@ -435,40 +416,28 @@ export default function RiskMapPage() {
           </table>
         </div>
 
-        {/* Pagination */}
         {!loading && filteredPackages.length > PAGE_SIZE && (
-          <div className="flex items-center justify-between mt-4 pt-4 border-t border-border/30">
+          <div className="flex items-center justify-between mt-4 pt-4 border-t border-border/30 flex-wrap gap-2">
             <p className="text-xs text-muted-foreground">
-              {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, filteredPackages.length)} dari {filteredPackages.length} paket
+              {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, filteredPackages.length)} dari {filteredPackages.length}
             </p>
             <div className="flex items-center gap-1">
-              <button
-                onClick={() => setPage(p => Math.max(1, p - 1))}
-                disabled={page === 1}
-                className="p-1.5 rounded-lg border border-border/50 disabled:opacity-30 hover:bg-muted/30 transition-colors"
-              >
+              <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
+                className="p-1.5 rounded-lg border border-border/50 disabled:opacity-30 hover:bg-muted/30 transition-colors">
                 <ChevronLeft className="w-3.5 h-3.5" />
               </button>
-              {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
-                const p = totalPages <= 7 ? i + 1 : page <= 4 ? i + 1 : page >= totalPages - 3 ? totalPages - 6 + i : page - 3 + i;
+              {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+                const p = totalPages <= 5 ? i + 1 : page <= 3 ? i + 1 : page >= totalPages - 2 ? totalPages - 4 + i : page - 2 + i;
                 return (
-                  <button
-                    key={p}
-                    onClick={() => setPage(p)}
-                    className={cn(
-                      'w-7 h-7 rounded-lg text-xs font-medium transition-colors',
-                      page === p ? 'bg-foreground text-white' : 'hover:bg-muted/30 text-muted-foreground'
-                    )}
-                  >
+                  <button key={p} onClick={() => setPage(p)}
+                    className={cn('w-7 h-7 rounded-lg text-xs font-medium transition-colors',
+                      page === p ? 'bg-foreground text-white' : 'hover:bg-muted/30 text-muted-foreground')}>
                     {p}
                   </button>
                 );
               })}
-              <button
-                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                disabled={page === totalPages}
-                className="p-1.5 rounded-lg border border-border/50 disabled:opacity-30 hover:bg-muted/30 transition-colors"
-              >
+              <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}
+                className="p-1.5 rounded-lg border border-border/50 disabled:opacity-30 hover:bg-muted/30 transition-colors">
                 <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -476,11 +445,8 @@ export default function RiskMapPage() {
         )}
       </div>
 
-      {/* Package Detail Modal */}
       <AnimatePresence>
-        {selectedPackage && (
-          <PackageModal pkg={selectedPackage} onClose={() => setSelectedPackage(null)} />
-        )}
+        {selectedPackage && <PackageModal pkg={selectedPackage} onClose={() => setSelectedPackage(null)} />}
       </AnimatePresence>
     </div>
   );
