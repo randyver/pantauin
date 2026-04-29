@@ -9,7 +9,7 @@ import {
   Map, 
   Signal, 
   Search, 
-  BellRing, 
+  Megaphone, 
   ShieldAlert,
   ChevronRight
 } from 'lucide-react';
@@ -19,7 +19,7 @@ const menuItems = [
   { icon: LayoutDashboard, label: 'Overview', href: '/dashboard' },
   { icon: Map, label: 'Peta Risiko', href: '/dashboard/risk-map' },
   { icon: Signal, label: 'Pantau Insiden', href: '/dashboard/pantau' },
-  { icon: BellRing, label: 'Pusat Alert', href: '/dashboard/alerts' },
+  { icon: Megaphone, label: 'Laporin', href: '/dashboard/laporin' },
 ];
 
 export function Sidebar() {
