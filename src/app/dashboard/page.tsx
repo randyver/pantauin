@@ -11,7 +11,7 @@ import {
   AreaChart, Area, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
 } from 'recharts';
-import { statsOverview, recentIncidents, alerts, socialSignals } from '@/lib/dummy-data';
+import { recentIncidents, alerts, socialSignals } from '@/lib/dummy-data';
 import { cn } from '@/lib/utils';
 import { useSearch } from '@/lib/search-context';
 

@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import {
-  Signal, Send, Camera, Globe, ExternalLink, ThumbsUp, MessageCircle,
+  Signal, ExternalLink, ThumbsUp, MessageCircle,
 } from 'lucide-react';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -13,17 +13,55 @@ import { cn } from '@/lib/utils';
 import { allSocialPosts, criticalPosts, type SocialPost, type Source } from '@/lib/sosmed-dummy-data';
 import { useSearch } from '@/lib/search-context';
 
+// ── Platform SVG icons ───────────────────────────────────────────────────────
+
+function IconX({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.259 5.63 5.905-5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  );
+}
+
+function IconInstagram({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+    </svg>
+  );
+}
+
+function IconTiktok({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.17 8.17 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z" />
+    </svg>
+  );
+}
+
+
+
+// ── Source → icon, style, label ─────────────────────────────────────────────
+
 function SourceIcon({ source }: { source: Source }) {
-  if (source === 'telegram') return <Send className="w-4 h-4" />;
-  if (source === 'instagram') return <Camera className="w-4 h-4" />;
-  return <Globe className="w-4 h-4" />;
+  if (source === 'instagram') return <IconInstagram className="w-4 h-4" />;
+  if (source === 'tiktok')    return <IconTiktok className="w-4 h-4" />;
+  return <IconX className="w-4 h-4" />;           // 'web' → X/Twitter
 }
 
 function iconBgClass(source: Source) {
-  if (source === 'telegram') return 'bg-sky-100 text-sky-600';
-  if (source === 'instagram') return 'bg-pink-100 text-pink-600';
-  return 'bg-blue-100 text-blue-600';
+  if (source === 'instagram') return 'bg-gradient-to-br from-pink-500 to-orange-400 text-white';
+  if (source === 'tiktok')    return 'bg-black text-white';
+  return 'bg-black text-white';                   // 'web' → X
 }
+
+function sourceLabel(source: Source) {
+  if (source === 'instagram') return 'Instagram';
+  if (source === 'tiktok')    return 'TikTok';
+  return 'X / Twitter';
+}
+
+// ── Feed Card ────────────────────────────────────────────────────────────────
 
 function FeedCard({ post, index }: { post: SocialPost; index: number }) {
   return (
@@ -35,11 +73,19 @@ function FeedCard({ post, index }: { post: SocialPost; index: number }) {
     >
       <div className="flex items-center justify-between mb-3 md:mb-4">
         <div className="flex items-center gap-2">
-          <div className={cn('w-7 h-7 md:w-8 md:h-8 rounded-lg flex items-center justify-center flex-shrink-0', iconBgClass(post.source))}>
+          <div className={cn(
+            'w-7 h-7 md:w-8 md:h-8 rounded-lg flex items-center justify-center flex-shrink-0',
+            iconBgClass(post.source)
+          )}>
             <SourceIcon source={post.source} />
           </div>
           <div>
-            <p className="text-xs font-bold text-foreground">{post.username}</p>
+            <div className="flex items-center gap-1.5">
+              <p className="text-xs font-bold text-foreground">{post.username}</p>
+              <span className="text-[9px] px-1 py-0.5 rounded bg-muted/60 text-muted-foreground font-medium leading-none">
+                {sourceLabel(post.source)}
+              </span>
+            </div>
             <p className="text-[10px] text-muted-foreground">{post.timeAgo} • {post.location}</p>
           </div>
         </div>
@@ -48,7 +94,7 @@ function FeedCard({ post, index }: { post: SocialPost; index: number }) {
           'px-2 py-0.5 rounded text-[10px] font-bold flex-shrink-0',
           post.sentiment === 'negative' && 'bg-red-100 text-red-600',
           post.sentiment === 'positive' && 'bg-green-100 text-green-600',
-          post.sentiment === 'neutral' && 'bg-gray-100 text-gray-600',
+          post.sentiment === 'neutral'  && 'bg-gray-100 text-gray-600',
         )}>
           {post.sentiment === 'negative' ? 'KRITIS' :
            post.sentiment === 'positive' ? 'POSITIF' : 'NETRAL'}
@@ -78,6 +124,8 @@ function FeedCard({ post, index }: { post: SocialPost; index: number }) {
     </motion.div>
   );
 }
+
+// ── Page ─────────────────────────────────────────────────────────────────────
 
 export default function SocialSignalPage() {
   const [mounted, setMounted] = React.useState(false);
@@ -220,7 +268,7 @@ export default function SocialSignalPage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
             {displayedPosts.map((post, i) => (
-              <FeedCard key={post.id} post={post} index={i} />
+              <FeedCard key={`${post.id}-${post.platform}`} post={post} index={i} />
             ))}
           </div>
         )}
