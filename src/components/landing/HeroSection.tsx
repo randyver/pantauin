@@ -68,8 +68,12 @@ export default function HeroSection() {
       <div className="relative w-full px-6 lg:px-[136px] pt-[47px] flex justify-between items-center z-50">
         {/* Left: Logo */}
         <div className="flex items-center gap-3 min-w-[150px]">
-          <div className="w-[18px] h-[18px] bg-[#FF4B3A] rounded-full"></div>
-          <div className="text-[#333333] text-[20px] font-extrabold capitalize">Pantauin</div>
+          <img 
+            className="w-[40px] h-[40px] md:w-[48px] md:h-[48px]" 
+            src="/logo/logo_pantauin.png" 
+            alt="Logo Pantauin" 
+          />
+          <div className="text-[#333333] text-[20px] font-extrabold capitalize hidden md:block">Pantauin</div>
         </div>
         
         {/* Center: Navigation Links */}

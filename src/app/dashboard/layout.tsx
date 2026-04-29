@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Sidebar } from '@/components/dashboard/Sidebar';
-import { Menu, Search, Bell, X } from 'lucide-react';
+import { Menu, Search, X } from 'lucide-react';
 import { SearchProvider, useSearch } from '@/lib/search-context';
 
 function LayoutInner({ children }: { children: React.ReactNode }) {

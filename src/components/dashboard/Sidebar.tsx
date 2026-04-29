@@ -29,13 +29,13 @@ export function Sidebar() {
     <aside className="fixed left-6 top-6 bottom-6 w-64 z-50">
       <div className="h-full glass rounded-3xl flex flex-col overflow-hidden border-white/40 shadow-2xl">
         <div className="p-8">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
-              <ShieldAlert className="text-white w-6 h-6" />
-            </div>
-            <span className="font-bold text-xl tracking-tight text-foreground">
-              Pantauin<span className="text-primary">MBG</span>
-            </span>
+            <div className="flex items-center gap-3 mb-8">
+              <img 
+                className="w-[40px] h-[40px] md:w-[48px] md:h-[48px]" 
+                src="/logo/logo_pantauin.png" 
+                alt="Logo Pantauin" 
+              />
+            <div className="text-[#333333] text-[20px] font-extrabold capitalize hidden md:block">Pantauin</div>
           </div>
 
           <nav className="space-y-2">
