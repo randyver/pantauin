@@ -16,7 +16,7 @@ import {
 import { cn } from '@/lib/utils';
 
 const menuItems = [
-  { icon: LayoutDashboard, label: 'Ringkasan', href: '/dashboard' },
+  { icon: LayoutDashboard, label: 'Overview', href: '/dashboard' },
   { icon: Map, label: 'Peta Risiko', href: '/dashboard/risk-map' },
   { icon: Signal, label: 'Pantau Insiden', href: '/dashboard/pantau' },
   { icon: BellRing, label: 'Pusat Alert', href: '/dashboard/alerts' },
