@@ -178,6 +178,14 @@ export const socialSignals = {
   ],
 };
 
+// Sparkline mini data for stat cards (7-day trends)
+export const sparklineData = {
+  incidents:    [12, 15, 11, 18, 14, 10, 8],
+  highRisk:     [8, 9, 10, 10, 11, 11, 12],
+  schools:      [14200, 14500, 14800, 15000, 15050, 15120, 15240],
+  vendors:      [1720, 1750, 1780, 1800, 1810, 1830, 1842],
+};
+
 export const alerts = [
   {
     id: 'alt-001',
