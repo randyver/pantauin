@@ -3,22 +3,21 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import {
-  Signal, ExternalLink, ThumbsUp, MessageCircle,
+  ExternalLink, ThumbsUp, MessageCircle, Newspaper,
 } from 'lucide-react';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from 'recharts';
 import { socialSignals } from '@/lib/dummy-data';
 import { cn } from '@/lib/utils';
-import { allSocialPosts, criticalPosts, type SocialPost, type Source } from '@/lib/sosmed-dummy-data';
+import { allSocialPosts, type SocialPost, type Source } from '@/lib/sosmed-dummy-data';
 import { useSearch } from '@/lib/search-context';
 
-// ── Platform SVG icons ───────────────────────────────────────────────────────
 
 function IconX({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.259 5.63 5.905-5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.261 5.635 5.903-5.635Zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
     </svg>
   );
 }
@@ -34,89 +33,99 @@ function IconInstagram({ className }: { className?: string }) {
 function IconTiktok({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.17 8.17 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z" />
+      <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V9.15a8.28 8.28 0 004.84 1.55V7.25a4.85 4.85 0 01-1.07-.56z" />
     </svg>
   );
 }
 
 
-
-// ── Source → icon, style, label ─────────────────────────────────────────────
-
-function SourceIcon({ source }: { source: Source }) {
-  if (source === 'instagram') return <IconInstagram className="w-4 h-4" />;
-  if (source === 'tiktok')    return <IconTiktok className="w-4 h-4" />;
-  return <IconX className="w-4 h-4" />;           // 'web' → X/Twitter
+function SourceIcon({ source, className }: { source: Source; className?: string }) {
+  if (source === 'instagram') return <IconInstagram className={className} />;
+  if (source === 'tiktok')    return <IconTiktok className={className} />;
+  if (source === 'news')      return <Newspaper className={className} />;
+  return <IconX className={className} />;
 }
 
 function iconBgClass(source: Source) {
   if (source === 'instagram') return 'bg-gradient-to-br from-pink-500 to-orange-400 text-white';
   if (source === 'tiktok')    return 'bg-black text-white';
-  return 'bg-black text-white';                   // 'web' → X
+  if (source === 'news')      return 'bg-blue-600 text-white';
+  return 'bg-black text-white';
 }
 
 function sourceLabel(source: Source) {
   if (source === 'instagram') return 'Instagram';
   if (source === 'tiktok')    return 'TikTok';
+  if (source === 'news')      return 'News';
   return 'X / Twitter';
 }
+
+type FilterSource = 'all' | Source;
+
+const FILTERS: { value: FilterSource; label: string }[] = [
+  { value: 'all',       label: 'Semua' },
+  { value: 'web',       label: 'X / Twitter' },
+  { value: 'instagram', label: 'Instagram' },
+  { value: 'tiktok',   label: 'TikTok' },
+  { value: 'news',     label: 'News' },
+];
 
 // ── Feed Card ────────────────────────────────────────────────────────────────
 
 function FeedCard({ post, index }: { post: SocialPost; index: number }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.08 }}
-      className="floating-card p-4 md:p-5 group"
+      transition={{ delay: index * 0.04 }}
+      className="glass rounded-2xl p-4 md:p-5 space-y-3 hover:ring-1 hover:ring-primary/20 transition-all"
     >
-      <div className="flex items-center justify-between mb-3 md:mb-4">
-        <div className="flex items-center gap-2">
-          <div className={cn(
-            'w-7 h-7 md:w-8 md:h-8 rounded-lg flex items-center justify-center flex-shrink-0',
-            iconBgClass(post.source)
-          )}>
-            <SourceIcon source={post.source} />
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className={cn('w-9 h-9 shrink-0 rounded-xl flex items-center justify-center', iconBgClass(post.source))}>
+            <SourceIcon source={post.source} className="w-4 h-4" />
           </div>
-          <div>
-            <div className="flex items-center gap-1.5">
-              <p className="text-xs font-bold text-foreground">{post.username}</p>
-              <span className="text-[9px] px-1 py-0.5 rounded bg-muted/60 text-muted-foreground font-medium leading-none">
+
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="text-sm font-semibold truncate">{post.username}</span>
+              <span className="text-[10px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded-full shrink-0">
                 {sourceLabel(post.source)}
               </span>
             </div>
-            <p className="text-[10px] text-muted-foreground">{post.timeAgo} • {post.location}</p>
+            <p className="text-[11px] text-muted-foreground">{post.timeAgo} • {post.location}</p>
           </div>
         </div>
 
-        <div className={cn(
-          'px-2 py-0.5 rounded text-[10px] font-bold flex-shrink-0',
-          post.sentiment === 'negative' && 'bg-red-100 text-red-600',
-          post.sentiment === 'positive' && 'bg-green-100 text-green-600',
-          post.sentiment === 'neutral'  && 'bg-gray-100 text-gray-600',
+        <span className={cn(
+          'shrink-0 text-[9px] font-black px-2 py-1 rounded-lg uppercase tracking-wider',
+          post.sentiment === 'negative' ? 'bg-red-500/15 text-red-500' :
+          post.sentiment === 'positive' ? 'bg-green-500/15 text-green-500' :
+          'bg-yellow-500/15 text-yellow-600',
         )}>
           {post.sentiment === 'negative' ? 'KRITIS' :
            post.sentiment === 'positive' ? 'POSITIF' : 'NETRAL'}
-        </div>
+        </span>
       </div>
 
-      <p className="text-xs md:text-sm text-foreground leading-relaxed mb-3 md:mb-4">{post.content}</p>
+      <p className="text-sm leading-relaxed">{post.content}</p>
 
-      <div className="flex items-center justify-between pt-3 border-t border-border/50">
-        <div className="flex gap-3 md:gap-4">
-          <div className="flex items-center gap-1.5 text-muted-foreground text-[10px] font-bold">
-            <ThumbsUp className="w-3 h-3" /> {post.likes.toLocaleString('id-ID')}
-          </div>
-          <div className="flex items-center gap-1.5 text-muted-foreground text-[10px] font-bold">
-            <MessageCircle className="w-3 h-3" /> {post.comments.toLocaleString('id-ID')}
-          </div>
+      <div className="flex items-center justify-between pt-1">
+        <div className="flex items-center gap-4 text-muted-foreground text-xs">
+          <span className="flex items-center gap-1">
+            <ThumbsUp className="w-3.5 h-3.5" />
+            {post.likes.toLocaleString('id-ID')}
+          </span>
+          <span className="flex items-center gap-1">
+            <MessageCircle className="w-3.5 h-3.5" />
+            {post.comments.toLocaleString('id-ID')}
+          </span>
         </div>
         <a
           href={post.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-primary hover:bg-primary/5 p-1.5 rounded-lg transition-colors group-hover:scale-110 inline-flex"
+          className="text-muted-foreground hover:text-primary transition-colors"
         >
           <ExternalLink className="w-4 h-4" />
         </a>
@@ -129,13 +138,16 @@ function FeedCard({ post, index }: { post: SocialPost; index: number }) {
 
 export default function SocialSignalPage() {
   const [mounted, setMounted] = React.useState(false);
-  const [filter, setFilter] = React.useState<'all' | 'critical'>('all');
+  const [filter, setFilter] = React.useState<FilterSource>('all');
   const { value: searchTerm } = useSearch();
 
   React.useEffect(() => setMounted(true), []);
-  if (!mounted) return <div className="h-screen" />;
+  if (!mounted) return <div />;
 
-  const basePosts = filter === 'critical' ? criticalPosts : allSocialPosts;
+  const basePosts = filter === 'all'
+    ? allSocialPosts
+    : allSocialPosts.filter(p => p.source === filter);
+
   const displayedPosts = basePosts.filter(post =>
     !searchTerm ||
     post.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -151,7 +163,7 @@ export default function SocialSignalPage() {
         <div className="lg:col-span-2 floating-card p-4 md:p-6">
           <div className="flex items-center justify-between mb-5 md:mb-8">
             <div>
-              <h3 className="text-base md:text-lg font-bold text-foreground">Tren Denyut Sosial</h3>
+              <h3 className="text-base md:text-lg font-bold text-foreground">Tren Sosial</h3>
               <p className="text-xs md:text-sm text-muted-foreground">Distribusi volume dan sentimen</p>
             </div>
             <div className="flex gap-2 md:gap-4">
@@ -229,35 +241,49 @@ export default function SocialSignalPage() {
       </div>
 
       {/* Live Feed */}
-      <div className="space-y-4 md:space-y-6">
-        <div className="flex items-center justify-between">
+      <div className="space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h3 className="text-[10px] md:text-sm font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-              <Signal className="w-3.5 h-3.5 md:w-4 md:h-4 text-primary animate-pulse" /> Feed Intelijen
-            </h3>
+            <h2 className="font-bold text-base flex items-center gap-2">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500" />
+              </span>
+              Feed Intelijen
+            </h2>
             {searchTerm && (
-              <p className="text-[10px] text-primary font-semibold mt-0.5">Filter: "{searchTerm}" — {displayedPosts.length} hasil</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Filter: "{searchTerm}" — {displayedPosts.length} hasil
+              </p>
             )}
           </div>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setFilter('all')}
-              className={cn(
-                'px-3 md:px-4 py-1.5 rounded-xl text-[10px] font-bold uppercase transition-colors',
-                filter === 'all' ? 'bg-foreground text-white' : 'glass hover:bg-primary/5',
-              )}
-            >
-              Semua
-            </button>
-            <button
-              onClick={() => setFilter('critical')}
-              className={cn(
-                'px-3 md:px-4 py-1.5 rounded-xl text-[10px] font-bold uppercase transition-colors',
-                filter === 'critical' ? 'bg-foreground text-white' : 'glass hover:bg-primary/5',
-              )}
-            >
-              Kritis
-            </button>
+
+          <div className="flex items-center gap-1.5 flex-wrap">
+            {FILTERS.map(({ value, label }) => {
+              const isActive = filter === value;
+              return (
+                <button
+                  key={value}
+                  onClick={() => setFilter(value)}
+                  className={cn(
+                    'flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-colors',
+                    isActive ? 'bg-foreground text-background' : 'glass hover:bg-primary/5',
+                  )}
+                >
+                  {value !== 'all' && (
+                    <span className={cn(
+                      'w-3.5 h-3.5 shrink-0',
+                      value === 'instagram' ? 'text-pink-500' :
+                      value === 'tiktok'    ? '' :
+                      value === 'news'      ? 'text-blue-500' : '',
+                    )}>
+                      <SourceIcon source={value as Source} className="w-3.5 h-3.5" />
+                    </span>
+                  )}
+                  {label}
+                </button>
+              );
+            })}
           </div>
         </div>
 

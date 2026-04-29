@@ -67,12 +67,6 @@ function LayoutInner({ children }: { children: React.ReactNode }) {
               </button>
             )}
           </div>
-
-          <button className="relative w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors text-gray-600 flex-shrink-0">
-            <Bell className="w-4 h-4" />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full" />
-          </button>
-
         </div>
       </div>
 

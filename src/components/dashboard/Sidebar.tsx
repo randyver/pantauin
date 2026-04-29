@@ -19,7 +19,6 @@ const menuItems = [
   { icon: LayoutDashboard, label: 'Ringkasan', href: '/dashboard' },
   { icon: Map, label: 'Peta Risiko', href: '/dashboard/risk-map' },
   { icon: Signal, label: 'Sinyal Sosial', href: '/dashboard/social' },
-  { icon: Search, label: 'Eksplorasi Insiden', href: '/dashboard/incidents' },
   { icon: BellRing, label: 'Pusat Alert', href: '/dashboard/alerts' },
 ];
 
