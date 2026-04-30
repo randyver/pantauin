@@ -12,11 +12,11 @@
 
 ## Features
 
-- **Overview** — current situation summary
-- **Risk Map** — geographic risk visualization by region
-- **Pantau Insiden** — live feed from Twitter/X, Instagram, TikTok, and news
-- **Kawalin** — real-time SPPG CCTV monitoring by region
-- **Laporin** — public incident reporting
+- **Overview** — high-level dashboard summarizing active incidents, risk levels, and sentiment trends across regions
+- **Risk Map** — interactive map for visualizing MBG procurement anomalies and MBG-related incidents (food poisoning, portion issues, distribution failures) by region
+- **Pantau Insiden** — AI-powered live feed that crawls and analyzes signals from Twitter/X, Instagram, TikTok, and news outlets, with automated sentiment scoring and entity extraction
+- **Kawalin** — real-time SPPG CCTV monitoring grid by province and region, sourced from local government streams
+- **Laporin** — public incident reporting channel for citizens to submit MBG-related complaints directly
 
 ## Tech Stack
 
