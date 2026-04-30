@@ -3,11 +3,6 @@ import { Bell, LayoutDashboard, Map as MapIcon, ShieldAlert, Camera } from "luci
 export default function FeaturesSection() {
   const cards = [
     {
-      icon: <Bell size={44} />,
-      title: "Early warning system",
-      desc: "Alert otomatis saat lonjakan isu MBG terdeteksi keracunan, porsi, harga, atau distribusi di wilayah, vendor, atau sekolah tertentu.",
-    },
-    {
       icon: <LayoutDashboard size={44} />,
       title: "Pantau Insiden",
       desc: "Visualisasi mention, sentimen publik, dan trending keyword di sosial media dan berita seputar MBG secara real-time.",
