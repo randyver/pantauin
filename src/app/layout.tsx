@@ -30,10 +30,8 @@ export const metadata: Metadata = {
     siteName: "Pantauin",
     images: [
       {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Pantauin MBG Dashboard Preview",
+        url: "/logo/logo_pantauin.png",
+        alt: "Pantauin",
       },
     ],
     locale: "id_ID",
@@ -43,7 +41,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Pantauin — Early Warning Isu MBG",
     description: "Deteksi sinyal awal berbagai isu MBG (keracunan, porsi, kualitas, harga, distribusi) dari Twitter, Instagram, TikTok, berita, dan laporan masyarakat — sebelum kasus meluas.",
-    images: ["/og-image.png"],
+    images: ["/logo/logo_pantauin.png"],
   },
   icons: {
     icon: "/favicon.ico",
