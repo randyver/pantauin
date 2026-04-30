@@ -4,7 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ExternalLink, ThumbsUp, MessageCircle, Newspaper,
-  Bot, Sparkles, BrainCircuit, Activity, AlertTriangle, Fingerprint, Zap, Radar
+  Bot, Sparkles, BrainCircuit, Activity, AlertTriangle, Zap, Radar,
+  ChevronLeft, ChevronRight,
 } from 'lucide-react';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -60,6 +61,43 @@ function sourceLabel(source: Source) {
   return 'X / Twitter';
 }
 
+const PAGE_SIZE = 9;
+
+const MONTHS_MAP: Record<string, number> = {
+  jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5,
+  jul: 6, aug: 7, sep: 8, sept: 8, oct: 9, nov: 10, dec: 11,
+};
+
+function parsePostDate(timeAgo: string): number {
+  const s = timeAgo.trim().toLowerCase();
+  const now = Date.now();
+
+  const jamMatch = s.match(/^(\d+)\s*jam/);
+  if (jamMatch) return now - parseInt(jamMatch[1]) * 3_600_000;
+
+  const hariMatch = s.match(/^(\d+)\s*hari/);
+  if (hariMatch) return now - parseInt(hariMatch[1]) * 86_400_000;
+
+  const datePart = s.includes('·') ? s.split('·')[1].trim() : s;
+  const parts = datePart.replace(/[,:]/g, ' ').split(/\s+/).filter(Boolean);
+
+  let day = 15;
+  let mon = 0;
+  let year = new Date().getFullYear();
+
+  for (const part of parts) {
+    const n = parseInt(part);
+    if (!isNaN(n) && part === String(n)) {
+      if (n > 31) year = n;
+      else if (n >= 1) day = n;
+    } else if (MONTHS_MAP[part] !== undefined) {
+      mon = MONTHS_MAP[part];
+    }
+  }
+
+  return new Date(year, mon, day).getTime();
+}
+
 type FilterSource = 'all' | Source;
 
 const FILTERS: { value: FilterSource; label: string }[] = [
@@ -82,12 +120,12 @@ function AISummary() {
       <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent opacity-70 animate-pulse" />
       <div className="absolute -right-20 -top-20 w-40 h-40 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
       
-      <div className="flex items-start gap-4 md:gap-5 relative z-10">
-        <div className="flex-shrink-0 p-3 rounded-xl bg-primary/10 border border-primary/20 relative">
+      <div className="flex flex-col sm:flex-row items-start gap-4 md:gap-5 relative z-10">
+        <div className="flex-shrink-0 p-3 rounded-xl bg-primary/10 border border-primary/20 relative self-start">
           <div className="absolute inset-0 bg-primary/20 rounded-xl animate-ping opacity-20" />
-          <BrainCircuit className="w-6 h-6 md:w-8 md:h-8 text-primary" />
+          <BrainCircuit className="w-6 h-6 text-primary" />
         </div>
-        <div className="flex-1 space-y-2.5">
+        <div className="flex-1 min-w-0 space-y-2.5">
           <div className="flex items-center gap-2 flex-wrap">
             <h3 className="text-base md:text-lg font-bold text-foreground flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-primary" />
@@ -98,23 +136,23 @@ function AISummary() {
               Live Feed Analysis
             </span>
           </div>
-          
-          <motion.div 
+
+          <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             transition={{ duration: 0.5 }}
-            className="flex gap-3 pt-2 overflow-x-auto pb-1 scrollbar-hide"
+            className="flex flex-wrap gap-2 pt-1"
           >
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-500 text-xs font-medium whitespace-nowrap">
-              <AlertTriangle className="w-3.5 h-3.5" />
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-red-500/10 border border-red-500/20 text-red-500 text-[11px] font-medium">
+              <AlertTriangle className="w-3 h-3 shrink-0" />
               High Risk Detected
             </div>
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-500 text-xs font-medium whitespace-nowrap">
-              <Bot className="w-3.5 h-3.5" />
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-blue-500/10 border border-blue-500/20 text-blue-500 text-[11px] font-medium">
+              <Bot className="w-3 h-3 shrink-0" />
               15 Bot Accounts Flagged
             </div>
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-green-500/10 border border-green-500/20 text-green-500 text-xs font-medium whitespace-nowrap">
-              <Zap className="w-3.5 h-3.5" />
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-green-500/10 border border-green-500/20 text-green-500 text-[11px] font-medium">
+              <Zap className="w-3 h-3 shrink-0" />
               Sentiment Stable (Last 2h)
             </div>
           </motion.div>
@@ -127,9 +165,6 @@ function AISummary() {
 // ── Feed Card ────────────────────────────────────────────────────────────────
 
 function FeedCard({ post, index }: { post: SocialPost; index: number }) {
-  // Generate fake AI score based on index and id
-  const fakeScore = Math.floor(Math.random() * 30) + 70; // 70-99
-  
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -173,26 +208,19 @@ function FeedCard({ post, index }: { post: SocialPost; index: number }) {
 
       <p className="text-sm leading-relaxed text-foreground/90 relative z-10 flex-grow">{post.content}</p>
 
-      {/* AI Metadata block */}
+      {/* Metadata block */}
       <div className="bg-muted/30 border border-border/50 rounded-xl p-3 flex items-center justify-between mt-auto">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5 text-xs font-mono text-muted-foreground" title="AI Confidence Score">
-            <Fingerprint className="w-3.5 h-3.5 text-primary/70" />
-            <span>Match: {fakeScore}%</span>
-          </div>
-          <div className="w-px h-3 bg-border" />
-          <div className="flex items-center gap-3 text-muted-foreground text-xs">
-            <span className="flex items-center gap-1 font-medium">
-              <ThumbsUp className="w-3.5 h-3.5" />
-              {post.likes > 1000 ? (post.likes/1000).toFixed(1) + 'k' : post.likes}
-            </span>
-            <span className="flex items-center gap-1 font-medium">
-              <MessageCircle className="w-3.5 h-3.5" />
-              {post.comments > 1000 ? (post.comments/1000).toFixed(1) + 'k' : post.comments}
-            </span>
-          </div>
+        <div className="flex items-center gap-3 text-muted-foreground text-xs">
+          <span className="flex items-center gap-1 font-medium">
+            <ThumbsUp className="w-3.5 h-3.5" />
+            {post.likes > 1000 ? (post.likes / 1000).toFixed(1) + 'k' : post.likes}
+          </span>
+          <span className="flex items-center gap-1 font-medium">
+            <MessageCircle className="w-3.5 h-3.5" />
+            {post.comments > 1000 ? (post.comments / 1000).toFixed(1) + 'k' : post.comments}
+          </span>
         </div>
-        
+
         <a
           href={post.url}
           target="_blank"
@@ -211,21 +239,25 @@ function FeedCard({ post, index }: { post: SocialPost; index: number }) {
 export default function SocialSignalPage() {
   const [mounted, setMounted] = React.useState(false);
   const [filter, setFilter] = React.useState<FilterSource>('all');
+  const [page, setPage] = React.useState(1);
   const { value: searchTerm } = useSearch();
 
   React.useEffect(() => setMounted(true), []);
+  React.useEffect(() => setPage(1), [filter, searchTerm]);
+
   if (!mounted) return <div />;
 
-  const basePosts = filter === 'all'
-    ? allSocialPosts
-    : allSocialPosts.filter(p => p.source === filter);
+  const basePosts = (filter === 'all' ? allSocialPosts : allSocialPosts.filter(p => p.source === filter))
+    .filter(post =>
+      !searchTerm ||
+      post.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      post.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      post.location.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => parsePostDate(b.timeAgo) - parsePostDate(a.timeAgo));
 
-  const displayedPosts = basePosts.filter(post =>
-    !searchTerm ||
-    post.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    post.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    post.location.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const totalPages = Math.max(1, Math.ceil(basePosts.length / PAGE_SIZE));
+  const displayedPosts = basePosts.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   return (
     <div className="sm:ml-4 space-y-6 md:space-y-8 animate-in fade-in duration-700 pb-12">
@@ -394,13 +426,54 @@ export default function SocialSignalPage() {
             <p className="text-sm text-muted-foreground max-w-sm mt-2">Sistem AI tidak menemukan post yang cocok dengan parameter pencarian Anda.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
-            <AnimatePresence>
-              {displayedPosts.map((post, i) => (
-                <FeedCard key={`${post.id}-${post.platform}`} post={post} index={i} />
-              ))}
-            </AnimatePresence>
-          </div>
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
+              <AnimatePresence>
+                {displayedPosts.map((post, i) => (
+                  <FeedCard key={`${post.id}-${post.platform}`} post={post} index={i} />
+                ))}
+              </AnimatePresence>
+            </div>
+
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between pt-4 border-t border-border/30">
+                <p className="text-xs text-muted-foreground">
+                  {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, basePosts.length)} dari {basePosts.length} post
+                </p>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => setPage(p => Math.max(1, p - 1))}
+                    disabled={page === 1}
+                    className="p-1.5 rounded-lg border border-border/50 disabled:opacity-30 hover:bg-muted/30 transition-colors"
+                  >
+                    <ChevronLeft className="w-3.5 h-3.5" />
+                  </button>
+                  {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
+                    const p = totalPages <= 7 ? i + 1 : page <= 4 ? i + 1 : page >= totalPages - 3 ? totalPages - 6 + i : page - 3 + i;
+                    return (
+                      <button
+                        key={p}
+                        onClick={() => setPage(p)}
+                        className={cn(
+                          'w-7 h-7 rounded-lg text-xs font-medium transition-colors',
+                          page === p ? 'bg-foreground text-white' : 'hover:bg-muted/30 text-muted-foreground'
+                        )}
+                      >
+                        {p}
+                      </button>
+                    );
+                  })}
+                  <button
+                    onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                    disabled={page === totalPages}
+                    className="p-1.5 rounded-lg border border-border/50 disabled:opacity-30 hover:bg-muted/30 transition-colors"
+                  >
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
