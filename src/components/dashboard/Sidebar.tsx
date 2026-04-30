@@ -4,14 +4,15 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { 
-  LayoutDashboard, 
-  Map, 
-  Signal, 
-  Search, 
-  Megaphone, 
+import {
+  LayoutDashboard,
+  Map,
+  Signal,
+  Search,
+  Megaphone,
   ShieldAlert,
-  ChevronRight
+  ChevronRight,
+  Video,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -19,6 +20,7 @@ const menuItems = [
   { icon: LayoutDashboard, label: 'Overview', href: '/dashboard' },
   { icon: Map, label: 'Peta Risiko', href: '/dashboard/risk-map' },
   { icon: Signal, label: 'Pantau Insiden', href: '/dashboard/pantau' },
+  { icon: Video, label: 'Kawalin', href: '/dashboard/kawalin' },
   { icon: Megaphone, label: 'Laporin', href: '/dashboard/laporin' },
 ];
 
