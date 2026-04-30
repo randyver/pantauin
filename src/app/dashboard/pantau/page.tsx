@@ -228,7 +228,7 @@ export default function SocialSignalPage() {
   );
 
   return (
-    <div className="space-y-6 md:space-y-8 animate-in fade-in duration-700 pb-12">
+    <div className="sm:ml-4 space-y-6 md:space-y-8 animate-in fade-in duration-700 pb-12">
 
       <AISummary />
 

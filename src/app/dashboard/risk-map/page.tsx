@@ -82,8 +82,6 @@ function AnomalyBadge({ score }: { score: number }) {
   );
 }
 
-
-
 function PackageModal({ pkg, onClose }: { pkg: RupPackageEnriched; onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4">
@@ -157,8 +155,6 @@ function PackageModal({ pkg, onClose }: { pkg: RupPackageEnriched; onClose: () =
   );
 }
 
-
-
 export default function RiskMapPage() {
   const [nationalData, setNationalData] = useState<MbgStaticData | null>(null);
   const [selectedProvince, setSelectedProvince] = useState<MbgProvinceData | null>(null);
@@ -170,8 +166,6 @@ export default function RiskMapPage() {
   const [page, setPage] = useState(1);
   const [mounted, setMounted] = useState(false);
 
-  // Gunakan search dari context (navbar) — juga sediakan input lokal di tabel
-  // agar bisa dipakai mandiri jika user ingin filter hanya di tabel ini
   const { value: globalSearch } = useSearch();
   const [localSearch, setLocalSearch] = useState('');
   const [provinceSortBy, setProvinceSortBy] = useState<'risk' | 'incident'>('risk');
@@ -244,17 +238,32 @@ export default function RiskMapPage() {
     }).filter(pr => pr.riskScore > 0 || pr.incidentCount > 0);
   }, [provincesWithData, provinceMap]);
 
+  // ✅ Filter provinsi berdasarkan globalSearch
+  const filteredProvinceRisks = useMemo(() => {
+    return provinceRisks.filter(pr =>
+      !globalSearch || pr.name.toLowerCase().includes(globalSearch.toLowerCase())
+    );
+  }, [provinceRisks, globalSearch]);
+
   const sortedProvinceRisks = useMemo(() => {
-    return [...provinceRisks].sort((a, b) => {
+    return [...filteredProvinceRisks].sort((a, b) => {
       if (provinceSortBy === 'risk') return b.riskScore - a.riskScore;
       return b.incidentCount - a.incidentCount;
     });
-  }, [provinceRisks, provinceSortBy]);
+  }, [filteredProvinceRisks, provinceSortBy]);
 
   if (!mounted) return <div className="h-screen" />;
 
   return (
     <div className="space-y-4 md:space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+
+      {/* ✅ Search feedback banner */}
+      {globalSearch && (
+        <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary/5 border border-primary/20 text-xs text-primary font-medium">
+          <Search className="w-3.5 h-3.5" />
+          Filter aktif: "{globalSearch}" — {filteredPackages.length} paket &amp; {sortedProvinceRisks.length} provinsi
+        </div>
+      )}
 
       {/* Stats Bar */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
@@ -278,10 +287,8 @@ export default function RiskMapPage() {
         ))}
       </div>
 
-      {/* Map + Detail Panel — mobile: panel dulu lalu map; desktop: map kiri panel kanan */}
+      {/* Map + Detail Panel */}
       <div className="flex flex-col xl:flex-row gap-4 md:gap-6">
-
-        {/* Map — di mobile tampil setelah panel (order-2), di desktop kiri (order-1) */}
         <div className="order-2 xl:order-1 xl:flex-1 relative h-[320px] sm:h-[420px] md:h-[500px] rounded-3xl overflow-hidden border-white/40 shadow-2xl">
           <LeafletMap 
             provinces={provincesWithData.map(p => ({ data: provinceMap[p.id], coords: p.coordinates }))}
@@ -292,7 +299,6 @@ export default function RiskMapPage() {
             onSelectIncident={(post) => { setSelectedIncident(post); setSelectedProvince(null); }}
           />
 
-          {/* Legend */}
           <div className="absolute bottom-3 left-3 glass rounded-xl p-2 md:p-3 text-[10px] space-y-1">
             {[
               { color: '#EF4444', label: 'Kritis (≥70)' },
@@ -307,7 +313,6 @@ export default function RiskMapPage() {
           </div>
         </div>
 
-        {/* Province Detail Panel — mobile: tampil duluan (order-1), desktop: kanan (order-2) */}
         <div className="order-1 xl:order-2 w-full xl:w-96">
           <AnimatePresence mode="wait">
             {selectedProvince ? (
@@ -341,7 +346,6 @@ export default function RiskMapPage() {
                       <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Total Anggaran</p>
                       <p className="text-lg md:text-xl font-bold text-foreground">{formatRupiah(selectedProvince.totalAnggaran)}</p>
                     </div>
-                    {/* Grid paket — 1 kolom di mobile, 2 kolom di sm ke atas */}
                     <div className="space-y-2">
                       <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Paket Pengadaan</p>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -552,13 +556,16 @@ export default function RiskMapPage() {
           )}
         </div>
 
-        {/* Right Table: Provinsi Risiko Terbesar */}
+        {/* Right Table: Provinsi Risiko — ✅ sekarang difilter berdasarkan globalSearch */}
         <div className="floating-card p-4 md:p-6 flex flex-col">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 md:gap-4 mb-4 md:mb-5">
             <div>
               <h3 className="text-[10px] md:text-sm font-bold uppercase tracking-widest text-muted-foreground">Provinsi Risiko Tertinggi</h3>
               <p className="text-[10px] md:text-xs text-muted-foreground mt-0.5">
-                Akumulasi skor anomali pengadaan & insiden sosmed
+                Akumulasi skor anomali pengadaan &amp; insiden sosmed
+                {globalSearch && (
+                  <span className="ml-2 text-primary font-semibold">· Filter: "{globalSearch}"</span>
+                )}
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -592,8 +599,8 @@ export default function RiskMapPage() {
               <tbody>
                 {sortedProvinceRisks.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="py-8 text-center text-muted-foreground">
-                      Data belum tersedia
+                    <td colSpan={4} className="py-8 text-center text-muted-foreground">
+                      {globalSearch ? `Tidak ada provinsi yang cocok dengan "${globalSearch}"` : 'Data belum tersedia'}
                     </td>
                   </tr>
                 ) : (

@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Video, ExternalLink, X, MapPin, RefreshCw, WifiOff, Maximize2, ChevronDown, Lock } from 'lucide-react';
+import { Video, ExternalLink, X, MapPin, RefreshCw, WifiOff, Maximize2, ChevronDown, Lock, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useSearch } from '@/lib/search-context';
 
 const BASE_URL = 'https://stream.kuduskab.go.id';
 
@@ -102,7 +103,7 @@ function CameraCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.04 }}
       onClick={onClick}
-      className="group relative glass rounded-2xl overflow-hidden cursor-pointer hover:ring-1 hover:ring-primary/40 hover:shadow-[0_0_20px_rgba(var(--primary),0.1)] transition-all"
+      className="group ml-relative glass rounded-2xl overflow-hidden cursor-pointer hover:ring-1 hover:ring-primary/40 hover:shadow-[0_0_20px_rgba(var(--primary),0.1)] transition-all"
     >
       <div className="relative aspect-video bg-muted overflow-hidden">
         {imgError ? (
@@ -243,6 +244,9 @@ export default function KawalinPage() {
   const [timestamp, setTimestamp] = useState(Date.now());
   const [mounted, setMounted] = useState(false);
 
+  // ✅ Global search dari navbar
+  const { value: searchTerm } = useSearch();
+
   useEffect(() => {
     setMounted(true);
     const interval = setInterval(() => setTimestamp(Date.now()), 10000);
@@ -254,8 +258,12 @@ export default function KawalinPage() {
   const province = PROVINCES.find((p) => p.name === selectedProvince);
   const district = province?.districts.find((d) => d.name === selectedDistrict);
 
+  const filteredCameras = (district?.cameras ?? []).filter((cam) =>
+    !searchTerm || cam.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <div className="space-y-6 md:space-y-8 animate-in fade-in duration-700 pb-12">
+    <div className="sm:ml-4 space-y-6 md:space-y-8 animate-in fade-in duration-700 pb-12">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -396,7 +404,18 @@ export default function KawalinPage() {
       {/* Count + refresh */}
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
-          <span className="font-semibold text-foreground">{district?.cameras.length ?? 0} kamera</span> SPPG tersedia di {selectedDistrict}, {selectedProvince}
+          {searchTerm ? (
+            <>
+              <span className="font-semibold text-foreground">{filteredCameras.length} kamera</span> ditemukan untuk{' '}
+              <span className="text-primary font-medium">"{searchTerm}"</span>
+              {' '}di {selectedDistrict}
+            </>
+          ) : (
+            <>
+              <span className="font-semibold text-foreground">{district?.cameras.length ?? 0} kamera</span>{' '}
+              SPPG tersedia di {selectedDistrict}, {selectedProvince}
+            </>
+          )}
         </p>
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
           <RefreshCw className="w-3 h-3 animate-spin [animation-duration:3s]" />
@@ -404,18 +423,34 @@ export default function KawalinPage() {
         </div>
       </div>
 
-      {/* Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5">
-        {district?.cameras.map((camera, i) => (
-          <CameraCard
-            key={camera.uuid}
-            camera={camera}
-            onClick={() => setSelectedCamera(camera)}
-            timestamp={timestamp}
-            index={i}
-          />
-        ))}
-      </div>
+      {searchTerm && (
+        <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary/5 border border-primary/20 text-xs text-primary font-medium">
+          <Search className="w-3.5 h-3.5" />
+          Filter aktif: "{searchTerm}" — menampilkan {filteredCameras.length} dari {district?.cameras.length ?? 0} kamera
+        </div>
+      )}
+
+      {filteredCameras.length === 0 ? (
+        <div className="glass rounded-2xl p-12 text-center flex flex-col items-center justify-center">
+          <Search className="w-10 h-10 text-muted-foreground/30 mb-4" />
+          <h3 className="text-base font-bold text-foreground">Kamera tidak ditemukan</h3>
+          <p className="text-sm text-muted-foreground mt-1 max-w-xs">
+            Tidak ada kamera yang cocok dengan "{searchTerm}" di wilayah {selectedDistrict}.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5">
+          {filteredCameras.map((camera, i) => (
+            <CameraCard
+              key={camera.uuid}
+              camera={camera}
+              onClick={() => setSelectedCamera(camera)}
+              timestamp={timestamp}
+              index={i}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Modal */}
       <AnimatePresence>

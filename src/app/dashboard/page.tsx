@@ -239,7 +239,7 @@ export default function OverviewPage() {
   };
 
   return (
-    <div className="space-y-6 md:space-y-8 animate-in fade-in duration-700">
+    <div className="sm:ml-4 space-y-6 md:space-y-8 animate-in fade-in duration-700">
 
       {searchTerm && (
         <div className="px-1 text-xs text-primary font-semibold">

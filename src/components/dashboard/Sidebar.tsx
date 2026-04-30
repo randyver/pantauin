@@ -8,10 +8,7 @@ import {
   LayoutDashboard,
   Map,
   Signal,
-  Search,
   Megaphone,
-  ShieldAlert,
-  ChevronRight,
   Video,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -31,13 +28,14 @@ export function Sidebar() {
     <aside className="fixed left-6 top-6 bottom-6 w-64 z-50">
       <div className="h-full glass rounded-3xl flex flex-col overflow-hidden border-white/40 shadow-2xl">
         <div className="p-8">
-            <div className="flex items-center gap-3 mb-8">
+            <Link href="/" className="flex items-center gap-3 mb-8 hover:opacity-80 transition-opacity">
               <img 
                 className="w-[40px] h-[40px] md:w-[48px] md:h-[48px]" 
                 src="/logo/logo_pantauin.png" 
                 alt="Logo Pantauin" 
               />
-            <div className="text-[#333333] text-[20px] font-extrabold capitalize hidden md:block">Pantauin</div>
+              <div className="text-[#333333] text-[20px] font-extrabold capitalize hidden md:block">Pantauin</div>
+            </Link>
           </div>
 
           <nav className="space-y-2">
@@ -64,7 +62,6 @@ export function Sidebar() {
               );
             })}
           </nav>
-        </div>
 
         <div className="mt-auto p-8 pt-0">
           <div className="p-4 bg-primary/5 rounded-2xl border border-primary/10">

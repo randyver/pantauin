@@ -73,10 +73,23 @@ export default function LaporinPage() {
     return true;
   });
 
+  // ✅ Filter kanal online berdasarkan search
+  const filteredOnline = kanalOnline.filter(k => {
+    if (globalSearch) {
+      const q = globalSearch.toLowerCase();
+      return (
+        k.nama.toLowerCase().includes(q) ||
+        k.deskripsi.toLowerCase().includes(q) ||
+        k.jenis.toLowerCase().includes(q)
+      );
+    }
+    return true;
+  });
+
   if (!mounted) return <div className="h-screen" />;
 
   return (
-    <div className="space-y-6 md:space-y-8 pb-12">
+    <div className="sm:ml-4 space-y-6 md:space-y-8 pb-12">
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-2">
         <div className="flex items-center gap-3">
@@ -89,6 +102,21 @@ export default function LaporinPage() {
           </div>
         </div>
       </motion.div>
+
+      {/* ✅ Search feedback banner */}
+      {globalSearch && (
+        <motion.div
+          initial={{ opacity: 0, y: -4 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary/5 border border-primary/20 text-xs text-primary font-medium"
+        >
+          <Search className="w-3.5 h-3.5" />
+          Filter aktif: "{globalSearch}" — ditemukan{' '}
+          {activeTab === 'nasional' ? filteredNasional.length :
+           activeTab === 'daerah' ? filteredProvinsi.length :
+           filteredOnline.length} hasil
+        </motion.div>
+      )}
 
       {/* Tips Banner */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
@@ -114,7 +142,7 @@ export default function LaporinPage() {
         {([
           { key: 'nasional' as const, label: 'Instansi Nasional', icon: Building2, count: filteredNasional.length },
           { key: 'daerah' as const, label: 'Kontak Daerah', icon: MapPin, count: filteredProvinsi.length },
-          { key: 'online' as const, label: 'Kanal Online', icon: Globe, count: kanalOnline.length },
+          { key: 'online' as const, label: 'Kanal Online', icon: Globe, count: filteredOnline.length },
         ]).map(tab => (
           <button
             key={tab.key}
@@ -139,16 +167,20 @@ export default function LaporinPage() {
       </div>
 
       <AnimatePresence mode="wait">
-        {/* ======================== */}
-        {/* TAB: INSTANSI NASIONAL  */}
-        {/* ======================== */}
+        {/* TAB: INSTANSI NASIONAL */}
         {activeTab === 'nasional' && (
           <motion.div
             key="nasional"
             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
             className="grid grid-cols-1 md:grid-cols-2 gap-4"
           >
-            {filteredNasional.map((k, i) => {
+            {filteredNasional.length === 0 ? (
+              <div className="col-span-2 floating-card p-8 text-center">
+                <Search className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
+                <p className="text-sm font-medium text-muted-foreground">Tidak ada instansi ditemukan</p>
+                <p className="text-xs text-muted-foreground mt-1">Coba ubah kata kunci pencarian</p>
+              </div>
+            ) : filteredNasional.map((k, i) => {
               const kat = kategoriLabels[k.kategori];
               const isExpanded = expandedCard === k.id;
               return (
@@ -177,7 +209,6 @@ export default function LaporinPage() {
 
                   <p className="text-[11px] md:text-xs text-muted-foreground leading-relaxed mb-3">{k.deskripsi}</p>
 
-                  {/* Contact Details — always visible */}
                   <div className="space-y-2">
                     <div className="flex items-center gap-2 text-xs">
                       <Phone className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
@@ -191,7 +222,6 @@ export default function LaporinPage() {
                     </div>
                   </div>
 
-                  {/* Expanded Details */}
                   <AnimatePresence>
                     {isExpanded && (
                       <motion.div
@@ -226,16 +256,13 @@ export default function LaporinPage() {
           </motion.div>
         )}
 
-        {/* ======================== */}
-        {/* TAB: KONTAK DAERAH       */}
-        {/* ======================== */}
+        {/* TAB: KONTAK DAERAH */}
         {activeTab === 'daerah' && (
           <motion.div
             key="daerah"
             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
             className="space-y-4"
           >
-            {/* Province Filter */}
             <div className="flex items-center gap-3 flex-wrap">
               <div className="relative">
                 <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
@@ -256,7 +283,6 @@ export default function LaporinPage() {
               </span>
             </div>
 
-            {/* Province Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
               {filteredProvinsi.map((k, i) => {
                 const JenisIcon = jenisIcons[k.jenis] || Building2;
@@ -341,16 +367,20 @@ export default function LaporinPage() {
           </motion.div>
         )}
 
-        {/* ======================== */}
-        {/* TAB: KANAL ONLINE        */}
-        {/* ======================== */}
+        {/* TAB: KANAL ONLINE — ✅ sekarang sudah difilter */}
         {activeTab === 'online' && (
           <motion.div
             key="online"
             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
             className="grid grid-cols-1 md:grid-cols-2 gap-4"
           >
-            {kanalOnline.map((k, i) => {
+            {filteredOnline.length === 0 ? (
+              <div className="col-span-2 floating-card p-8 text-center">
+                <Search className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
+                <p className="text-sm font-medium text-muted-foreground">Tidak ada kanal ditemukan</p>
+                <p className="text-xs text-muted-foreground mt-1">Coba ubah kata kunci pencarian</p>
+              </div>
+            ) : filteredOnline.map((k, i) => {
               const IconComp = k.icon === 'globe' ? Globe : k.icon === 'smartphone' ? Smartphone : PhoneCall;
               return (
                 <motion.div
