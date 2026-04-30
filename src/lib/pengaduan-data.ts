@@ -9,6 +9,7 @@ export interface KontakNasional {
   website: string;
   alamat: string;
   kategori: 'pengawasan' | 'pengaduan' | 'penegakan';
+  logo?: string;
 }
 
 export interface KontakProvinsi {
@@ -29,6 +30,12 @@ export interface KanalOnline {
   deskripsi: string;
   jenis: 'Website' | 'Aplikasi' | 'Hotline';
   icon: 'globe' | 'smartphone' | 'phone';
+  logo?: string;
+  telepon?: string;
+  whatsapp?: string;
+  email?: string;
+  sms?: string;
+  kategoriLabel?: string;
 }
 
 // ==========================================
@@ -44,6 +51,7 @@ export const kontakNasional: KontakNasional[] = [
     website: 'https://bgn.go.id',
     alamat: 'Jl. HR Rasuna Said, Kuningan, Jakarta Selatan 12950',
     kategori: 'pengaduan',
+    logo: '/lapor/bgn.jpg',
   },
   {
     id: 'ombudsman',
@@ -54,6 +62,7 @@ export const kontakNasional: KontakNasional[] = [
     website: 'https://ombudsman.go.id',
     alamat: 'Jl. HR Rasuna Said Kav. C-19, Kuningan, Jakarta Selatan 12940',
     kategori: 'pengawasan',
+    logo: '/lapor/ombdusman.jpg',
   },
   {
     id: 'bpkp',
@@ -64,6 +73,7 @@ export const kontakNasional: KontakNasional[] = [
     website: 'https://wbs.bpkp.go.id',
     alamat: 'Jl. Pramuka No. 33, Rawasari, Jakarta Timur 13120',
     kategori: 'pengawasan',
+    logo: '/lapor/bpkp.jpg',
   },
   {
     id: 'kpk',
@@ -74,6 +84,7 @@ export const kontakNasional: KontakNasional[] = [
     website: 'https://www.kpk.go.id/id/layanan-publik/pengaduan',
     alamat: 'Jl. Kuningan Persada Kav. 4, Setiabudi, Jakarta Selatan 12950',
     kategori: 'penegakan',
+    logo: '/lapor/kpk.jpg',
   },
   {
     id: 'kemendikbud',
@@ -84,6 +95,7 @@ export const kontakNasional: KontakNasional[] = [
     website: 'https://ult.kemdikbud.go.id',
     alamat: 'Jl. Jend. Sudirman, Senayan, Jakarta Pusat 10270',
     kategori: 'pengaduan',
+    logo: '/lapor/kmendikbud.jpg',
   },
   {
     id: 'sp4n',
@@ -94,6 +106,7 @@ export const kontakNasional: KontakNasional[] = [
     website: 'https://lapor.go.id',
     alamat: 'Kementerian PANRB, Jl. Jend. Sudirman Kav. 69, Jakarta 12190',
     kategori: 'pengaduan',
+    logo: '/lapor/span-lapor.jpg',
   },
 ];
 
@@ -299,37 +312,100 @@ export const kontakProvinsi: KontakProvinsi[] = [
 // KANAL ONLINE
 // ==========================================
 export const kanalOnline: KanalOnline[] = [
+  // ── Lintas Kementerian & Pengawasan Publik ──
   {
-    id: 'lapor',
+    id: 'sp4n-lapor',
     nama: 'SP4N-LAPOR!',
     url: 'https://lapor.go.id',
-    deskripsi: 'Portal pengaduan resmi pemerintah. Dukung semua jenis aduan layanan publik termasuk program MBG.',
+    deskripsi: 'Portal pengaduan resmi pemerintah untuk semua jenis aduan layanan publik, termasuk MBG. Tersedia juga via SMS ke 1708 dan aplikasi mobile (PlayStore/AppStore).',
     jenis: 'Website',
     icon: 'globe',
+    logo: '/lapor/span-lapor.jpg',
+    sms: '1708',
+    kategoriLabel: 'Lintas Kementerian',
   },
   {
-    id: 'wise-kpk',
-    nama: 'KPK Whistleblower',
-    url: 'https://www.kpk.go.id/id/layanan-publik/pengaduan',
-    deskripsi: 'Laporkan dugaan korupsi pengadaan MBG secara anonim dan terlindungi.',
+    id: 'ombudsman',
+    nama: 'Ombudsman Republik Indonesia',
+    url: 'https://ombudsman.go.id/pengaduan',
+    deskripsi: 'Untuk melaporkan dugaan maladministrasi atau kelalaian penyelenggara negara dalam program MBG.',
     jenis: 'Website',
     icon: 'globe',
+    logo: '/lapor/ombdusman.jpg',
+    telepon: '137',
+    whatsapp: '0821-3737-3737',
+    email: 'pengaduan@ombudsman.go.id',
+    kategoriLabel: 'Lintas Kementerian',
+  },
+  // ── Sektor Pendidikan ──
+  {
+    id: 'kemdikbud-ult',
+    nama: 'Kemendikbudristek — ULT & Posko Itjen',
+    url: 'https://ult.kemdikbud.go.id',
+    deskripsi: 'Untuk sekolah umum (SD, SMP, SMA, SMK). Ada juga posko pengaduan Inspektorat Jenderal khusus MBG di posko-pengaduan.itjen.kemdikbud.go.id.',
+    jenis: 'Website',
+    icon: 'globe',
+    logo: '/lapor/kmendikbud.jpg',
+    telepon: '177',
+    kategoriLabel: 'Sektor Pendidikan',
   },
   {
-    id: 'ombudsman-app',
-    nama: 'Ombudsman RI App',
-    url: 'https://play.google.com/store/apps/details?id=go.id.ombudsman.pengaduan',
-    deskripsi: 'Aplikasi mobile untuk pengaduan maladministrasi pelayanan publik.',
-    jenis: 'Aplikasi',
-    icon: 'smartphone',
+    id: 'kemenag-dumas',
+    nama: 'Kementerian Agama — Dumas',
+    url: 'https://dumas.kemenag.go.id',
+    deskripsi: 'Untuk madrasah (MI, MTs, MA) dan pesantren yang menjadi lokasi distribusi MBG.',
+    jenis: 'Website',
+    icon: 'globe',
+    logo: '/lapor/kemenag.jpg',
+    telepon: '146',
+    kategoriLabel: 'Sektor Pendidikan',
+  },
+  // ── Keamanan Pangan & Kesehatan ──
+  {
+    id: 'bpom',
+    nama: 'BPOM — Halo BPOM',
+    url: 'https://halobpom.pom.go.id',
+    deskripsi: 'Laporkan higienitas kemasan, bahan pangan tidak berizin/berbahaya, atau masalah gizi terkait MBG. Tersedia juga lewat aplikasi BPOM Mobile.',
+    jenis: 'Website',
+    icon: 'globe',
+    logo: '/lapor/bpom.jpg',
+    telepon: '1500533',
+    whatsapp: '0811-9181-533',
+    kategoriLabel: 'Keamanan Pangan & Kesehatan',
   },
   {
-    id: 'hotline-bgn',
-    nama: 'Hotline BGN',
-    url: 'tel:02152770505',
-    deskripsi: 'Hubungi langsung call center Badan Gizi Nasional untuk keluhan MBG.',
-    jenis: 'Hotline',
-    icon: 'phone',
+    id: 'kemenkes',
+    nama: 'Kementerian Kesehatan — Halo Kemenkes',
+    url: 'https://kemkes.go.id',
+    deskripsi: 'Hotline darurat 119 untuk kasus keracunan massal MBG. Call center umum 1500567 untuk pertanyaan gizi dan kesehatan lainnya.',
+    jenis: 'Website',
+    icon: 'globe',
+    logo: '/lapor/kemenkes.jpg',
+    telepon: '119',
+    kategoriLabel: 'Keamanan Pangan & Kesehatan',
+  },
+  // ── Dugaan Korupsi & Anggaran ──
+  {
+    id: 'kpk-wbs',
+    nama: 'KPK — Whistleblower System (KWS)',
+    url: 'https://kws.kpk.go.id',
+    deskripsi: 'Laporkan dugaan korupsi, mark-up, atau penyelewengan dana MBG. Identitas pelapor dapat dirahasiakan, asalkan bukti valid dan kuat.',
+    jenis: 'Website',
+    icon: 'globe',
+    logo: '/lapor/kpk.jpg',
+    telepon: '198',
+    email: 'pengaduan@kpk.go.id',
+    kategoriLabel: 'Dugaan Korupsi',
+  },
+  {
+    id: 'kemenkeu-wise',
+    nama: 'Kemenkeu — WiSe (Whistleblowing)',
+    url: 'https://wise.kemenkeu.go.id',
+    deskripsi: 'Laporkan penyelewengan dana APBN untuk program MBG, termasuk dugaan pemotongan jatah atau mark-up pengadaan. Bisa anonim.',
+    jenis: 'Website',
+    icon: 'globe',
+    logo: '/lapor/kemenkeu.jpg',
+    kategoriLabel: 'Dugaan Korupsi',
   },
 ];
 

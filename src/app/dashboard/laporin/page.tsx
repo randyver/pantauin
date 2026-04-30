@@ -194,8 +194,11 @@ export default function LaporinPage() {
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                        <kat.icon className="w-4.5 h-4.5 text-primary" />
+                      <div className="w-9 h-9 rounded-xl overflow-hidden flex-shrink-0 border border-border/40 bg-white">
+                        {k.logo
+                          ? <img src={k.logo} alt={k.nama} className="w-full h-full object-cover" />
+                          : <div className="w-full h-full flex items-center justify-center bg-primary/10"><kat.icon className="w-4 h-4 text-primary" /></div>
+                        }
                       </div>
                       <div>
                         <h3 className="text-xs md:text-sm font-bold text-foreground leading-snug">{k.nama}</h3>
@@ -388,38 +391,69 @@ export default function LaporinPage() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  className="floating-card p-5 md:p-6 hover:shadow-xl transition-shadow group"
+                  className="floating-card p-5 md:p-6 hover:shadow-xl transition-shadow group flex flex-col"
                 >
                   <div className="flex items-start gap-3 mb-3">
-                    <div className={cn(
-                      'w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0',
-                      k.jenis === 'Website' ? 'bg-blue-100' : k.jenis === 'Aplikasi' ? 'bg-green-100' : 'bg-amber-100'
-                    )}>
-                      <IconComp className={cn(
-                        'w-5 h-5',
-                        k.jenis === 'Website' ? 'text-blue-600' : k.jenis === 'Aplikasi' ? 'text-green-600' : 'text-amber-600'
-                      )} />
+                    <div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 border border-border/40 bg-white">
+                      {k.logo
+                        ? <img src={k.logo} alt={k.nama} className="w-full h-full object-cover" />
+                        : <div className="w-full h-full flex items-center justify-center bg-primary/10"><IconComp className="w-5 h-5 text-primary" /></div>
+                      }
                     </div>
-                    <div className="flex-1">
-                      <h3 className="text-sm font-bold text-foreground">{k.nama}</h3>
-                      <span className={cn(
-                        'text-[9px] font-bold px-1.5 py-0.5 rounded-md border inline-block mt-1',
-                        k.jenis === 'Website' ? 'bg-blue-50 text-blue-600 border-blue-200'
-                          : k.jenis === 'Aplikasi' ? 'bg-green-50 text-green-600 border-green-200'
-                          : 'bg-amber-50 text-amber-600 border-amber-200'
-                      )}>
-                        {k.jenis}
-                      </span>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-sm font-bold text-foreground leading-snug">{k.nama}</h3>
+                      <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+                        {k.kategoriLabel && (
+                          <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md border bg-primary/5 text-primary border-primary/20">
+                            {k.kategoriLabel}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
-                  <p className="text-[11px] md:text-xs text-muted-foreground leading-relaxed mb-4">{k.deskripsi}</p>
+
+                  <p className="text-[11px] md:text-xs text-muted-foreground leading-relaxed mb-3">{k.deskripsi}</p>
+
+                  {(k.telepon || k.whatsapp || k.email || k.sms) && (
+                    <div className="space-y-1.5 mb-3 pt-3 border-t border-border/30">
+                      {k.telepon && (
+                        <div className="flex items-center gap-2 text-xs">
+                          <Phone className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
+                          <span className="font-medium text-foreground">{k.telepon}</span>
+                          <CopyButton text={k.telepon} />
+                        </div>
+                      )}
+                      {k.sms && (
+                        <div className="flex items-center gap-2 text-xs">
+                          <Smartphone className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
+                          <span className="font-medium text-foreground">SMS: {k.sms}</span>
+                          <CopyButton text={k.sms} />
+                        </div>
+                      )}
+                      {k.whatsapp && (
+                        <div className="flex items-center gap-2 text-xs">
+                          <PhoneCall className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
+                          <span className="font-medium text-foreground">WA: {k.whatsapp}</span>
+                          <CopyButton text={k.whatsapp} />
+                        </div>
+                      )}
+                      {k.email && (
+                        <div className="flex items-center gap-2 text-xs">
+                          <Mail className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
+                          <span className="font-medium text-foreground truncate">{k.email}</span>
+                          <CopyButton text={k.email} />
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   <a
                     href={k.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 w-full py-2.5 bg-foreground text-white rounded-xl text-xs font-bold hover:bg-black transition-colors group-hover:shadow-lg"
+                    className="flex items-center justify-center gap-2 w-full py-2.5 bg-foreground text-white rounded-xl text-xs font-bold hover:bg-black transition-colors group-hover:shadow-lg mt-auto"
                   >
-                    {k.jenis === 'Hotline' ? 'Hubungi Sekarang' : 'Kunjungi'} <ExternalLink className="w-3.5 h-3.5" />
+                    Kunjungi <ExternalLink className="w-3.5 h-3.5" />
                   </a>
                 </motion.div>
               );
