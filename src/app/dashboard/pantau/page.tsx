@@ -10,10 +10,10 @@ import {
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from 'recharts';
-import { socialSignals } from '@/lib/dummy-data';
 import { cn } from '@/lib/utils';
-import { allSocialPosts, type SocialPost, type Source } from '@/lib/sosmed-dummy-data';
+import { type SocialPost, type Source } from '@/types/social';
 import { useSearch } from '@/lib/search-context';
+import { fetchPosts, fetchPostsStats, fetchOverviewTrends, type PostsStats } from '@/lib/api';
 
 function IconX({ className }: { className?: string }) {
   return (
@@ -63,41 +63,6 @@ function sourceLabel(source: Source) {
 
 const PAGE_SIZE = 9;
 
-const MONTHS_MAP: Record<string, number> = {
-  jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5,
-  jul: 6, aug: 7, sep: 8, sept: 8, oct: 9, nov: 10, dec: 11,
-};
-
-function parsePostDate(timeAgo: string): number {
-  const s = timeAgo.trim().toLowerCase();
-  const now = Date.now();
-
-  const jamMatch = s.match(/^(\d+)\s*jam/);
-  if (jamMatch) return now - parseInt(jamMatch[1]) * 3_600_000;
-
-  const hariMatch = s.match(/^(\d+)\s*hari/);
-  if (hariMatch) return now - parseInt(hariMatch[1]) * 86_400_000;
-
-  const datePart = s.includes('·') ? s.split('·')[1].trim() : s;
-  const parts = datePart.replace(/[,:]/g, ' ').split(/\s+/).filter(Boolean);
-
-  let day = 15;
-  let mon = 0;
-  let year = new Date().getFullYear();
-
-  for (const part of parts) {
-    const n = parseInt(part);
-    if (!isNaN(n) && part === String(n)) {
-      if (n > 31) year = n;
-      else if (n >= 1) day = n;
-    } else if (MONTHS_MAP[part] !== undefined) {
-      mon = MONTHS_MAP[part];
-    }
-  }
-
-  return new Date(year, mon, day).getTime();
-}
-
 type FilterSource = 'all' | Source;
 
 const FILTERS: { value: FilterSource; label: string }[] = [
@@ -110,7 +75,9 @@ const FILTERS: { value: FilterSource; label: string }[] = [
 
 // ── AI Summary Component ─────────────────────────────────────────────────────
 
-function AISummary() {
+function AISummary({ stats }: { stats: PostsStats | null }) {
+  const total = stats?.ratio.total ?? 0;
+  const negPct = total > 0 ? Math.round((stats!.ratio.negative / total) * 100) : 0;
   return (
     <motion.div
       initial={{ opacity: 0, y: -20 }}
@@ -119,7 +86,7 @@ function AISummary() {
     >
       <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent opacity-70 animate-pulse" />
       <div className="absolute -right-20 -top-20 w-40 h-40 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
-      
+
       <div className="flex flex-col sm:flex-row items-start gap-4 md:gap-5 relative z-10">
         <div className="flex-shrink-0 p-3 rounded-xl bg-primary/10 border border-primary/20 relative self-start">
           <div className="absolute inset-0 bg-primary/20 rounded-xl animate-ping opacity-20" />
@@ -145,15 +112,15 @@ function AISummary() {
           >
             <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-red-500/10 border border-red-500/20 text-red-500 text-[11px] font-medium">
               <AlertTriangle className="w-3 h-3 shrink-0" />
-              High Risk Detected
+              {negPct >= 50 ? 'Sentimen Negatif Dominan' : negPct > 0 ? `${negPct}% Sentimen Negatif` : 'Belum Ada Data'}
             </div>
             <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-blue-500/10 border border-blue-500/20 text-blue-500 text-[11px] font-medium">
               <Bot className="w-3 h-3 shrink-0" />
-              15 Bot Accounts Flagged
+              {total.toLocaleString('id-ID')} Sinyal 7 Hari
             </div>
             <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-green-500/10 border border-green-500/20 text-green-500 text-[11px] font-medium">
               <Zap className="w-3 h-3 shrink-0" />
-              Sentiment Stable (Last 2h)
+              {(stats?.topEntities.length ?? 0)} Entitas Terdeteksi
             </div>
           </motion.div>
         </div>
@@ -240,42 +207,63 @@ export default function SocialSignalPage() {
   const [mounted, setMounted] = React.useState(false);
   const [filter, setFilter] = React.useState<FilterSource>('all');
   const [page, setPage] = React.useState(1);
+  const [posts, setPosts] = React.useState<SocialPost[]>([]);
+  const [totalPosts, setTotalPosts] = React.useState(0);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
+  const [stats, setStats] = React.useState<PostsStats | null>(null);
+  const [trends, setTrends] = React.useState<Array<{ date: string; positive: number; negative: number; neutral: number; mentions: number }>>([]);
   const { value: searchTerm } = useSearch();
 
   React.useEffect(() => setMounted(true), []);
   React.useEffect(() => setPage(1), [filter, searchTerm]);
 
+  React.useEffect(() => {
+    fetchPostsStats(7).then(setStats).catch((e) => console.warn('stats fetch failed:', e));
+    fetchOverviewTrends(7).then(setTrends).catch((e) => console.warn('trends fetch failed:', e));
+  }, []);
+
+  React.useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+    fetchPosts({ platform: filter, q: searchTerm || undefined, page, pageSize: PAGE_SIZE })
+      .then((res) => {
+        if (cancelled) return;
+        setPosts(res.posts);
+        setTotalPosts(res.total);
+      })
+      .catch((e) => { if (!cancelled) setError(e instanceof Error ? e.message : 'Gagal memuat data'); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, [filter, searchTerm, page]);
+
   if (!mounted) return <div />;
 
-  const basePosts = (filter === 'all' ? allSocialPosts : allSocialPosts.filter(p => p.source === filter))
-    .filter(post =>
-      !searchTerm ||
-      post.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.location.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    .sort((a, b) => parsePostDate(b.timeAgo) - parsePostDate(a.timeAgo));
-
-  const totalPages = Math.max(1, Math.ceil(basePosts.length / PAGE_SIZE));
-  const displayedPosts = basePosts.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const totalPages = Math.max(1, Math.ceil(totalPosts / PAGE_SIZE));
+  const displayedPosts = posts;
 
   return (
     <div className="sm:ml-4 space-y-6 md:space-y-8 animate-in fade-in duration-700 pb-12">
 
-      <AISummary />
+      <AISummary stats={stats} />
 
       {/* Trends & Keywords */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
         <div className="lg:col-span-2 floating-card p-4 md:p-6 flex flex-col relative overflow-hidden">
           <div className="absolute top-0 right-0 p-32 bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
-          
+
           <div className="flex items-center justify-between mb-6">
             <div>
               <h3 className="text-base md:text-lg font-bold text-foreground flex items-center gap-2">
                 <Activity className="w-5 h-5 text-primary" />
                 Pulse Sentimen Nasional
               </h3>
-              <p className="text-xs md:text-sm text-muted-foreground mt-1">Distribusi sentimen harian dari 450k+ data</p>
+              <p className="text-xs md:text-sm text-muted-foreground mt-1">
+                {stats?.ratio.total
+                  ? `Distribusi sentimen 7 hari dari ${stats.ratio.total.toLocaleString('id-ID')} sinyal`
+                  : 'Distribusi sentimen harian'}
+              </p>
             </div>
             <div className="flex gap-3">
               <div className="flex items-center gap-2 bg-green-500/10 px-2.5 py-1 rounded-md border border-green-500/20">
@@ -290,7 +278,7 @@ export default function SocialSignalPage() {
           </div>
           <div className="flex-1 min-h-[250px] md:min-h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={socialSignals.trends} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <AreaChart data={trends} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorPos" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#10B981" stopOpacity={0.4} />
@@ -325,11 +313,10 @@ export default function SocialSignalPage() {
           </div>
           
           <div className="flex flex-wrap gap-2 mb-8">
-            {socialSignals.keywords.map((tag: { text: string; sentiment: string }, i: number) => {
-              const randScore = Math.floor(Math.random() * 15) + 85;
-              return (
+            {stats?.topEntities.length ? (
+              stats.topEntities.map((tag, i) => (
                 <motion.div
-                  key={tag.text}
+                  key={tag.entity}
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: i * 0.05 }}
@@ -340,33 +327,45 @@ export default function SocialSignalPage() {
                     'bg-muted/50 text-foreground border-border hover:bg-muted',
                   )}
                 >
-                  <span>{tag.text}</span>
+                  <span>{tag.entity}</span>
                   <span className="text-[9px] px-1.5 py-0.5 rounded bg-background/50 font-mono opacity-80">
-                    {randScore}%
+                    {tag.n}
                   </span>
                 </motion.div>
-              );
-            })}
+              ))
+            ) : (
+              <p className="text-xs text-muted-foreground">Belum ada entitas terdeteksi</p>
+            )}
           </div>
 
           <div className="mt-auto pt-6 border-t border-border/50">
             <h4 className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4">
               <Bot className="w-3.5 h-3.5" /> Rasio Sentimen
             </h4>
-            <div className="relative h-3 rounded-full overflow-hidden bg-muted flex shadow-inner">
-              <div className="h-full bg-green-500 transition-all duration-1000 relative" style={{ width: '45%' }}>
-                <div className="absolute inset-0 bg-white/20 animate-pulse" />
-              </div>
-              <div className="h-full bg-zinc-400 transition-all duration-1000" style={{ width: '20%' }} />
-              <div className="h-full bg-red-500 transition-all duration-1000 relative" style={{ width: '35%' }}>
-                <div className="absolute inset-0 bg-black/10" />
-              </div>
-            </div>
-            <div className="flex justify-between mt-3 text-[10px] font-bold uppercase text-muted-foreground">
-              <span className="text-green-600 dark:text-green-500">Positif (45%)</span>
-              <span className="text-zinc-500">Netral (20%)</span>
-              <span className="text-red-600 dark:text-red-500">Negatif (35%)</span>
-            </div>
+            {(() => {
+              const total = stats?.ratio.total ?? 0;
+              const posPct = total > 0 ? (stats!.ratio.positive / total) * 100 : 0;
+              const neuPct = total > 0 ? (stats!.ratio.neutral / total) * 100 : 0;
+              const negPct = total > 0 ? (stats!.ratio.negative / total) * 100 : 0;
+              return (
+                <>
+                  <div className="relative h-3 rounded-full overflow-hidden bg-muted flex shadow-inner">
+                    <div className="h-full bg-green-500 transition-all duration-1000 relative" style={{ width: `${posPct}%` }}>
+                      <div className="absolute inset-0 bg-white/20 animate-pulse" />
+                    </div>
+                    <div className="h-full bg-zinc-400 transition-all duration-1000" style={{ width: `${neuPct}%` }} />
+                    <div className="h-full bg-red-500 transition-all duration-1000 relative" style={{ width: `${negPct}%` }}>
+                      <div className="absolute inset-0 bg-black/10" />
+                    </div>
+                  </div>
+                  <div className="flex justify-between mt-3 text-[10px] font-bold uppercase text-muted-foreground">
+                    <span className="text-green-600 dark:text-green-500">Positif ({Math.round(posPct)}%)</span>
+                    <span className="text-zinc-500">Netral ({Math.round(neuPct)}%)</span>
+                    <span className="text-red-600 dark:text-red-500">Negatif ({Math.round(negPct)}%)</span>
+                  </div>
+                </>
+              );
+            })()}
           </div>
         </div>
       </div>
@@ -383,7 +382,9 @@ export default function SocialSignalPage() {
               Live Data Feed
             </h2>
             <p className="text-sm text-muted-foreground mt-1.5">
-              Menampilkan data real-time dari {displayedPosts.length} sumber yang dipantau.
+              {totalPosts > 0
+                ? `Menampilkan ${displayedPosts.length} dari ${totalPosts.toLocaleString('id-ID')} sinyal terpantau.`
+                : 'Belum ada sinyal terpantau.'}
               {searchTerm && <span className="text-primary font-medium ml-1">Filter aktif: "{searchTerm}"</span>}
             </p>
           </div>
@@ -419,7 +420,18 @@ export default function SocialSignalPage() {
           </div>
         </div>
 
-        {displayedPosts.length === 0 ? (
+        {loading ? (
+          <div className="glass rounded-2xl p-12 text-center flex flex-col items-center justify-center border-dashed">
+            <Radar className="w-12 h-12 text-muted-foreground/30 mb-4 animate-spin-slow" />
+            <h3 className="text-lg font-bold text-foreground">Memuat data...</h3>
+          </div>
+        ) : error ? (
+          <div className="glass rounded-2xl p-12 text-center flex flex-col items-center justify-center border-dashed border-red-500/30">
+            <AlertTriangle className="w-12 h-12 text-red-400/60 mb-4" />
+            <h3 className="text-lg font-bold text-foreground">Gagal memuat data</h3>
+            <p className="text-sm text-muted-foreground max-w-sm mt-2">{error}</p>
+          </div>
+        ) : displayedPosts.length === 0 ? (
           <div className="glass rounded-2xl p-12 text-center flex flex-col items-center justify-center border-dashed">
             <Radar className="w-12 h-12 text-muted-foreground/30 mb-4 animate-spin-slow" />
             <h3 className="text-lg font-bold text-foreground">Tidak ada anomali terdeteksi</h3>
@@ -438,7 +450,7 @@ export default function SocialSignalPage() {
             {totalPages > 1 && (
               <div className="flex items-center justify-between pt-4 border-t border-border/30">
                 <p className="text-xs text-muted-foreground">
-                  {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, basePosts.length)} dari {basePosts.length} post
+                  {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, totalPosts)} dari {totalPosts} post
                 </p>
                 <div className="flex items-center gap-1">
                   <button

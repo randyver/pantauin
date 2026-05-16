@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   ShieldAlert,
@@ -11,19 +11,52 @@ import {
   Activity,
   UserCheck
 } from 'lucide-react';
-import { alerts } from '@/lib/dummy-data';
 import { cn } from '@/lib/utils';
 import { useSearch } from '@/lib/search-context';
+import { fetchAlerts, fetchAlertsStats, type ApiAlert, type AlertsStats } from '@/lib/api';
+
+type DisplayAlert = {
+  id: string;
+  title: string;
+  severity: string;
+  timestamp: string;
+  source: string;
+  recommendation: string;
+};
+
+function toDisplayAlert(a: ApiAlert): DisplayAlert {
+  return {
+    id: a.id,
+    title: a.title,
+    severity: (a.severity ?? 'Medium').replace(/^\w/, (c) => c.toUpperCase()),
+    timestamp: new Date(a.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }),
+    source: a.triggerType ?? 'Pantauin AI',
+    recommendation: a.recommendation ?? '',
+  };
+}
 
 export default function AlertsCenterPage() {
   const { value: searchTerm } = useSearch();
+  const [items, setItems] = useState<DisplayAlert[]>([]);
+  const [stats, setStats] = useState<AlertsStats | null>(null);
+  const [loaded, setLoaded] = useState(false);
 
-  const filteredAlerts = alerts.concat(alerts).filter((alert, i) =>
+  useEffect(() => {
+    fetchAlerts({ pageSize: 50 })
+      .then((res) => setItems(res.alerts.map(toDisplayAlert)))
+      .catch((e) => console.warn('alerts fetch failed:', e))
+      .finally(() => setLoaded(true));
+    fetchAlertsStats().then(setStats).catch((e) => console.warn('alerts stats fetch failed:', e));
+  }, []);
+
+  const filteredAlerts = items.filter((alert) =>
     !searchTerm ||
     alert.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     alert.source.toLowerCase().includes(searchTerm.toLowerCase()) ||
     alert.recommendation.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const fmtNum = (n: number | undefined | null) => (n == null ? '—' : n.toLocaleString('id-ID'));
 
   return (
     <div className="space-y-4 md:space-y-6 animate-in fade-in duration-700">
@@ -37,7 +70,7 @@ export default function AlertsCenterPage() {
             </div>
             <div>
               <p className="text-[9px] md:text-[10px] font-bold text-red-600 leading-tight">Risiko Tinggi Aktif</p>
-              <h3 className="text-lg md:text-2xl font-bold text-foreground">12</h3>
+              <h3 className="text-lg md:text-2xl font-bold text-foreground">{fmtNum(stats?.active_high)}</h3>
             </div>
           </div>
           <p className="text-[10px] text-muted-foreground font-medium mt-2 hidden md:block">Memerlukan perhatian segera dari koordinator lapangan.</p>
@@ -50,7 +83,7 @@ export default function AlertsCenterPage() {
             </div>
             <div>
               <p className="text-[9px] md:text-[10px] font-bold text-amber-600 leading-tight">Tindakan Menunggu</p>
-              <h3 className="text-lg md:text-2xl font-bold text-foreground">42</h3>
+              <h3 className="text-lg md:text-2xl font-bold text-foreground">{fmtNum(stats?.pending)}</h3>
             </div>
           </div>
           <p className="text-[10px] text-muted-foreground font-medium mt-2 hidden md:block">Peringatan yang sedang diproses oleh unit intelijen.</p>
@@ -63,7 +96,7 @@ export default function AlertsCenterPage() {
             </div>
             <div>
               <p className="text-[9px] md:text-[10px] font-bold text-green-600 leading-tight">Selesai Hari Ini</p>
-              <h3 className="text-lg md:text-2xl font-bold text-foreground">156</h3>
+              <h3 className="text-lg md:text-2xl font-bold text-foreground">{fmtNum(stats?.closed_today)}</h3>
             </div>
           </div>
           <p className="text-[10px] text-muted-foreground font-medium mt-2 hidden md:block">Masalah yang berhasil ditutup dan diverifikasi.</p>
@@ -85,15 +118,19 @@ export default function AlertsCenterPage() {
           </div>
         </div>
 
-        {filteredAlerts.length === 0 ? (
+        {!loaded ? (
           <div className="floating-card p-8 text-center text-sm text-muted-foreground">
-            Tidak ada peringatan yang cocok dengan pencarian
+            Memuat peringatan...
+          </div>
+        ) : filteredAlerts.length === 0 ? (
+          <div className="floating-card p-8 text-center text-sm text-muted-foreground">
+            {items.length === 0 ? 'Belum ada peringatan' : 'Tidak ada peringatan yang cocok dengan pencarian'}
           </div>
         ) : (
           <div className="space-y-3">
             {filteredAlerts.map((alert, i) => (
               <motion.div
-                key={`${alert.id}-${i}`}
+                key={alert.id}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.05 }}
