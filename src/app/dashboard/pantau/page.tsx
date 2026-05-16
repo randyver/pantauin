@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   ExternalLink, ThumbsUp, MessageCircle, Newspaper,
   Bot, Activity, AlertTriangle, Radar,
@@ -75,12 +74,9 @@ const FILTERS: { value: FilterSource; label: string }[] = [
 
 // ── Feed Card ────────────────────────────────────────────────────────────────
 
-function FeedCard({ post, index }: { post: SocialPost; index: number }) {
+function FeedCard({ post }: { post: SocialPost }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.04 }}
+    <div
       className="group relative glass rounded-2xl p-4 md:p-5 space-y-4 hover:ring-1 hover:ring-primary/40 hover:shadow-[0_0_20px_rgba(var(--primary),0.1)] transition-all overflow-hidden flex flex-col h-full"
     >
       {/* Decorative tech background */}
@@ -141,7 +137,7 @@ function FeedCard({ post, index }: { post: SocialPost; index: number }) {
           <ExternalLink className="w-3.5 h-3.5" />
         </a>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -301,11 +297,8 @@ export default function SocialSignalPage() {
           <div className="flex flex-wrap gap-2 mb-8">
             {stats?.topEntities.length ? (
               stats.topEntities.map((tag, i) => (
-                <motion.div
+                <div
                   key={tag.entity}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: i * 0.05 }}
                   className={cn(
                     'flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium cursor-pointer transition-all hover:scale-105 border backdrop-blur-sm',
                     tag.sentiment === 'negative' ? 'bg-red-500/5 text-red-600 dark:text-red-400 border-red-500/20 hover:bg-red-500/10' :
@@ -317,7 +310,7 @@ export default function SocialSignalPage() {
                   <span className="text-[9px] px-1.5 py-0.5 rounded bg-background/50 font-mono opacity-80">
                     {tag.n}
                   </span>
-                </motion.div>
+                </div>
               ))
             ) : (
               <p className="text-xs text-muted-foreground">Belum ada entitas terdeteksi</p>
@@ -426,11 +419,9 @@ export default function SocialSignalPage() {
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
-              <AnimatePresence>
-                {displayedPosts.map((post, i) => (
-                  <FeedCard key={`${post.id}-${post.platform}`} post={post} index={i} />
-                ))}
-              </AnimatePresence>
+              {displayedPosts.map((post, i) => (
+                <FeedCard key={`${post.id}-${post.platform}`} post={post} />
+              ))}
             </div>
 
             {totalPages > 1 && (

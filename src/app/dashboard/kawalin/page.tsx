@@ -87,21 +87,16 @@ function CameraCard({
   camera,
   onClick,
   timestamp,
-  index,
 }: {
   camera: CameraFeed;
   onClick: () => void;
   timestamp: number;
-  index: number;
 }) {
   const [imgError, setImgError] = useState(false);
   const thumbnailUrl = `${BASE_URL}/memfs/${camera.uuid}.jpg?t=${timestamp}`;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.04 }}
+    <div
       onClick={onClick}
       className="group ml-relative glass rounded-2xl overflow-hidden cursor-pointer hover:ring-1 hover:ring-primary/40 hover:shadow-[0_0_20px_rgba(var(--primary),0.1)] transition-all"
     >
@@ -139,7 +134,7 @@ function CameraCard({
           <span className="text-[10px] text-green-600 dark:text-green-500 font-semibold">Online</span>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -446,7 +441,6 @@ export default function KawalinPage() {
               camera={camera}
               onClick={() => setSelectedCamera(camera)}
               timestamp={timestamp}
-              index={i}
             />
           ))}
         </div>

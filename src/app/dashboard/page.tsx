@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
 import { MapPin, AlertTriangle, School, Building, Activity } from 'lucide-react';
 import {
   AreaChart, Area, PieChart, Pie, Cell,
@@ -203,11 +202,8 @@ export default function OverviewPage() {
         {keyMetrics.map((stat, i) => {
           const Icon = stat.icon;
           return (
-            <motion.div
+            <div
               key={stat.label}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
               className="floating-card p-4 md:p-5 relative overflow-hidden"
             >
               <div className="flex justify-between items-start mb-2">
@@ -222,7 +218,7 @@ export default function OverviewPage() {
                 <h3 className="text-2xl md:text-3xl font-black text-foreground">{stat.value}</h3>
                 {stat.sparkline.length > 0 && <Sparkline data={stat.sparkline} color={stat.color} />}
               </div>
-            </motion.div>
+            </div>
           );
         })}
       </section>

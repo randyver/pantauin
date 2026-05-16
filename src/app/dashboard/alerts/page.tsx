@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import {
   ShieldAlert,
   Clock,
@@ -129,11 +128,8 @@ export default function AlertsCenterPage() {
         ) : (
           <div className="space-y-3">
             {filteredAlerts.map((alert, i) => (
-              <motion.div
+              <div
                 key={alert.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.05 }}
                 className={cn(
                   "floating-card p-4 md:p-5 group",
                   alert.severity === 'High' ? "border-l-4 border-l-red-500" : "border-l-4 border-l-amber-500"
@@ -169,7 +165,7 @@ export default function AlertsCenterPage() {
                     Konfirmasi <ArrowRight className="w-3 h-3" />
                   </button>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         )}
