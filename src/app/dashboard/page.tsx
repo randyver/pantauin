@@ -9,7 +9,13 @@ import {
 } from 'recharts';
 import { cn } from '@/lib/utils';
 import { useSearch } from '@/lib/search-context';
-import { fetchOverview, type OverviewResponse } from '@/lib/api';
+import { fetchOverview, fetchOverviewTrends, type OverviewResponse } from '@/lib/api';
+
+const RANGE_OPTIONS: Array<{ label: string; days: number }> = [
+  { label: '7 Hari', days: 7 },
+  { label: '30 Hari', days: 30 },
+  { label: '3 Bulan', days: 90 },
+];
 
 const COLORS = ['#FF4B3A', '#EF4444', '#F59E0B', '#6B7280'];
 
@@ -81,12 +87,23 @@ const Gauge = ({ value }: { value: number }) => {
 export default function OverviewPage() {
   const [mounted, setMounted] = React.useState(false);
   const [overview, setOverview] = React.useState<OverviewResponse | null>(null);
+  const [trendDays, setTrendDays] = React.useState<number>(7);
+  const [trendData, setTrendData] = React.useState<OverviewResponse['sentimentTrend']>([]);
+  const [trendLoading, setTrendLoading] = React.useState(false);
   const { value: searchTerm } = useSearch();
 
   React.useEffect(() => setMounted(true), []);
   React.useEffect(() => {
     fetchOverview().then(setOverview).catch((e) => console.warn('overview fetch failed:', e));
   }, []);
+
+  React.useEffect(() => {
+    setTrendLoading(true);
+    fetchOverviewTrends(trendDays)
+      .then(setTrendData)
+      .catch((e) => console.warn('trend fetch failed:', e))
+      .finally(() => setTrendLoading(false));
+  }, [trendDays]);
 
   if (!mounted) return <div className="h-screen" />;
 
@@ -213,25 +230,53 @@ export default function OverviewPage() {
       {/* 4. Main Content Area */}
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
         <div className="lg:col-span-2 floating-card p-4 md:p-6 flex flex-col">
-          <div className="flex items-center justify-between mb-4 md:mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 md:mb-6">
             <div>
               <h3 className="text-base md:text-lg font-bold text-foreground">Tren Insiden &amp; Sentimen</h3>
               <p className="text-xs md:text-sm text-muted-foreground">Agregat harian laporan publik</p>
             </div>
-            <div className="flex gap-3">
-              <div className="flex items-center gap-1.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-primary" />
-                <span className="text-[10px] font-bold uppercase text-muted-foreground hidden sm:block">Total Sebutan</span>
+            <div className="flex items-center gap-3 flex-wrap">
+              <div className="flex items-center gap-1 bg-muted/30 p-0.5 rounded-lg border border-border/50">
+                {RANGE_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.days}
+                    onClick={() => setTrendDays(opt.days)}
+                    className={cn(
+                      'px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all',
+                      trendDays === opt.days
+                        ? 'bg-background text-foreground shadow-sm'
+                        : 'text-muted-foreground hover:text-foreground'
+                    )}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
               </div>
-              <div className="flex items-center gap-1.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
-                <span className="text-[10px] font-bold uppercase text-muted-foreground hidden sm:block">Sentimen Negatif</span>
+              <div className="flex gap-2">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-primary" />
+                  <span className="text-[10px] font-bold uppercase text-muted-foreground hidden sm:block">Sebutan</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
+                  <span className="text-[10px] font-bold uppercase text-muted-foreground hidden sm:block">Negatif</span>
+                </div>
               </div>
             </div>
           </div>
-          <div className="flex-1 min-h-[250px] md:min-h-[300px] w-full">
+          <div className="flex-1 min-h-[250px] md:min-h-[300px] w-full relative">
+            {trendLoading && (
+              <div className="absolute inset-0 flex items-center justify-center text-xs text-muted-foreground z-10 bg-background/40 backdrop-blur-[2px]">
+                Memuat...
+              </div>
+            )}
+            {!trendLoading && trendData.length === 0 ? (
+              <div className="absolute inset-0 flex items-center justify-center text-xs text-muted-foreground">
+                Belum ada data dalam rentang ini
+              </div>
+            ) : (
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={overview?.sentimentTrend ?? []} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <AreaChart data={trendData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorMentions" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#FF4B3A" stopOpacity={0.3}/>
@@ -274,6 +319,7 @@ export default function OverviewPage() {
                 />
               </AreaChart>
             </ResponsiveContainer>
+            )}
           </div>
         </div>
 

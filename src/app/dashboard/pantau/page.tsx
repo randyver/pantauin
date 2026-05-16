@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ExternalLink, ThumbsUp, MessageCircle, Newspaper,
-  Bot, Sparkles, BrainCircuit, Activity, AlertTriangle, Zap, Radar,
+  Bot, Activity, AlertTriangle, Radar,
   ChevronLeft, ChevronRight,
 } from 'lucide-react';
 import {
@@ -72,62 +72,6 @@ const FILTERS: { value: FilterSource; label: string }[] = [
   { value: 'tiktok',   label: 'TikTok' },
   { value: 'news',     label: 'News' },
 ];
-
-// ── AI Summary Component ─────────────────────────────────────────────────────
-
-function AISummary({ stats }: { stats: PostsStats | null }) {
-  const total = stats?.ratio.total ?? 0;
-  const negPct = total > 0 ? Math.round((stats!.ratio.negative / total) * 100) : 0;
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="relative overflow-hidden rounded-2xl border border-primary/20 bg-primary/5 p-5 md:p-6 mb-8 backdrop-blur-sm shadow-[0_0_30px_rgba(var(--primary),0.05)]"
-    >
-      <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent opacity-70 animate-pulse" />
-      <div className="absolute -right-20 -top-20 w-40 h-40 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
-
-      <div className="flex flex-col sm:flex-row items-start gap-4 md:gap-5 relative z-10">
-        <div className="flex-shrink-0 p-3 rounded-xl bg-primary/10 border border-primary/20 relative self-start">
-          <div className="absolute inset-0 bg-primary/20 rounded-xl animate-ping opacity-20" />
-          <BrainCircuit className="w-6 h-6 text-primary" />
-        </div>
-        <div className="flex-1 min-w-0 space-y-2.5">
-          <div className="flex items-center gap-2 flex-wrap">
-            <h3 className="text-base md:text-lg font-bold text-foreground flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-primary" />
-              Pantauin AI Insight
-            </h3>
-            <span className="px-2 py-0.5 rounded-md bg-primary/10 border border-primary/20 text-primary text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-              Live Feed Analysis
-            </span>
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            transition={{ duration: 0.5 }}
-            className="flex flex-wrap gap-2 pt-1"
-          >
-            <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-red-500/10 border border-red-500/20 text-red-500 text-[11px] font-medium">
-              <AlertTriangle className="w-3 h-3 shrink-0" />
-              {negPct >= 50 ? 'Sentimen Negatif Dominan' : negPct > 0 ? `${negPct}% Sentimen Negatif` : 'Belum Ada Data'}
-            </div>
-            <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-blue-500/10 border border-blue-500/20 text-blue-500 text-[11px] font-medium">
-              <Bot className="w-3 h-3 shrink-0" />
-              {total.toLocaleString('id-ID')} Sinyal 7 Hari
-            </div>
-            <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-green-500/10 border border-green-500/20 text-green-500 text-[11px] font-medium">
-              <Zap className="w-3 h-3 shrink-0" />
-              {(stats?.topEntities.length ?? 0)} Entitas Terdeteksi
-            </div>
-          </motion.div>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
 
 // ── Feed Card ────────────────────────────────────────────────────────────────
 
@@ -203,6 +147,12 @@ function FeedCard({ post, index }: { post: SocialPost; index: number }) {
 
 // ── Page ─────────────────────────────────────────────────────────────────────
 
+const RANGE_OPTIONS: Array<{ label: string; days: number }> = [
+  { label: '7 Hari', days: 7 },
+  { label: '30 Hari', days: 30 },
+  { label: '3 Bulan', days: 90 },
+];
+
 export default function SocialSignalPage() {
   const [mounted, setMounted] = React.useState(false);
   const [filter, setFilter] = React.useState<FilterSource>('all');
@@ -213,15 +163,24 @@ export default function SocialSignalPage() {
   const [error, setError] = React.useState<string | null>(null);
   const [stats, setStats] = React.useState<PostsStats | null>(null);
   const [trends, setTrends] = React.useState<Array<{ date: string; positive: number; negative: number; neutral: number; mentions: number }>>([]);
+  const [trendDays, setTrendDays] = React.useState<number>(7);
+  const [trendLoading, setTrendLoading] = React.useState(false);
   const { value: searchTerm } = useSearch();
 
   React.useEffect(() => setMounted(true), []);
   React.useEffect(() => setPage(1), [filter, searchTerm]);
 
   React.useEffect(() => {
-    fetchPostsStats(7).then(setStats).catch((e) => console.warn('stats fetch failed:', e));
-    fetchOverviewTrends(7).then(setTrends).catch((e) => console.warn('trends fetch failed:', e));
-  }, []);
+    fetchPostsStats(trendDays).then(setStats).catch((e) => console.warn('stats fetch failed:', e));
+  }, [trendDays]);
+
+  React.useEffect(() => {
+    setTrendLoading(true);
+    fetchOverviewTrends(trendDays)
+      .then(setTrends)
+      .catch((e) => console.warn('trends fetch failed:', e))
+      .finally(() => setTrendLoading(false));
+  }, [trendDays]);
 
   React.useEffect(() => {
     let cancelled = false;
@@ -246,14 +205,12 @@ export default function SocialSignalPage() {
   return (
     <div className="sm:ml-4 space-y-6 md:space-y-8 animate-in fade-in duration-700 pb-12">
 
-      <AISummary stats={stats} />
-
       {/* Trends & Keywords */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
         <div className="lg:col-span-2 floating-card p-4 md:p-6 flex flex-col relative overflow-hidden">
           <div className="absolute top-0 right-0 p-32 bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
 
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
             <div>
               <h3 className="text-base md:text-lg font-bold text-foreground flex items-center gap-2">
                 <Activity className="w-5 h-5 text-primary" />
@@ -261,22 +218,50 @@ export default function SocialSignalPage() {
               </h3>
               <p className="text-xs md:text-sm text-muted-foreground mt-1">
                 {stats?.ratio.total
-                  ? `Distribusi sentimen 7 hari dari ${stats.ratio.total.toLocaleString('id-ID')} sinyal`
+                  ? `Distribusi sentimen dari ${stats.ratio.total.toLocaleString('id-ID')} sinyal`
                   : 'Distribusi sentimen harian'}
               </p>
             </div>
-            <div className="flex gap-3">
-              <div className="flex items-center gap-2 bg-green-500/10 px-2.5 py-1 rounded-md border border-green-500/20">
-                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                <span className="text-[10px] font-bold uppercase text-green-600 hidden sm:block">Positif</span>
+            <div className="flex items-center gap-3 flex-wrap">
+              <div className="flex items-center gap-1 bg-muted/30 p-0.5 rounded-lg border border-border/50">
+                {RANGE_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.days}
+                    onClick={() => setTrendDays(opt.days)}
+                    className={cn(
+                      'px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all',
+                      trendDays === opt.days
+                        ? 'bg-background text-foreground shadow-sm'
+                        : 'text-muted-foreground hover:text-foreground'
+                    )}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
               </div>
-              <div className="flex items-center gap-2 bg-red-500/10 px-2.5 py-1 rounded-md border border-red-500/20">
-                <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                <span className="text-[10px] font-bold uppercase text-red-600 hidden sm:block">Negatif</span>
+              <div className="flex gap-2">
+                <div className="flex items-center gap-2 bg-green-500/10 px-2.5 py-1 rounded-md border border-green-500/20">
+                  <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                  <span className="text-[10px] font-bold uppercase text-green-600 hidden sm:block">Positif</span>
+                </div>
+                <div className="flex items-center gap-2 bg-red-500/10 px-2.5 py-1 rounded-md border border-red-500/20">
+                  <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                  <span className="text-[10px] font-bold uppercase text-red-600 hidden sm:block">Negatif</span>
+                </div>
               </div>
             </div>
           </div>
-          <div className="flex-1 min-h-[250px] md:min-h-[300px] w-full">
+          <div className="flex-1 min-h-[250px] md:min-h-[300px] w-full relative">
+            {trendLoading && (
+              <div className="absolute inset-0 flex items-center justify-center text-xs text-muted-foreground z-10 bg-background/40 backdrop-blur-[2px]">
+                Memuat...
+              </div>
+            )}
+            {!trendLoading && trends.length === 0 ? (
+              <div className="absolute inset-0 flex items-center justify-center text-xs text-muted-foreground">
+                Belum ada data dalam rentang ini
+              </div>
+            ) : (
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={trends} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
@@ -300,6 +285,7 @@ export default function SocialSignalPage() {
                 <Area type="monotone" dataKey="negative" stroke="#EF4444" fillOpacity={1} fill="url(#colorNeg)" strokeWidth={3} activeDot={{r: 6, fill: '#EF4444', stroke: '#fff', strokeWidth: 2}} />
               </AreaChart>
             </ResponsiveContainer>
+            )}
           </div>
         </div>
 
