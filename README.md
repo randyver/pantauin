@@ -25,7 +25,7 @@
 
 ## Related
 
-- [pantauin-api](../pantauin-api) — Hono + Drizzle backend yang serve data dari Neon Postgres
+- [pantauin-api](https://github.com/randyver/pantauin-api) — Hono + Drizzle backend yang serve data dari Neon Postgres
 - [pantauin-crawling](https://github.com/randyver/pantauin-crawling) — AI agent for MBG data crawling & analysis (writes directly to Postgres)
 
 ## Getting Started
