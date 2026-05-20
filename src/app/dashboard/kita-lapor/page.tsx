@@ -148,14 +148,15 @@ function ReportCard({ report, provinceName }: { report: CitizenReport; provinceN
         </div>
       )}
 
-      {/* AI Summary (if available, replaces raw description) */}
-      {report.aiSummary ? (
+      {/* Description */}
+      <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">{report.description}</p>
+
+      {/* AI Summary */}
+      {report.aiSummary && (
         <div className="flex items-start gap-1.5">
           <BrainCircuit className="w-3 h-3 text-purple-400 mt-0.5 shrink-0" />
-          <p className="text-xs text-gray-600 leading-relaxed line-clamp-2 italic">{report.aiSummary}</p>
+          <p className="text-xs text-purple-600 leading-relaxed line-clamp-2 italic">{report.aiSummary}</p>
         </div>
-      ) : (
-        <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">{report.description}</p>
       )}
 
       {/* Cluster indicator */}
