@@ -6,7 +6,7 @@
 
 <p align="center">AI-powered platform for monitoring and early detection of issues in Indonesia's Free Nutritious Meal (MBG) program — from social media, news, and public reports in real-time.</p>
 
-<p align="center"><a href="https://pantauin-web.vercel.app">https://pantauin-web.vercel.app</a></p>
+<p align="center"><a href="https://pantauin.site">https://pantauin.site</a></p>
 
 ---
 
@@ -17,6 +17,7 @@
 - **Pantau Insiden** — AI-powered live feed that crawls and analyzes signals from Twitter/X, Instagram, TikTok, and news outlets, with automated sentiment scoring and entity extraction
 - **Kawalin** — real-time SPPG CCTV monitoring grid by province and region, sourced from local government streams
 - **Laporin** — public incident reporting channel for citizens to submit MBG-related complaints directly
+- **KitaLapor** — citizen-driven report submission portal with full AI pipeline: automatic severity triage, spam filtering, photo analysis, and duplicate clustering
 
 ## Tech Stack
 
