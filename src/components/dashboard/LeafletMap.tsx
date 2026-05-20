@@ -8,7 +8,7 @@ import { renderToString } from 'react-dom/server';
 import { Package, AlertTriangle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { MbgProvinceData } from '@/types/mbg';
-import type { SocialPost } from '@/lib/sosmed-dummy-data';
+import type { ApiIncident } from '@/lib/api';
 
 // Marker color logic mirroring the previous implementation
 function markerColor(riskScore: number) {
@@ -19,11 +19,11 @@ function markerColor(riskScore: number) {
 
 interface LeafletMapProps {
   provinces: { data: MbgProvinceData; coords: { lat: number; lng: number } }[];
-  incidents: { post: SocialPost; coords: { lat: number; lng: number } }[];
+  incidents: { incident: ApiIncident; coords: { lat: number; lng: number } }[];
   selectedProvince: MbgProvinceData | null;
-  selectedIncident: SocialPost | null;
+  selectedIncident: ApiIncident | null;
   onSelectProvince: (p: MbgProvinceData) => void;
-  onSelectIncident: (p: SocialPost) => void;
+  onSelectIncident: (i: ApiIncident) => void;
 }
 
 // Small component to fix missing default leaflet marker icons if any, though we use custom ones here.
@@ -103,10 +103,9 @@ export default function LeafletMap({
         );
       })}
 
-      {incidents.map(({ post, coords }) => {
-        const isSelected = selectedIncident?.id === post.id;
-        
-        // Generate raw HTML for the divIcon
+      {incidents.map(({ incident, coords }) => {
+        const isSelected = selectedIncident?.id === incident.id;
+
         const html = renderToString(
           <div className={cn(
             'relative flex items-center justify-center rounded-full text-white transition-all cursor-pointer shadow-lg',
@@ -125,11 +124,11 @@ export default function LeafletMap({
 
         return (
           <Marker
-            key={`inc-${post.id}`}
+            key={`inc-${incident.id}`}
             position={[coords.lat, coords.lng]}
             icon={customIcon}
             eventHandlers={{
-              click: () => onSelectIncident(post),
+              click: () => onSelectIncident(incident),
             }}
           />
         );

@@ -25,7 +25,8 @@
 
 ## Related
 
-- [pantauin-crawling](https://github.com/randyver/pantauin-crawling) — AI agent for MBG data crawling & analysis
+- [pantauin-api](../pantauin-api) — Hono + Drizzle backend yang serve data dari Neon Postgres
+- [pantauin-crawling](https://github.com/randyver/pantauin-crawling) — AI agent for MBG data crawling & analysis (writes directly to Postgres)
 
 ## Getting Started
 
@@ -34,4 +35,10 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Set env (`.env.local`):
+
+```
+NEXT_PUBLIC_API_URL=http://localhost:3001
+```
+
+Pastikan `pantauin-api` jalan (port 3001 default). Buka [http://localhost:3000](http://localhost:3000).

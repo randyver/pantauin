@@ -91,7 +91,7 @@ export default function LaporinPage() {
   return (
     <div className="sm:ml-4 space-y-6 md:space-y-8 pb-12">
       {/* Header */}
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shadow-lg shadow-primary/20">
             <Megaphone className="w-5 h-5 text-white" />
@@ -101,27 +101,21 @@ export default function LaporinPage() {
             <p className="text-xs text-muted-foreground">Temukan kontak resmi untuk melaporkan isu terkait program MBG</p>
           </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* ✅ Search feedback banner */}
       {globalSearch && (
-        <motion.div
-          initial={{ opacity: 0, y: -4 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary/5 border border-primary/20 text-xs text-primary font-medium"
-        >
+        <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary/5 border border-primary/20 text-xs text-primary font-medium">
           <Search className="w-3.5 h-3.5" />
           Filter aktif: "{globalSearch}" — ditemukan{' '}
           {activeTab === 'nasional' ? filteredNasional.length :
            activeTab === 'daerah' ? filteredProvinsi.length :
            filteredOnline.length} hasil
-        </motion.div>
+        </div>
       )}
 
       {/* Tips Banner */}
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-        className="floating-card p-4 md:p-5 border-l-4 border-primary"
-      >
+      <div className="floating-card p-4 md:p-5 border-l-4 border-primary">
         <div className="flex items-start gap-3">
           <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
             <FileText className="w-4 h-4 text-primary" />
@@ -135,7 +129,7 @@ export default function LaporinPage() {
             </p>
           </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* Tab Navigation */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1">
@@ -184,11 +178,8 @@ export default function LaporinPage() {
               const kat = kategoriLabels[k.kategori];
               const isExpanded = expandedCard === k.id;
               return (
-                <motion.div
+                <div
                   key={k.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.05 }}
                   className="floating-card p-4 md:p-5 hover:shadow-xl transition-shadow cursor-pointer group"
                   onClick={() => setExpandedCard(isExpanded ? null : k.id)}
                 >
@@ -253,7 +244,7 @@ export default function LaporinPage() {
                       </motion.div>
                     )}
                   </AnimatePresence>
-                </motion.div>
+                </div>
               );
             })}
           </motion.div>
@@ -291,11 +282,8 @@ export default function LaporinPage() {
                 const JenisIcon = jenisIcons[k.jenis] || Building2;
                 const isExpanded = expandedCard === k.id;
                 return (
-                  <motion.div
+                  <div
                     key={k.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.03 }}
                     className="floating-card p-4 hover:shadow-xl transition-shadow cursor-pointer group"
                     onClick={() => setExpandedCard(isExpanded ? null : k.id)}
                   >
@@ -355,7 +343,7 @@ export default function LaporinPage() {
                         </motion.div>
                       )}
                     </AnimatePresence>
-                  </motion.div>
+                  </div>
                 );
               })}
             </div>
@@ -386,11 +374,8 @@ export default function LaporinPage() {
             ) : filteredOnline.map((k, i) => {
               const IconComp = k.icon === 'globe' ? Globe : k.icon === 'smartphone' ? Smartphone : PhoneCall;
               return (
-                <motion.div
+                <div
                   key={k.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.05 }}
                   className="floating-card p-5 md:p-6 hover:shadow-xl transition-shadow group flex flex-col"
                 >
                   <div className="flex items-start gap-3 mb-3">
@@ -455,7 +440,7 @@ export default function LaporinPage() {
                   >
                     Kunjungi <ExternalLink className="w-3.5 h-3.5" />
                   </a>
-                </motion.div>
+                </div>
               );
             })}
           </motion.div>

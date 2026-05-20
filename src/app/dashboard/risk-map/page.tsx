@@ -9,55 +9,15 @@ import {
   Building2, BadgeAlert, ArrowUpRight, ChevronLeft, ChevronRight,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { PROVINCES } from '@/lib/provinces';
 import { useSearch } from '@/lib/search-context';
 import type { MbgStaticData, MbgProvinceData, RupPackageEnriched } from '@/types/mbg';
-import { allSocialPosts, type SocialPost } from '@/lib/sosmed-dummy-data';
+import { fetchRupNational, fetchIncidentsMap, type ApiIncident } from '@/lib/api';
 
 const LeafletMap = dynamic(() => import('@/components/dashboard/LeafletMap'), {
   ssr: false,
   loading: () => <div className="w-full h-full flex items-center justify-center bg-[#1a1a2e] text-white">Memuat Peta...</div>
 });
 
-const INCIDENT_COORDS: Record<string, { lat: number, lng: number }> = {
-  'Jakarta': { lat: -6.2088, lng: 106.8456 },
-  'Cianjur': { lat: -6.8168, lng: 107.1415 },
-  'Cianjur, Jawa Barat': { lat: -6.8168, lng: 107.1415 },
-  'Lombok Timur': { lat: -8.6500, lng: 116.5333 },
-  'Pangadaan, Lombok Timur': { lat: -8.6500, lng: 116.5333 },
-  'Pringgasela, Lombok Timur': { lat: -8.6186, lng: 116.4870 },
-  'Jeneponto, Lombok Timur': { lat: -8.6500, lng: 116.5333 },
-  'Cilegon, Banten': { lat: -6.0175, lng: 106.0205 },
-  'Jambi': { lat: -1.6101, lng: 103.6131 },
-  'Yogyakarta': { lat: -7.7956, lng: 110.3695 },
-  'Medan': { lat: 3.5952, lng: 98.6722 },
-  'Benteng, Bengkulu': { lat: -3.7533, lng: 102.2665 },
-  'Madura': { lat: -7.0267, lng: 113.6231 },
-  'Depok': { lat: -6.4025, lng: 106.7942 },
-  'Magetan': { lat: -7.6496, lng: 111.3323 },
-  'Lombok Tengah': { lat: -8.7061, lng: 116.2829 },
-  'Jeneponto': { lat: -5.6980, lng: 119.7369 },
-  'Mataram': { lat: -8.5833, lng: 116.1167 },
-  'Sumatra': { lat: 0.5897, lng: 101.3431 },
-  'Jakarta Timur': { lat: -6.2250, lng: 106.9004 },
-  'Pontianak': { lat: -0.0227, lng: 109.3333 },
-  'Banten': { lat: -6.4058, lng: 106.0640 },
-  'Surabaya': { lat: -7.2504, lng: 112.7688 },
-  'Pasuruan': { lat: -7.6453, lng: 112.9075 },
-  'Kebonagung': { lat: -6.9150, lng: 110.5899 },
-  'Sulawesi Selatan': { lat: -4.1449, lng: 119.9289 },
-  'Rembang': { lat: -6.7088, lng: 111.3435 },
-  'Klaten': { lat: -7.7051, lng: 110.6015 },
-  'Kediri': { lat: -7.8202, lng: 112.0118 },
-  'Mataram, NTB': { lat: -8.5833, lng: 116.1167 },
-  'Demak, Jawa Tengah': { lat: -6.8906, lng: 110.6396 },
-  'Deli Serdang, Sumatra Utara': { lat: -3.5516, lng: 98.8770 },
-  'Rembang, Jawa Tengah': { lat: -6.7088, lng: 111.3435 },
-  'Kediri, Jawa Timur': { lat: -7.8202, lng: 112.0118 },
-  'Cianjur / Jakarta': { lat: -6.8168, lng: 107.1415 },
-};
-
-const MAPS_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
 const PAGE_SIZE = 20;
 
 function formatRupiah(n: number) {
@@ -157,9 +117,10 @@ function PackageModal({ pkg, onClose }: { pkg: RupPackageEnriched; onClose: () =
 
 export default function RiskMapPage() {
   const [nationalData, setNationalData] = useState<MbgStaticData | null>(null);
+  const [incidents, setIncidents] = useState<ApiIncident[]>([]);
   const [selectedProvince, setSelectedProvince] = useState<MbgProvinceData | null>(null);
   const [selectedPackage, setSelectedPackage] = useState<RupPackageEnriched | null>(null);
-  const [selectedIncident, setSelectedIncident] = useState<SocialPost | null>(null);
+  const [selectedIncident, setSelectedIncident] = useState<ApiIncident | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [tableSortBy, setTableSortBy] = useState<'score' | 'value'>('score');
@@ -180,9 +141,9 @@ export default function RiskMapPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch('/data/mbg-data.json');
-      if (!res.ok) throw new Error('Data belum digenerate. Jalankan: npm run generate-data');
-      setNationalData(await res.json());
+      const [rup, inc] = await Promise.all([fetchRupNational(), fetchIncidentsMap()]);
+      setNationalData(rup);
+      setIncidents(inc);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Error tidak diketahui');
     } finally {
@@ -206,37 +167,24 @@ export default function RiskMapPage() {
 
   const provinceMap: Record<string, MbgProvinceData> = {};
   nationalData?.provinces.forEach(p => { provinceMap[p.provinceId] = p; });
-  const provincesWithData = PROVINCES.filter(p => (provinceMap[p.id]?.packages.length ?? 0) > 0);
+  const provincesWithData = (nationalData?.provinces ?? []).filter(p => p.packages.length > 0 && p.lat != null && p.lng != null);
+
+  const incidentCountByProvince = useMemo(() => {
+    const map: Record<string, number> = {};
+    incidents.forEach((i) => {
+      if (i.provinceId) map[i.provinceId] = (map[i.provinceId] ?? 0) + 1;
+    });
+    return map;
+  }, [incidents]);
 
   const provinceRisks = useMemo(() => {
-    return provincesWithData.map(p => {
-      const pd = provinceMap[p.id];
-      const provinceIncidents = allSocialPosts.filter(post => {
-        const loc = post.location.toLowerCase();
-        const pName = p.name.toLowerCase();
-        if (loc.includes(pName)) return true;
-        if (pName === 'jawa barat' && (loc.includes('cianjur') || loc.includes('depok') || loc.includes('bandung'))) return true;
-        if (pName === 'nusa tenggara barat' && (loc.includes('lombok') || loc.includes('mataram'))) return true;
-        if (pName === 'dki jakarta' && loc.includes('jakarta')) return true;
-        if (pName === 'banten' && loc.includes('cilegon')) return true;
-        if (pName === 'jambi' && loc.includes('jambi')) return true;
-        if (pName === 'di yogyakarta' && loc.includes('yogyakarta')) return true;
-        if (pName === 'sumatera utara' && (loc.includes('medan') || loc.includes('deli serdang'))) return true;
-        if (pName === 'bengkulu' && loc.includes('bengkulu')) return true;
-        if (pName === 'jawa timur' && (loc.includes('madura') || loc.includes('magetan') || loc.includes('surabaya') || loc.includes('pasuruan') || loc.includes('kediri'))) return true;
-        if (pName === 'sulawesi selatan' && loc.includes('jeneponto')) return true;
-        if (pName === 'kalimantan barat' && loc.includes('pontianak')) return true;
-        if (pName === 'jawa tengah' && (loc.includes('kebonagung') || loc.includes('rembang') || loc.includes('klaten') || loc.includes('demak'))) return true;
-        return false;
-      });
-      return {
-        id: p.id,
-        name: p.name,
-        riskScore: pd.riskScore,
-        incidentCount: provinceIncidents.length,
-      };
-    }).filter(pr => pr.riskScore > 0 || pr.incidentCount > 0);
-  }, [provincesWithData, provinceMap]);
+    return provincesWithData.map(p => ({
+      id: p.provinceId,
+      name: p.provinceName,
+      riskScore: p.riskScore,
+      incidentCount: incidentCountByProvince[p.provinceId] ?? 0,
+    })).filter(pr => pr.riskScore > 0 || pr.incidentCount > 0);
+  }, [provincesWithData, incidentCountByProvince]);
 
   // ✅ Filter provinsi berdasarkan globalSearch
   const filteredProvinceRisks = useMemo(() => {
@@ -291,8 +239,8 @@ export default function RiskMapPage() {
       <div className="flex flex-col xl:flex-row gap-4 md:gap-6">
         <div className="order-2 xl:order-1 xl:flex-1 relative h-[320px] sm:h-[420px] md:h-[500px] rounded-3xl overflow-hidden border-white/40 shadow-2xl">
           <LeafletMap 
-            provinces={provincesWithData.map(p => ({ data: provinceMap[p.id], coords: p.coordinates }))}
-            incidents={allSocialPosts.filter(p => INCIDENT_COORDS[p.location]).map(post => ({ post, coords: INCIDENT_COORDS[post.location] }))}
+            provinces={provincesWithData.map(p => ({ data: p, coords: { lat: p.lat!, lng: p.lng! } }))}
+            incidents={incidents.filter(i => i.lat != null && i.lng != null).map(i => ({ incident: i, coords: { lat: i.lat!, lng: i.lng! } }))}
             selectedProvince={selectedProvince}
             selectedIncident={selectedIncident}
             onSelectProvince={(pd) => { setSelectedProvince(pd); setSelectedIncident(null); }}
@@ -380,24 +328,38 @@ export default function RiskMapPage() {
                   <X className="w-4 h-4" />
                 </button>
                 <div className="mb-4 pr-6">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-red-500 mb-1">Sosmed Alert: {selectedIncident.platform}</p>
-                  <h3 className="text-sm md:text-base font-bold text-foreground leading-snug">{selectedIncident.username} <br/><span className="text-muted-foreground font-normal text-xs">{selectedIncident.location}</span></h3>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-red-500 mb-1">
+                    Insiden{selectedIncident.type ? ` · ${selectedIncident.type}` : ''}
+                  </p>
+                  <h3 className="text-sm md:text-base font-bold text-foreground leading-snug">
+                    {selectedIncident.title}
+                    <br />
+                    <span className="text-muted-foreground font-normal text-xs">{selectedIncident.locationText ?? '—'}</span>
+                  </h3>
                 </div>
-                <div className="bg-red-50 p-3 md:p-4 rounded-xl mb-4 border border-red-200">
-                  <p className="text-xs md:text-sm text-red-900 leading-relaxed font-medium">{selectedIncident.content}</p>
+                {selectedIncident.aiSummary && (
+                  <div className="bg-red-50 p-3 md:p-4 rounded-xl mb-4 border border-red-200">
+                    <p className="text-xs md:text-sm text-red-900 leading-relaxed font-medium">{selectedIncident.aiSummary}</p>
+                  </div>
+                )}
+                <div className="grid grid-cols-3 gap-2 mb-4">
+                  {[
+                    { label: 'Korban', value: selectedIncident.victims },
+                    { label: 'Sekolah', value: selectedIncident.schoolsAffected },
+                    { label: 'Severity', value: selectedIncident.severity ?? '—' },
+                  ].map((s) => (
+                    <div key={s.label} className="bg-white/50 rounded-xl p-2 text-center border border-white/80">
+                      <p className="text-[10px] text-muted-foreground">{s.label}</p>
+                      <p className="text-sm md:text-base font-bold text-foreground">{s.value}</p>
+                    </div>
+                  ))}
                 </div>
                 <div className="flex flex-col gap-1 text-xs font-medium text-muted-foreground mb-6">
-                  <span>Waktu: {selectedIncident.timeAgo}</span>
-                  <span>Keterlibatan: {selectedIncident.likes} likes, {selectedIncident.comments} comments</span>
+                  {selectedIncident.vendorName && <span>Vendor: {selectedIncident.vendorName}</span>}
+                  {selectedIncident.sppgName && <span>SPPG: {selectedIncident.sppgName}</span>}
+                  <span>Status: {selectedIncident.status}</span>
+                  <span>Update: {new Date(selectedIncident.lastUpdatedAt).toLocaleString('id-ID')}</span>
                 </div>
-                <a
-                  href={selectedIncident.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 w-full py-2.5 bg-red-600 text-white rounded-xl text-xs font-bold hover:bg-red-700 transition-colors"
-                >
-                  Lihat Postingan Asli <ExternalLink className="w-3.5 h-3.5" />
-                </a>
               </motion.div>
             ) : (
               <motion.div

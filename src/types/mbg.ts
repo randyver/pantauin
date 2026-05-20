@@ -15,6 +15,8 @@ export interface RupPackageEnriched {
 export interface MbgProvinceData {
   provinceId: string;
   provinceName: string;
+  lat: number | null;
+  lng: number | null;
   packages: RupPackageEnriched[];
   totalAnggaran: number;
   anomalyCount: number;
