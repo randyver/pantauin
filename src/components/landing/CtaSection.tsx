@@ -17,7 +17,7 @@ export default function CtaSection() {
         </p>
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row items-center gap-4 lg:gap-6 mb-16 lg:mb-20 w-full sm:w-auto">
+        <div className="flex flex-col sm:flex-row items-center gap-4 lg:gap-6 mb-16 lg:mb-20 w-full sm:w-auto flex-wrap justify-center">
           <Link href="/dashboard" className="w-full sm:w-auto">
             <button className="w-full px-10 py-4 bg-[#E9F7BA] text-black font-bold text-[18px] rounded-full hover:bg-[#d9e8aa] transition-all shadow-lg cursor-pointer">
               Buka Dashboard
@@ -26,6 +26,11 @@ export default function CtaSection() {
           <Link href="/dashboard/risk-map" className="w-full sm:w-auto">
             <button className="w-full px-10 py-4 bg-transparent border-2 border-white text-white font-bold text-[18px] rounded-full hover:bg-white/10 transition-all shadow-lg cursor-pointer">
               Lihat Risk Map
+            </button>
+          </Link>
+          <Link href="/kita-lapor/buat" className="w-full sm:w-auto">
+            <button className="w-full px-10 py-4 bg-[#1a1a1a] text-white font-bold text-[18px] rounded-full hover:bg-[#333] transition-all shadow-lg cursor-pointer">
+              Lapor Insiden
             </button>
           </Link>
         </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { MapPin, AlertTriangle, School, Building, Activity } from 'lucide-react';
 import {
   AreaChart, Area, PieChart, Pie, Cell,
@@ -522,6 +523,24 @@ export default function OverviewPage() {
             </table>
           </div>
         </div>
+      </section>
+
+      {/* KitaLapor CTA Banner */}
+      <section className="floating-card p-5 md:p-6 bg-gradient-to-r from-[#FF4B3A]/5 to-transparent border-l-4 border-[#FF4B3A] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h3 className="font-bold text-foreground text-sm md:text-base flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-[#FF4B3A] animate-pulse" />
+            Temukan Masalah di Program MBG?
+          </h3>
+          <p className="text-xs md:text-sm text-muted-foreground mt-1">
+            Laporkan langsung melalui KitaLapor — laporan warga menjadi sinyal early-warning sistem kami.
+          </p>
+        </div>
+        <Link href="/kita-lapor/buat" className="shrink-0">
+          <button className="flex items-center gap-2 px-5 py-2.5 bg-[#FF4B3A] text-white text-xs font-bold rounded-xl hover:bg-[#e03f31] transition-all shadow-sm">
+            Lapor Sekarang →
+          </button>
+        </Link>
       </section>
     </div>
   );

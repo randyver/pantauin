@@ -10,6 +10,7 @@ import {
   Signal,
   Megaphone,
   Video,
+  ClipboardList,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -19,6 +20,7 @@ const menuItems = [
   { icon: Signal, label: 'Pantau Insiden', href: '/dashboard/pantau' },
   { icon: Video, label: 'Kawalin', href: '/dashboard/kawalin' },
   { icon: Megaphone, label: 'Laporin', href: '/dashboard/laporin' },
+  { icon: ClipboardList, label: 'KitaLapor', href: '/kita-lapor' },
 ];
 
 export function Sidebar() {

@@ -115,9 +115,9 @@ export default function HeroSection() {
                 LIHAT DASHBOARD LIVE
               </button>
             </Link>
-            <Link href="/dashboard/risk-map" className="w-full sm:w-[247px]">
+            <Link href="/kita-lapor/buat" className="w-full sm:w-[247px]">
               <button className="w-full h-[54px] bg-white text-[#FF4B3A] border-[1px] border-[#FF4B3A] font-bold rounded-full shadow-lg hover:bg-gray-50 transition-all cursor-pointer">
-                LIHAT RISK MAP
+                LAPOR INSIDEN
               </button>
             </Link>
           </div>
