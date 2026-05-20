@@ -182,7 +182,7 @@ export default function BuatLaporanPage() {
     <div className="min-h-screen bg-[#f5f5f0] py-8 px-4">
       {/* Header */}
       <div className="max-w-xl mx-auto mb-6">
-        <Link href="/kita-lapor" className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 transition-colors mb-4">
+        <Link href="/dashboard/kita-lapor" className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 transition-colors mb-4">
           <ChevronLeft className="w-4 h-4" /> Kembali
         </Link>
         <div className="flex items-center gap-3 mb-6">

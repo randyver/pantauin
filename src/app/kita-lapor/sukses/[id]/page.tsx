@@ -51,10 +51,10 @@ export default function SuksesPage({ params }: { params: Promise<{ id: string }>
             </div>
 
             <div className="flex flex-col gap-3">
-              <Link href="/dashboard">
+              <Link href="/dashboard/kita-lapor">
                 <button className="w-full flex items-center justify-center gap-2 py-3 bg-[#FF4B3A] text-white font-bold rounded-xl hover:bg-[#e03f31] transition-all text-sm">
                   <LayoutDashboard className="w-4 h-4" />
-                  Lihat Dashboard
+                  Lihat Semua Laporan
                 </button>
               </Link>
               <Link href="/kita-lapor/buat">

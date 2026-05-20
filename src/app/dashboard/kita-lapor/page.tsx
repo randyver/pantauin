@@ -8,6 +8,7 @@ import {
   Clock, CheckCircle, AlertCircle, X,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useSearch } from '@/lib/search-context';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 
@@ -158,7 +159,7 @@ function ReportCard({ report, provinceName }: { report: CitizenReport; provinceN
           {report.photoUrls.length > 3 && (
             <button
               onClick={() => setLightboxUrl(report.photoUrls![3])}
-              className="w-14 h-14 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center text-xs text-gray-400 font-bold hover:border-[#FF4B3A]/40 transition-colors"
+              className="w-14 h-14 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center text-xs text-gray-400 font-bold hover:border-[#FF4B3A]/40 transition-colors cursor-pointer"
             >
               +{report.photoUrls.length - 3}
             </button>
@@ -187,7 +188,7 @@ function ReportCard({ report, provinceName }: { report: CitizenReport; provinceN
 
 // ── Page ─────────────────────────────────────────────────────────────────────
 
-export default function KitaLaporPage() {
+export default function KitaLaporListPage() {
   const [reports, setReports] = useState<CitizenReport[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -196,6 +197,7 @@ export default function KitaLaporPage() {
   const [filterCategory, setFilterCategory] = useState('');
   const [filterProvince, setFilterProvince] = useState('');
   const [showFilters, setShowFilters] = useState(false);
+  const { value: searchTerm } = useSearch();
 
   useEffect(() => {
     fetch(`${API_URL}/api/provinces`).then(r => r.json()).then(j => setProvinces(j.data ?? [])).catch(() => {});
@@ -218,176 +220,171 @@ export default function KitaLaporPage() {
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const provinceMap = Object.fromEntries(provinces.map(p => [p.id, p.name]));
 
+  const filteredReports = searchTerm
+    ? reports.filter(r => {
+        const q = searchTerm.toLowerCase();
+        return (
+          r.description.toLowerCase().includes(q) ||
+          (r.schoolName ?? '').toLowerCase().includes(q) ||
+          (r.trackingId ?? '').toLowerCase().includes(q)
+        );
+      })
+    : reports;
+
   return (
-    <div className="min-h-screen bg-[#f5f5f0]">
-      {/* Nav */}
-      <nav className="px-6 py-5 flex items-center justify-between max-w-6xl mx-auto">
-        <Link href="/" className="flex items-center gap-2.5">
-          <img src="/logo/logo_pantauin.png" alt="Pantauin" className="w-8 h-8" />
-          <span className="font-extrabold text-[#333] text-lg">Pantauin</span>
-        </Link>
-        <Link href="/dashboard" className="text-sm font-semibold text-[#333]/60 hover:text-[#333] transition-colors">
-          Dashboard →
-        </Link>
-      </nav>
-
-      <div className="max-w-6xl mx-auto px-6 pb-16">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-          <div>
-            <h1 className="text-2xl md:text-3xl font-black text-[#1a1a1a] flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-[#FF4B3A] flex items-center justify-center shrink-0">
-                <Megaphone className="w-4 h-4 text-white" />
-              </div>
-              Laporan Masyarakat
-            </h1>
-            <p className="text-sm text-gray-500 mt-1.5">
-              {total > 0 ? `${total.toLocaleString('id-ID')} laporan masuk dari seluruh Indonesia` : 'Laporan warga tentang program MBG'}
-            </p>
-          </div>
-          <Link href="/kita-lapor/buat">
-            <button className="flex items-center gap-2 px-5 py-2.5 bg-[#FF4B3A] text-white text-sm font-bold rounded-xl hover:bg-[#e03f31] transition-all shadow-sm shrink-0">
-              <Megaphone className="w-4 h-4" /> Buat Laporan
-            </button>
-          </Link>
+    <div className="sm:ml-4 space-y-6 md:space-y-8 pb-12">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-xl md:text-2xl font-black text-foreground flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-[#FF4B3A] flex items-center justify-center shrink-0">
+              <Megaphone className="w-4 h-4 text-white" />
+            </div>
+            Laporan Masyarakat
+          </h1>
+          <p className="text-xs md:text-sm text-muted-foreground mt-1.5">
+            {total > 0 ? `${total.toLocaleString('id-ID')} laporan masuk dari seluruh Indonesia` : 'Laporan warga tentang program MBG'}
+          </p>
         </div>
-
-        {/* Filters */}
-        <div className="mb-6">
-          <button
-            onClick={() => setShowFilters(v => !v)}
-            className={cn(
-              'flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border transition-all mb-3',
-              showFilters ? 'bg-[#FF4B3A] text-white border-[#FF4B3A]' : 'bg-white text-gray-600 border-gray-200 hover:border-[#FF4B3A]/40'
-            )}
-          >
-            <Filter className="w-3.5 h-3.5" /> Filter
-            {(filterCategory || filterProvince) && (
-              <span className="w-2 h-2 rounded-full bg-white/80" />
-            )}
+        <Link href="/kita-lapor/buat">
+          <button className="flex items-center gap-2 px-5 py-2.5 bg-[#FF4B3A] text-white text-sm font-bold rounded-xl hover:bg-[#e03f31] transition-all shadow-sm shrink-0">
+            <Megaphone className="w-4 h-4" /> Buat Laporan
           </button>
+        </Link>
+      </div>
 
-          {showFilters && (
-            <div className="bg-white rounded-2xl border border-gray-100 p-4 flex flex-col sm:flex-row gap-4">
-              <div className="flex-1">
-                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-2">Kategori</label>
-                <select
-                  value={filterCategory}
-                  onChange={e => setFilterCategory(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#FF4B3A]/20"
-                >
-                  <option value="">Semua Kategori</option>
-                  {Object.entries(CATEGORY_MAP).map(([v, c]) => (
-                    <option key={v} value={v}>{c.label}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="flex-1">
-                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-2">Provinsi</label>
-                <select
-                  value={filterProvince}
-                  onChange={e => setFilterProvince(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#FF4B3A]/20"
-                >
-                  <option value="">Semua Provinsi</option>
-                  {provinces.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-                </select>
-              </div>
-              {(filterCategory || filterProvince) && (
-                <div className="flex items-end">
-                  <button
-                    onClick={() => { setFilterCategory(''); setFilterProvince(''); }}
-                    className="px-4 py-2 text-xs font-semibold text-gray-500 hover:text-gray-700 transition-colors"
-                  >
-                    Reset
-                  </button>
-                </div>
-              )}
-            </div>
+      {/* Filters */}
+      <div>
+        <button
+          onClick={() => setShowFilters(v => !v)}
+          className={cn(
+            'flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border transition-all mb-3',
+            showFilters ? 'bg-[#FF4B3A] text-white border-[#FF4B3A]' : 'bg-white text-gray-600 border-gray-200 hover:border-[#FF4B3A]/40'
           )}
-        </div>
+        >
+          <Filter className="w-3.5 h-3.5" /> Filter
+          {(filterCategory || filterProvince) && (
+            <span className="w-2 h-2 rounded-full bg-white/80" />
+          )}
+        </button>
 
-        {/* Content */}
-        {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="bg-white rounded-2xl border border-gray-100 p-5 animate-pulse">
-                <div className="h-6 bg-gray-100 rounded-lg w-1/2 mb-3" />
-                <div className="h-4 bg-gray-100 rounded w-3/4 mb-2" />
-                <div className="h-3 bg-gray-100 rounded w-full mb-1" />
-                <div className="h-3 bg-gray-100 rounded w-5/6" />
-              </div>
-            ))}
-          </div>
-        ) : reports.length === 0 ? (
-          <div className="text-center py-20">
-            <FileX className="w-12 h-12 text-gray-200 mx-auto mb-4" />
-            <h3 className="font-bold text-gray-400 mb-1">Belum ada laporan</h3>
-            <p className="text-sm text-gray-400 mb-6">
-              {filterCategory || filterProvince ? 'Tidak ada laporan yang sesuai filter.' : 'Jadilah yang pertama melaporkan!'}
-            </p>
-            <Link href="/kita-lapor/buat">
-              <button className="px-6 py-2.5 bg-[#FF4B3A] text-white text-sm font-bold rounded-xl hover:bg-[#e03f31] transition-all">
-                Buat Laporan Pertama
-              </button>
-            </Link>
-          </div>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-              {reports.map(r => (
-                <ReportCard key={r.id} report={r} provinceName={r.provinceId ? provinceMap[r.provinceId] : undefined} />
-              ))}
+        {showFilters && (
+          <div className="bg-white rounded-2xl border border-gray-100 p-4 flex flex-col sm:flex-row gap-4">
+            <div className="flex-1">
+              <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-2">Kategori</label>
+              <select
+                value={filterCategory}
+                onChange={e => setFilterCategory(e.target.value)}
+                className="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#FF4B3A]/20"
+              >
+                <option value="">Semua Kategori</option>
+                {Object.entries(CATEGORY_MAP).map(([v, c]) => (
+                  <option key={v} value={v}>{c.label}</option>
+                ))}
+              </select>
             </div>
-
-            {totalPages > 1 && (
-              <div className="flex items-center justify-between mt-8 pt-6 border-t border-gray-200">
-                <p className="text-xs text-gray-400">
-                  {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, total)} dari {total} laporan
-                </p>
-                <div className="flex items-center gap-1">
-                  <button
-                    onClick={() => setPage(p => Math.max(1, p - 1))}
-                    disabled={page === 1}
-                    className="p-2 rounded-lg border border-gray-200 disabled:opacity-30 hover:bg-gray-50 transition-colors"
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                  </button>
-                  {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
-                    const p = totalPages <= 5 ? i + 1 : page <= 3 ? i + 1 : page >= totalPages - 2 ? totalPages - 4 + i : page - 2 + i;
-                    return (
-                      <button
-                        key={p}
-                        onClick={() => setPage(p)}
-                        className={cn(
-                          'w-8 h-8 rounded-lg text-xs font-semibold transition-colors',
-                          page === p ? 'bg-[#FF4B3A] text-white' : 'hover:bg-gray-100 text-gray-500'
-                        )}
-                      >
-                        {p}
-                      </button>
-                    );
-                  })}
-                  <button
-                    onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                    disabled={page === totalPages}
-                    className="p-2 rounded-lg border border-gray-200 disabled:opacity-30 hover:bg-gray-50 transition-colors"
-                  >
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                </div>
+            <div className="flex-1">
+              <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-2">Provinsi</label>
+              <select
+                value={filterProvince}
+                onChange={e => setFilterProvince(e.target.value)}
+                className="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#FF4B3A]/20"
+              >
+                <option value="">Semua Provinsi</option>
+                {provinces.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+              </select>
+            </div>
+            {(filterCategory || filterProvince) && (
+              <div className="flex items-end">
+                <button
+                  onClick={() => { setFilterCategory(''); setFilterProvince(''); }}
+                  className="px-4 py-2 text-xs font-semibold text-gray-500 hover:text-gray-700 transition-colors"
+                >
+                  Reset
+                </button>
               </div>
             )}
-          </>
+          </div>
         )}
       </div>
 
-      {/* Sticky fab */}
-      <Link href="/kita-lapor/buat" className="fixed bottom-6 right-6 sm:hidden z-50">
-        <button className="flex items-center gap-2 px-5 py-3 bg-[#FF4B3A] text-white text-sm font-bold rounded-full shadow-xl hover:bg-[#e03f31] transition-all">
-          <Megaphone className="w-4 h-4" /> Lapor
-        </button>
-      </Link>
+      {/* Content */}
+      {loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="bg-white rounded-2xl border border-gray-100 p-5 animate-pulse">
+              <div className="h-6 bg-gray-100 rounded-lg w-1/2 mb-3" />
+              <div className="h-4 bg-gray-100 rounded w-3/4 mb-2" />
+              <div className="h-3 bg-gray-100 rounded w-full mb-1" />
+              <div className="h-3 bg-gray-100 rounded w-5/6" />
+            </div>
+          ))}
+        </div>
+      ) : filteredReports.length === 0 ? (
+        <div className="text-center py-20">
+          <FileX className="w-12 h-12 text-gray-200 mx-auto mb-4" />
+          <h3 className="font-bold text-gray-400 mb-1">Belum ada laporan</h3>
+          <p className="text-sm text-gray-400 mb-6">
+            {searchTerm
+              ? `Tidak ada hasil untuk "${searchTerm}".`
+              : filterCategory || filterProvince
+                ? 'Tidak ada laporan yang sesuai filter.'
+                : 'Jadilah yang pertama melaporkan!'}
+          </p>
+          <Link href="/kita-lapor/buat">
+            <button className="px-6 py-2.5 bg-[#FF4B3A] text-white text-sm font-bold rounded-xl hover:bg-[#e03f31] transition-all">
+              Buat Laporan Pertama
+            </button>
+          </Link>
+        </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            {filteredReports.map(r => (
+              <ReportCard key={r.id} report={r} provinceName={r.provinceId ? provinceMap[r.provinceId] : undefined} />
+            ))}
+          </div>
+
+          {totalPages > 1 && !searchTerm && (
+            <div className="flex items-center justify-between pt-6 border-t border-gray-200">
+              <p className="text-xs text-gray-400">
+                {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, total)} dari {total} laporan
+              </p>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                  disabled={page === 1}
+                  className="p-2 rounded-lg border border-gray-200 disabled:opacity-30 hover:bg-gray-50 transition-colors"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+                  const p = totalPages <= 5 ? i + 1 : page <= 3 ? i + 1 : page >= totalPages - 2 ? totalPages - 4 + i : page - 2 + i;
+                  return (
+                    <button
+                      key={p}
+                      onClick={() => setPage(p)}
+                      className={cn(
+                        'w-8 h-8 rounded-lg text-xs font-semibold transition-colors',
+                        page === p ? 'bg-[#FF4B3A] text-white' : 'hover:bg-gray-100 text-gray-500'
+                      )}
+                    >
+                      {p}
+                    </button>
+                  );
+                })}
+                <button
+                  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                  disabled={page === totalPages}
+                  className="p-2 rounded-lg border border-gray-200 disabled:opacity-30 hover:bg-gray-50 transition-colors"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }

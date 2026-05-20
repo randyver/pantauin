@@ -20,7 +20,7 @@ const menuItems = [
   { icon: Signal, label: 'Pantau Insiden', href: '/dashboard/pantau' },
   { icon: Video, label: 'Kawalin', href: '/dashboard/kawalin' },
   { icon: Megaphone, label: 'Laporin', href: '/dashboard/laporin' },
-  { icon: ClipboardList, label: 'KitaLapor', href: '/kita-lapor' },
+  { icon: ClipboardList, label: 'KitaLapor', href: '/dashboard/kita-lapor' },
 ];
 
 export function Sidebar() {
