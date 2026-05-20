@@ -5,7 +5,8 @@ import Link from 'next/link';
 import {
   Megaphone, ChevronLeft, ChevronRight, Filter,
   MapPin, Calendar, Users, FileX,
-  Clock, CheckCircle, AlertCircle, X,
+  Clock, CheckCircle, AlertCircle, X, BrainCircuit,
+  ShieldAlert, GitBranch,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useSearch } from '@/lib/search-context';
@@ -28,6 +29,10 @@ interface CitizenReport {
   symptoms: string[] | null;
   photoUrls: string[] | null;
   status: string;
+  aiSeverity: string | null;
+  aiSummary: string | null;
+  aiSpamScore: number | null;
+  clusterId: string | null;
   createdAt: string;
 }
 
@@ -47,7 +52,15 @@ const STATUS_MAP: Record<string, { label: string; icon: React.ElementType; color
   pending:    { label: 'Menunggu', icon: Clock, color: 'text-yellow-600 bg-yellow-50' },
   verified:   { label: 'Terverifikasi', icon: CheckCircle, color: 'text-green-600 bg-green-50' },
   escalated:  { label: 'Dieskalasi', icon: AlertCircle, color: 'text-red-600 bg-red-50' },
+  rejected:   { label: 'Ditolak (Spam)', icon: ShieldAlert, color: 'text-gray-400 bg-gray-50' },
   closed:     { label: 'Selesai', icon: CheckCircle, color: 'text-gray-500 bg-gray-50' },
+};
+
+const SEVERITY_MAP: Record<string, { label: string; color: string }> = {
+  low:      { label: 'Rendah', color: 'bg-green-50 text-green-700 border-green-200' },
+  medium:   { label: 'Sedang', color: 'bg-yellow-50 text-yellow-700 border-yellow-200' },
+  high:     { label: 'Tinggi', color: 'bg-orange-50 text-orange-700 border-orange-200' },
+  critical: { label: 'Kritis', color: 'bg-red-50 text-red-700 border-red-200' },
 };
 
 const ROLE_LABEL: Record<string, string> = {
@@ -113,6 +126,12 @@ function ReportCard({ report, provinceName }: { report: CitizenReport; provinceN
               {cat.label}
             </span>
           )}
+          {report.aiSeverity && SEVERITY_MAP[report.aiSeverity] && (
+            <span className={cn('inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold border', SEVERITY_MAP[report.aiSeverity].color)}>
+              <BrainCircuit className="w-3 h-3" />
+              {SEVERITY_MAP[report.aiSeverity].label}
+            </span>
+          )}
           <span className={cn('inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-bold', stat.color)}>
             <StatIcon className="w-3 h-3" /> {stat.label}
           </span>
@@ -129,8 +148,23 @@ function ReportCard({ report, provinceName }: { report: CitizenReport; provinceN
         </div>
       )}
 
-      {/* Description */}
-      <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">{report.description}</p>
+      {/* AI Summary (if available, replaces raw description) */}
+      {report.aiSummary ? (
+        <div className="flex items-start gap-1.5">
+          <BrainCircuit className="w-3 h-3 text-purple-400 mt-0.5 shrink-0" />
+          <p className="text-xs text-gray-600 leading-relaxed line-clamp-2 italic">{report.aiSummary}</p>
+        </div>
+      ) : (
+        <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">{report.description}</p>
+      )}
+
+      {/* Cluster indicator */}
+      {report.clusterId && (
+        <div className="flex items-center gap-1 text-[10px] text-purple-500 font-medium">
+          <GitBranch className="w-3 h-3" />
+          <span>Klaster: {report.clusterId}</span>
+        </div>
+      )}
 
       {/* Symptoms */}
       {report.symptoms && report.symptoms.length > 0 && (
